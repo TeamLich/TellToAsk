@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kendo.Mvc.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 using TellToAsk.Areas.LoggedUser.Models;
 using TellToAsk.Controllers;
 using TellToAsk.Data;
+using Kendo.Mvc.Extensions;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
@@ -31,11 +33,11 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             return View(questions);
         }
 
-        public JsonResult GetMyQuestions()
+        public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request)
         {
           var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-
-          return Json(questions, JsonRequestBehavior.AllowGet);
+          var list = questions.ToList();
+          return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TakeQuestion()

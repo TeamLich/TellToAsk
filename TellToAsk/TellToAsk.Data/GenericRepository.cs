@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using TellToAsk.Data;
 
-namespace TwiterApp.Data
+namespace TellToAsk.Data
 {
     public class GenericRepository<T>: IRepository<T> where T : class
     {

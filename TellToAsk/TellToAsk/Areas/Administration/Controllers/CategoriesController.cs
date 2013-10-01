@@ -8,17 +8,26 @@ using System.Web;
 using System.Web.Mvc;
 using TellToAsk.Model;
 using TellToAsk.Data;
+using TellToAsk.Controllers;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseController
     {
-        private TellToAskContext db = new TellToAskContext();
 
+        public CategoriesController()
+            : this(new UowData())
+        {
+        }
+
+        public CategoriesController(IUowData data)
+            : base(data)
+        {
+        }
         // GET: /Administration/Categories/
         public ActionResult Index()
         {
-            return View(db.Categories.ToList());
+            return View(this.Data.Categories.All().ToList());
         }
 
         // GET: /Administration/Categories/Details/5
@@ -28,7 +37,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = this.Data.Categories.GetById((int)id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -53,8 +62,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(category);
-                db.SaveChanges();
+                this.Data.Categories.Add(category);
+                this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -68,7 +77,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = this.Data.Categories.GetById((int)id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -87,8 +96,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
+                this.Data.Categories.Update(category);
+                this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -101,7 +110,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = this.Data.Categories.GetById((int)id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -114,15 +123,14 @@ namespace TellToAsk.Areas.Administration.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
-            db.SaveChanges();
+            this.Data.Categories.Delete(id);
+            this.Data.SaveChanges();
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            this.Data.Dispose();
             base.Dispose(disposing);
         }
     }

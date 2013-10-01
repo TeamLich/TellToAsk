@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using TellToAsk.Model;
 
-namespace TwiterApp.Data
+namespace TellToAsk.Data
 {
     public interface IUowData : IDisposable
     {

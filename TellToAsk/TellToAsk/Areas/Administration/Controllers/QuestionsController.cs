@@ -8,17 +8,26 @@ using System.Web;
 using System.Web.Mvc;
 using TellToAsk.Model;
 using TellToAsk.Data;
+using TellToAsk.Controllers;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-    public class QuestionsController : Controller
+    public class QuestionsController : BaseController
     {
-        private TellToAskContext db = new TellToAskContext();
+       public QuestionsController()
+            : this(new UowData())
+        {
+        }
+
+       public QuestionsController(IUowData data)
+            : base(data)
+        {
+        }
 
         // GET: /Administration/Questions/
         public ActionResult Index()
         {
-            return View(db.Questions.ToList());
+            return View(this.Data.Questions.All().ToList());
         }
 
         // GET: /Administration/Questions/Details/5
@@ -28,7 +37,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = db.Questions.Find(id);
+            Question question = this.Data.Questions.GetById((int)id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -39,7 +48,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Questions/Create
         public ActionResult Create()
         {
-            ViewBag.Categories = db.Categories.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
+            ViewBag.Categories = this.Data.Categories.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
             return View();
         }
 
@@ -54,17 +64,18 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             
 
-            var user = db.Users.FirstOrDefault( u => u.UserName == this.User.Identity.Name);
+            var user = this.Data.Users.All().FirstOrDefault( u => u.UserName == this.User.Identity.Name);
 
             question.Creator = user;
 
             if (ModelState.IsValid)
             {
-                db.Questions.Add(question);
-                db.SaveChanges();
+                this.Data.Questions.Add(question);
+                this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Categories = db.Categories.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
+            ViewBag.Categories = this.Data.Categories.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
             return View(question);
         }
 
@@ -75,7 +86,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = db.Questions.Find(id);
+            Question question = this.Data.Questions.GetById((int)id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -94,8 +105,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(question).State = EntityState.Modified;
-                db.SaveChanges();
+                this.Data.Questions.Update(question);
+                this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(question);
@@ -108,7 +119,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = db.Questions.Find(id);
+            Question question = this.Data.Questions.GetById((int)id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -120,16 +131,15 @@ namespace TellToAsk.Areas.Administration.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
-        {
-            Question question = db.Questions.Find(id);
-            db.Questions.Remove(question);
-            db.SaveChanges();
+        {          
+            this.Data.Questions.Delete(id);
+            this.Data.SaveChanges();
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            this.Data.Dispose();
             base.Dispose(disposing);
         }
     }

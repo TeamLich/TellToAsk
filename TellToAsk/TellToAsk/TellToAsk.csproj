@@ -158,8 +158,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
+    <Compile Include="Areas\Administration\Controllers\AnswersController.cs" />
     <Compile Include="Areas\Administration\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
+    <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
@@ -245,6 +247,11 @@
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\LoggedUser\Views\_ViewStart.cshtml" />
     <Content Include="Areas\LoggedUser\Views\LoggedUser\TakeQuestion.cshtml" />
+    <Content Include="Areas\Administration\Views\Answers\Create.cshtml" />
+    <Content Include="Areas\Administration\Views\Answers\Delete.cshtml" />
+    <Content Include="Areas\Administration\Views\Answers\Details.cshtml" />
+    <Content Include="Areas\Administration\Views\Answers\Edit.cshtml" />
+    <Content Include="Areas\Administration\Views\Answers\Index.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -286,7 +293,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Administration\Models\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Areas\LoggedUser\Views\Shared\" />
   </ItemGroup>

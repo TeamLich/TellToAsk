@@ -1,0 +1,33 @@
+﻿@model TellToAsk.Model.Answer
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Answer</legend>
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsReported)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsReported)
+        </dd>
+
+    </dl>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.AnswerId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

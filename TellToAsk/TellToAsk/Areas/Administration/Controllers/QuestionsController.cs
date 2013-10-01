@@ -46,6 +46,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
+           
             return View(question);
         }
 

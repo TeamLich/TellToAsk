@@ -1,0 +1,58 @@
+﻿@model IEnumerable<TellToAsk.Areas.Administration.Models.AnswerModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Aswers</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>@(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.AnswerModel>()
+    .Name("answers")
+    .Columns(column =>
+        {
+            // column.Bound(p => p.AnswerId);
+            column.Bound(p => p.Comment);
+            column.Bound(p => p.Question);
+            column.Bound(p => p.Creator).Title("Answered User");
+            column.Bound(p => p.Reported);            
+            column.Template(p => @Html.Action("Edit", "Answers", new { id = p.AnswerId }))
+                .ClientTemplate("<a href='/Administration/Answers/Edit?id=#= AnswerId #'>Edit</a> | " +
+                "<a href='/Administration/Answers/Delete?id=#= AnswerId #'>Delete</a>").Title("Action");
+        })
+     .Pageable()
+     .Sortable()
+     .Selectable()
+     .DataSource(data => data
+         .Ajax()
+         .ServerOperation(true)
+         .PageSize(5)
+         .Events(events => events.Error("error_handler"))
+         .Model(model =>
+         {
+             model.Id(p => p.AnswerId);
+
+         })
+             .Read(read => read.Action("Read", "Answers")))
+)
+
+<script>
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+</script>
+@section Scripts{
+    @Scripts.Render("~/bundles/kendo")
+}

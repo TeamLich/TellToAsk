@@ -33,8 +33,3 @@ input[type="checkbox"].input-validation-error {
   background-color: white;
   border-style:none;
 }
-
-.chart-wrapper {
-    width: 50px;
-    display: inline-block;
-}

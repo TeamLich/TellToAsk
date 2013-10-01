@@ -37,5 +37,11 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
           return Json(questions, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult TakeQuestion()
+        {
+            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+            return View(questions);
+        }
 	}
 }

@@ -1,39 +1,61 @@
-﻿@model IEnumerable<TellToAsk.Model.Question>
+﻿@model IEnumerable<TellToAsk.Areas.Administration.Models.QuestionModel>
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Questions</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Text)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsApproved)
-        </th>
-        <th></th>
-    </tr>
+@(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.QuestionModel>()
+    .Name("questions")
+    .Columns(column =>
+        {
+            // column.Bound(p => p.QuestionId);
+            column.Bound(p => p.Text).Title("Question");
+            column.Bound(p => p.Creator);
+            column.Bound(p => p.AnswersCount).Title("Asnwers Count");
+            column.Bound(p => p.Category);
+            column.Bound(p => p.Approved).Title("Approved");            
+            column.Template(p => @Html.Action("Edit", "Questions", new { id = p.QuestionId }))
+                .ClientTemplate("<a href='/Administration/Questions/Edit?id=#= QuestionId #'>Edit</a> | " +
+                "<a href='/Administration/Questions/Details?id=#= QuestionId #'>Details</a> | " +
+                "<a href='/Administration/Questions/Delete?id=#= QuestionId #'>Delete</a>").Title("Action");
+        })
+     .Pageable()
+     .Sortable()
+     .Selectable()
+     .DataSource(data => data
+         .Ajax()
+         .ServerOperation(true)
+         .PageSize(5)
+         .Events(events => events.Error("error_handler"))
+         .Model(model =>
+         {
+             model.Id(p => p.QuestionId);
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Text)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsApproved)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.QuestionId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.QuestionId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.QuestionId })
-        </td>
-    </tr>
+         })
+         .Read(read => read.Action("Read", "Questions")))
+)
+
+<script>
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+   
+</script>
+@section Scripts{
+    @Scripts.Render("~/bundles/kendo")
 }
-
-</table>

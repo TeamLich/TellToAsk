@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using TellToAsk.Model;
 using TellToAsk.Data;
 using TellToAsk.Controllers;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
@@ -30,19 +32,11 @@ namespace TellToAsk.Areas.Administration.Controllers
             return View(this.Data.Categories.All().ToList());
         }
 
-        // GET: /Administration/Categories/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Category category = this.Data.Categories.GetById((int)id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            return View(category);
+            var categories = this.Data.Categories.All();
+
+            return Json(categories.ToDataSourceResult(request));
         }
 
         // GET: /Administration/Categories/Create

@@ -19,6 +19,38 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.Creator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Creator.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Category.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers)
+        </dt>
+
+        <dd>
+            @foreach (var answer in Model.Answers)
+            {
+                //<spna>@answer.Comment</spna>
+                string isReported = answer.IsReported == false ? "Reported" : "";
+                @Html.ActionLink(answer.Comment,
+                    "Edit", "Answers", new { id = answer.AnswerId }, new { @class = "list-answer" });  
+                <span style="color:red">@isReported</span>
+                <br />
+            }
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.IsApproved)
         </dt>
 
@@ -29,6 +61,6 @@
     </dl>
 </fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.QuestionId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.QuestionId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

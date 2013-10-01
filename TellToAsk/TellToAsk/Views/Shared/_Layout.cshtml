@@ -20,7 +20,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area= "" }, new { @class = "brand" })
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "brand" })
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
@@ -34,13 +34,11 @@
                             <li>@Html.ActionLink("AskQuestion", "AskQuestion", "LoggedUser", new { area = "LoggedUser" }, null)</li>
                             <li>@Html.ActionLink("Take Question", "TakeQuestion", "LoggedUser", new { area = "LoggedUser" }, null)</li>
                         }
-                        
-                        @*to be changed on admin and add sub menu item*@
 
-                        @if (this.User.IsInRole("User"))
-                        {
-                          <li>@Html.ActionLink("Admin", "Index", "Questions", new { area = "Administration" }, null)</li>
-                        }
+                        @*to be changed on admin and add sub menu item*@
+                        <li>@Html.ActionLink("Categories", "Index", "Categories", new { area = "Administration" }, null)</li>
+                        <li>@Html.ActionLink("Questions", "Index", "Questions", new { area = "Administration" }, null)</li>
+                        <li>@Html.ActionLink("Answers", "Index", "Answers", new { area = "Administration" }, null)</li>
 
                     </ul>
                     @Html.Partial("_LoginPartial")

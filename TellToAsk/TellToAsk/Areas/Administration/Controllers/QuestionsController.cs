@@ -126,7 +126,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        // comment
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

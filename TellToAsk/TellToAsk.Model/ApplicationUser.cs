@@ -8,7 +8,7 @@ namespace TellToAsk.Model
 {
     public class ApplicationUser : User
     {
-        public int Age { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         public Gender Gender { get; set; }
 

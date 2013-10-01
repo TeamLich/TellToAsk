@@ -2,15 +2,20 @@
     ViewBag.Title = "Home Page";  
 }
 
-<div class="chart-Questions">
-    @(Html.Kendo().Chart()
-        .Name("chart")
+
+<h1 class="text-success text-center">@ViewBag.RegisteredUsers users are waiting for your questions.</h1>
+<div>
+    <div class="chart-wrapper">
+
+        @(Html.Kendo().Chart()
+        .Name("chart2")
                 .Title(title => title
                     .Text("You ask the most about ...?")
                     .Position(ChartTitlePosition.Bottom))
         .Legend(legend => legend
             .Visible(false)
         )
+                .HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
         .Series(series =>
         {
             series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
@@ -25,31 +30,35 @@
             .Visible(true)
             .Format("{0}%")
         )
-    )
-</div>
-@*hghjgh*@
-<div class="chart-Answers inline">
-    @(Html.Kendo().Chart()
-        .Name("chart")
-                .Title(title => title
-                    .Text("You asnwer the most...?")
-                    .Position(ChartTitlePosition.Bottom))
-        .Legend(legend => legend
-            .Visible(false)
         )
-        .Series(series =>
-        {
-            series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
-            .Labels(labels => labels
-                .Template("#= category #: #= value#%")
-                .Background("transparent")
+    </div>
+    
+    <div class="chart-wrapper">
+
+        @(Html.Kendo().Chart()
+            .Name("chart")
+                    .Title(title => title
+                        .Text("You asnwer the most...?")
+                        .Position(ChartTitlePosition.Bottom))
+            .Legend(legend => legend
+                .Visible(false)
+                    ).HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
+            .Series(series =>
+            {
+                series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
+                .Labels(labels => labels
+                    .Template("#= category #: #= value#%")
+                    .Background("transparent")
+                    .Visible(true)
+                )
+                
+                .StartAngle(550);
+            })
+            .Tooltip(tooltip => tooltip
                 .Visible(true)
+                .Format("{0}%")
             )
-            .StartAngle(150);
-        })
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Format("{0}%")
         )
-    )
+    </div>
+   
 </div>

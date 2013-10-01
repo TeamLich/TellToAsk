@@ -162,6 +162,8 @@
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
+    <Compile Include="Areas\LoggedUser\Models\CategoryModel.cs" />
+    <Compile Include="Areas\LoggedUser\Models\QuestionModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -240,6 +242,8 @@
     <Content Include="Areas\LoggedUser\Views\web.config" />
     <Content Include="Areas\LoggedUser\Views\LoggedUser\MyQuestions.cshtml" />
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\LoggedUser\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\LoggedUser\Views\LoggedUser\TakeQuestion.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -283,7 +287,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
-    <Folder Include="Areas\LoggedUser\Models\" />
     <Folder Include="Areas\LoggedUser\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>

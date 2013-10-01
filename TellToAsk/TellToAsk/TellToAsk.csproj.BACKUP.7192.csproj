@@ -39,9 +39,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
+    <Reference Include="Kendo.Mvc">
+      <HintPath>..\packages\Kendo.Mvc.dll</HintPath>
+=======
     <Reference Include="Kendo.Mvc, Version=2013.2.918.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>KendoMVC\Kendo.Mvc.dll</HintPath>
+>>>>>>> 049695deac1da6264bd704e092c6f2b1fd845de9
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

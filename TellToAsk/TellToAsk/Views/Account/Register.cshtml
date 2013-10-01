@@ -18,7 +18,7 @@
             @Html.LabelFor(m => m.UserName, new { @class = "control-label" })
             <div class="controls">
                 @Html.TextBoxFor(m => m.UserName)
-            </div>
+            </div>   
         </div>
         <div class="control-group">
             @Html.LabelFor(m => m.Password, new { @class = "control-label" })
@@ -28,16 +28,53 @@
         </div>
         <div class="control-group">
             @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.PasswordFor(m => m.ConfirmPassword)
+                    </div>
+                </div>
+        <div class="control-group">
+            @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
             <div class="controls">
-                @Html.PasswordFor(m => m.ConfirmPassword)
+                @(Html.DropDownListFor(g=>g.Gender, new List<SelectListItem> {
+                   new SelectListItem { Value = "0", Text = "Male"},
+                   new SelectListItem { Value = "1", Text = "Female"},
+                 })
+                )
             </div>
         </div>
+        <div class="control-group">
+            @Html.LabelFor(m => m.BirthDate, new { @class = "control-label" })
+                <div class="controls">
+                   @(Html.Kendo().Calendar().Name("birthDate")
+                   .Min(new DateTime(1901, 01, 01))
+                   .Max(new DateTime(2001, 12, 31))
+                   .Events(e => e.Change("change"))
+                   )                   
+                   @Html.TextBoxFor(m => m.BirthDate, new { @class = "hidden", @Id="birth-date" })
+                 </div>
+       </div>
+          
         <div class="form-actions no-color">
             <input type="submit" value="Register" class="btn" />
         </div>
     </fieldset>
 }
 
+<script>
+    function change() {
+        console.log("Change : " + kendo.toString(this.value(), 'd'));
+        console.log(this.value());
+        console.log($("#birth-date"));
+        $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
+    }
+
+    function navigate() {
+        // console.log("Navigate");
+    }
+</script>
+
 @section Scripts {
+    @Scripts.Render("~/bundles/kendo")
     @Scripts.Render("~/bundles/jqueryval")
+
 }

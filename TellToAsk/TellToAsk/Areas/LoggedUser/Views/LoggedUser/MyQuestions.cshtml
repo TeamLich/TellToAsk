@@ -1,0 +1,24 @@
+﻿@model IEnumerable<TellToAsk.Areas.LoggedUser.Models.QuestionModel>
+
+@(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Text).ClientTemplate(
+        "#= Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
+).Groupable(false);
+    columns.Bound(p =>  p.Category.Name);
+
+    })
+    .Groupable()
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Read(read => read.Action("GetMyQuestions", "LoggedUser")))
+    )
+    @section Scripts {
+        @Scripts.Render("~/bundles/kendo")
+    }

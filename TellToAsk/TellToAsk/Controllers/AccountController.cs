@@ -87,8 +87,16 @@ namespace TellToAsk.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 // Create a local login before signing in the user
-                var user = new ApplicationUser { UserName = model.UserName };
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    BirthDate = DateTime.Parse(model.BirthDate),
+                    Gender = model.Gender,
+                    
+                };
+
                 var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
                 if (result.Success)
                 {

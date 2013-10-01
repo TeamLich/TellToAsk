@@ -11,6 +11,8 @@ namespace TellToAsk.Model
 
         public string Name { get; set; }
 
+        public AgeRating AgeRating { get; set; }
+
         public virtual ICollection<ApplicationUser> Users { get; set; }
 
         public virtual ICollection<Question> Questions { get; set; }

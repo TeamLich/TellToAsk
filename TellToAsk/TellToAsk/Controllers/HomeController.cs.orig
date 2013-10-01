@@ -1,0 +1,74 @@
+﻿using System;
+using TellToAsk.Model;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using TellToAsk.Data;
+
+namespace TellToAsk.Controllers
+{
+    public class HomeController : BaseController
+    {
+
+          public HomeController()
+            : this(new UowData())
+        {
+        }
+
+          public HomeController(IUowData data)
+            : base(data)
+        {
+        }
+
+        public ActionResult Index()
+        {
+<<<<<<< HEAD
+            ViewBag.QuestionsData = new dynamic[] 
+           {
+                new {category="Asia",value=53.8,color="#9de219"},
+                new {category="Europe",value=16.1,color="#90cc38"},
+                new {category="LatinAmerica",value=11.3,color="#068c35"},
+                new {category="Africa",value=9.6,color="#006634"},
+                new {category="MiddleEast",value=5.2,color="#004d38"},
+                new {category="NorthAmerica",value=3.6,color="#033939"}
+           };
+
+=======
+           
+            var questionsCount =  this.Data.Questions.All().Count();
+
+            ViewBag.RegisteredUsers = this.Data.Users.All().Count();
+
+            if (questionsCount > 0)
+            {
+                ViewBag.QuestionsData = this.Data.Categories.All().Select(x => new { category = x.Name, value = x.Questions.Count * 100 / questionsCount }).ToList();
+            }
+
+            var answersCount = this.Data.Answers.All().Count();
+            if (answersCount > 0)
+            {
+                ViewBag.AnswersData = this.Data.Categories.All().ToList().Select(x =>
+                 new { category = x.Name, value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount }).ToList();
+
+            }
+         
+>>>>>>> 44dddb8ce65ea24f70dbf49e945c82f117695175
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+    }
+}

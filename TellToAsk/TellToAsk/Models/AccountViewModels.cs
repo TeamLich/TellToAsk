@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TellToAsk.Model;
 
 namespace TellToAsk.Models 
 {
@@ -59,5 +60,15 @@ namespace TellToAsk.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Birth Date")]
+        public string BirthDate { get; set; }
+
+        [Required]
+        [Display(Name = "Gender")]
+        public Gender Gender { get; set; }
+
     }
 }

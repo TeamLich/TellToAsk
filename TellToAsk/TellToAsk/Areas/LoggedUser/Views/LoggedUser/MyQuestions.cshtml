@@ -4,6 +4,7 @@
     .Name("Grid")
     .Columns(columns =>
     {
+        columns.Bound(p => p.QuestionId).Visible(false);
         columns.Bound(p => p.Text).ClientTemplate(
         "#= Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
 ).Groupable(false);
@@ -14,11 +15,31 @@
     .Pageable()
     .Sortable()
     .Scrollable()
+    .Selectable()
+    .Events(ev =>
+        {
+            ev.Change("onChange");
+        })
     .Filterable()
     .DataSource(dataSource => dataSource
     .Ajax()
     .Read(read => read.Action("GetMyQuestions", "LoggedUser")))
     )
+
+<script>
+    function onChange(e) {
+        grid = e.sender;
+        var currentDataItem = grid.dataItem(this.select()).QuestionId;
+        CallActionForShowingAllAnswers(currentDataItem);
+    }
+
+    function CallActionForShowingAllAnswers(id) {
+        window.location.href = "QuestionAnswers?id=" + id;
+    }
+</script>
+
+
+
     @section Scripts {
         @Scripts.Render("~/bundles/kendo")
     }

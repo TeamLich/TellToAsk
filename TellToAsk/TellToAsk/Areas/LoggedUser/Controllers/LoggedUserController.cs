@@ -8,6 +8,7 @@ using TellToAsk.Areas.LoggedUser.Models;
 using TellToAsk.Controllers;
 using TellToAsk.Data;
 using Kendo.Mvc.Extensions;
+using TellToAsk.Model;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
@@ -29,21 +30,83 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult MyQuestions()
         {
-            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-            return View(questions);
+            return View();
         }
 
         public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request)
         {
           var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-          var list = questions.ToList();
           return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetTargetedQuestions([DataSourceRequest]DataSourceRequest request)
+        {
+            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+            return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult QuestionAnswers(int? id)
+        {
+            var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
+            
+            if (question != null)
+            {
+               var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
+
+               var model = new DetailsModel() { Answers = answers, QuestionId = question.QuestionId, QuestionText = question.Text };
+
+               return View(model);
+            }
+            return View();
+        }
+
+        public JsonResult GetQuestionAnswers([DataSourceRequest]DataSourceRequest request, int? id)
+        {
+           // var id = Convert.ToInt32(this.Request.Params["id"]);
+
+            var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
+
+            if (question != null)
+            {
+                var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
+                return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+               
+                
+            }
+            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TakeQuestion()
         {
             var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
             return View(questions);
+        }
+
+        public ActionResult AnswerToQuestion(AnswerModel answerModel)
+        {
+            if (answerModel.Comment.Length < 100)
+            {
+                // validate
+            }
+
+            var userName = this.User.Identity.Name;
+
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+            var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == answerModel.QuestionId);
+
+            var newAnswer = new Answer() 
+            {
+                IsReported = false,
+                Comment = answerModel.Comment,
+                User = user,
+                Question = question
+            };
+
+            this.Data.Answers.Add(newAnswer);
+
+            this.Data.SaveChanges();
+
+            return View("MyQuestions");
         }
 	}
 }

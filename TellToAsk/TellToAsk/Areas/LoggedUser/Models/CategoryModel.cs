@@ -13,7 +13,7 @@ namespace TellToAsk.Areas.LoggedUser.Models
 
         public string Name { get; set; }
 
-
+       
         public static Expression<Func<Category, CategoryModel>> FromCategory
         {
             get

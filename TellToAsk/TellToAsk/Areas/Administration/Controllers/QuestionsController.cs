@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using TellToAsk.Model;
 using TellToAsk.Data;
 using TellToAsk.Controllers;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
+using TellToAsk.Areas.Administration.Models;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
@@ -27,7 +30,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Questions/
         public ActionResult Index()
         {
-            return View(this.Data.Questions.All().ToList());
+            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+            return View(questions.ToList());
         }
 
         // GET: /Administration/Questions/Details/5
@@ -43,6 +47,13 @@ namespace TellToAsk.Areas.Administration.Controllers
                 return HttpNotFound();
             }
             return View(question);
+        }
+
+        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        {
+            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+
+            return Json(questions.ToDataSourceResult(request));
         }
 
         // GET: /Administration/Questions/Create
@@ -91,6 +102,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Category = this.Data.Categories.All()
+                .ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
             return View(question);
         }
 
@@ -109,6 +122,8 @@ namespace TellToAsk.Areas.Administration.Controllers
                 this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.Category = this.Data.Categories.All()
+               .ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
             return View(question);
         }
 

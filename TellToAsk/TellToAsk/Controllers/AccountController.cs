@@ -92,7 +92,11 @@ namespace TellToAsk.Controllers
                 var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
                 if (result.Success)
                 {
+                    //add user to role
                     await IdentityManager.Authentication.SignInAsync(AuthenticationManager, user.Id, isPersistent: false);
+                    Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleByNameAsync("User");
+                    var userRole = await getRoleTask;
+                    await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
                     return RedirectToAction("Index", "Home");
                 }
                 else

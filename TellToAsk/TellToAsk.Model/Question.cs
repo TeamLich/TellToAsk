@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace TellToAsk.Model
 
         public string Text { get; set; }
 
-        public bool IsApprove { get; set; }
+        public bool IsApproved { get; set; }
 
         public virtual ApplicationUser Creator { get; set; }
 
@@ -20,6 +21,8 @@ namespace TellToAsk.Model
 
         public virtual ICollection<Answer> Answers { get; set; }
 
+        [Display(Name="Category")]
+        public  int CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
         public Question()

@@ -1,0 +1,56 @@
+﻿@model TellToAsk.Model.Question
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset class="form-horizontal">
+        <legend>Question</legend>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.Text, new { @class = "control-label" })
+            <div class="controls">
+                @Html.EditorFor(model => model.Text)
+                @Html.ValidationMessageFor(model => model.Text, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.IsApproved, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.EditorFor(model => model.IsApproved)
+                        @Html.ValidationMessageFor(model => model.IsApproved, null, new { @class = "help-inline" })
+                </div>
+            </div>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.CategoryId, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Categories)
+                        @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "help-inline" })
+                        </div>
+                    </div>
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Create" class="btn" />
+        </div>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

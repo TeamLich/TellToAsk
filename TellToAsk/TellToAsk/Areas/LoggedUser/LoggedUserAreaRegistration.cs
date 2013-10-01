@@ -16,7 +16,7 @@ namespace TellToAsk.Areas.LoggedUser
         {
             context.MapRoute(
                 "LoggedUser_default",
-                "LoggedUser/{controller}/{action}/{id}",
+                "{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
             );
         }

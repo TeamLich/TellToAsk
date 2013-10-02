@@ -16,8 +16,6 @@ namespace TellToAsk.Model
 
         public virtual ICollection<Question> MyQuestions { get; set; }
 
-        public virtual ICollection<Question> AnsweredQuestions { get; set; }
-
         public virtual ICollection<Answer> Answers { get; set; }
 
         public virtual ICollection<Category> Categories { get; set; }
@@ -25,7 +23,6 @@ namespace TellToAsk.Model
         public ApplicationUser()
         {
             this.MyQuestions = new HashSet<Question>();
-            this.AnsweredQuestions = new HashSet<Question>();
             this.Answers = new HashSet<Answer>();
             this.Categories = new HashSet<Category>();
         }

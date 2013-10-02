@@ -1,12 +1,11 @@
 ﻿@model TellToAsk.Areas.LoggedUser.Models.DetailsModel
 
-@if (Model == null)
-{
-    <p>
-        No question found.
-    </p>
-}
-else if (Model.Answers.Count() == 0)
+<h1>
+    @Model.QuestionText
+</h1>
+
+
+@if (Model.Answers.Count() == 0)
 {
      <p>
         No answer for this question, yet.
@@ -14,9 +13,7 @@ else if (Model.Answers.Count() == 0)
 }
 else{
     
-    <p>
-        @Model.QuestionText;
-    </p>
+   
     
     @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.AnswerModel>()
     .Name("Grid")

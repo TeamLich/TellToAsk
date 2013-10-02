@@ -10,7 +10,7 @@
         "#= Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
 ).Groupable(false);
         columns.Bound(p => p.Category.Name);
-        columns.Command(command => command.Custom("ViewDetails").Click("showDetails"));
+        columns.Command(command => command.Custom("Answer").Click("showDetails"));
 
     })
     .Groupable()
@@ -40,9 +40,7 @@
         {
             <input type="hidden" name="QuestionId" value="#= QuestionId #" />
 
-                            <textarea name="Comment">
-
-                     </textarea>
+                 @Html.TextArea("Comment", string.Empty, 10, 55, null)
             <input type="submit" class="btn btn-success" value="Answer" />
         }
     </div>

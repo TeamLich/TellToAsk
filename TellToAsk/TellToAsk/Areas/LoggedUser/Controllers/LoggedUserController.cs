@@ -25,9 +25,6 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
         {
         }
 
-        //
-        // GET: /LoggedUser/LoggedUser/
-
         public ActionResult MyQuestions()
         {
             return View();
@@ -50,8 +47,8 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
 
-            var questions = this.Data.Questions.All()
-                .Where( q => user.Categories.Contains(q.Category)).Select(QuestionModel.FromQuestion);
+            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+                //.Where( q => user.Categories.Contains(q.Category)).Select(QuestionModel.FromQuestion);
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -101,7 +98,48 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult AnswerToQuestion(AnswerModel answerModel)
         {
-            if (answerModel.Comment.Length < 100)
+            if (ModelState.IsValid)
+            {
+                var userName = this.User.Identity.Name;
+
+                var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+                var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == answerModel.QuestionId);
+
+                var newAnswer = new Answer()
+                {
+                    IsReported = false,
+                    Comment = answerModel.Comment,
+                    User = user,
+                    Question = question
+                };
+
+                this.Data.Answers.Add(newAnswer);
+
+                this.Data.SaveChanges();
+
+                return View("MyQuestions");
+            }
+
+            return PartialView("_AnswerQuestion", answerModel);
+        }
+
+        public ActionResult AskQuestion()
+        {
+            var list = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text= "---Select category---", Value= "-1"} };
+
+            var categories = this.Data.Categories.All().OrderBy(c => c.Name).ToList().Select( c => new SelectListItem () { Value = c.CategoryId.ToString(), Text= c.Name } ).ToList();
+
+            list.AddRange(categories);
+
+            ViewBag.Categories = list;
+
+            return View();
+        }
+
+        public ActionResult CreateQuestion(Question question)
+        {
+
+            if (question != null && question.TargetedMinAge != null && question.TargetedMaxAge != null)
             {
                 // validate
             }
@@ -109,21 +147,20 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             var userName = this.User.Identity.Name;
 
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
-            var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == answerModel.QuestionId);
-
-            var newAnswer = new Answer() 
+            question.Creator = user;
+            if (ModelState.IsValid)
             {
-                IsReported = false,
-                Comment = answerModel.Comment,
-                User = user,
-                Question = question
-            };
+                this.Data.Questions.Add(question);
+                this.Data.SaveChanges();
+                return RedirectToAction("MyQuestions");
+            }
 
-            this.Data.Answers.Add(newAnswer);
+            return View(question);
+        }
 
-            this.Data.SaveChanges();
-
-            return View("MyQuestions");
+        public ActionResult RenderTargetGroupForm()
+        {
+            return PartialView("_TargetGroupForm");
         }
 	}
 }

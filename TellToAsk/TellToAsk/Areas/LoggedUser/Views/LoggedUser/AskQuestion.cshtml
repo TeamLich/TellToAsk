@@ -1,32 +1,61 @@
-﻿
-@using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
+﻿@model TellToAsk.Model.Question
+
+@using (Html.BeginForm("CreateQuestion", "LoggedUser"))
 {
+    
     <fieldset>
-    <legend>Legend</legend>
-    <label>Label name</label>
-    <textarea placeholder="Question text...">
-    </textarea>
-    <div id="target-question-form">
+        <legend>Ask question</legend>
+       <input class="btn btn-info" type="button" id="target-group-button" value="Target Group"/>
+
         <div class="control-group">
-            @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
-                <div class="controls">
-                    @(Html.DropDownListFor(g => g.Gender, new List<SelectListItem> {
-                       new SelectListItem { Value = ((int)TellToAsk.Model.Gender.Male).ToString(), Text = TellToAsk.Model.Gender.Male.ToString()},
-                       new SelectListItem { Value = ((int)TellToAsk.Model.Gender.Female).ToString(), Text = TellToAsk.Model.Gender.Male.ToString()},
-                 })
-                )
+            @Html.LabelFor(model => model.Text, new { @class = "control-label" })
+            <div class="controls">
+                @Html.EditorFor(model => model.Text)
+                @Html.ValidationMessageFor(model => model.Text, null, new { @class = "help-inline" })
             </div>
         </div>
         <div class="control-group">
-            @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
-                <div class="controls">
-                  <input type="number"/>
-                </div>
+            @Html.LabelFor(model => model.CategoryId, new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Categories)
+                @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "help-inline" })
+            </div>
         </div>
-    </div>
-    <button type="submit" class="btn">Submit</button>
-  </fieldset>
-
-    <textarea name="Comment"></textarea>
-    <input type="submit" class="btn btn-success" value="Answer" />
+        
+        <div id="target-question-form" class="hidden">
+           @Ajax.BeginForm("_TargetGroupForm", new AjaxOptions {
+                    
+            }))
+            {
+                
+            }
+        </div>
+        <input type="submit" class="btn btn-success" value="Answer" />
+    </fieldset>
 }
+
+<script>
+    $(document).ready(function () {
+
+        $('#target-group-button').click(function (e) {
+            e.preventDefault;
+            debugger;
+            var isHidden = $('#target-question-form').hasClass("hidden");
+            if (!isHidden) {
+                debugger;
+
+                $.getJSON("RenderTargetGroupForm", null, function () {
+                    console.log("ok rendered");
+                });    
+
+                $(this).val("Target Group");
+                $('#target-question-form').addClass("hidden");
+            }
+            else {
+                debugger;
+                $(this).val("Hide");
+                $('#target-question-form').removeClass("hidden");
+            }
+        });
+    });
+</script>

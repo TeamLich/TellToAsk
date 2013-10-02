@@ -41,16 +41,16 @@ namespace TellToAsk.Data.Migrations
 
                 context.Categories.AddOrUpdate(
                  c => c.Name,
-                 new Category { Name = "Others" },
-                 new Category { Name = "Fun" },
-                 new Category { Name = "Sport" },
-                 new Category { Name = "Health" },
-                 new Category { Name = "In the Kitchen" },
-                 new Category { Name = "In the Name of the Law" },
-                 new Category { Name = "Love is all Around " },
-                 new Category { Name = "Communication Skills" },
-                 new Category { Name = "18+ - For Adults Only" },
-                 new Category { Name = "Geeks Zone - Dreams in Code" }
+                 new Category { Name = "Others", AgeRating = AgeRating.Everyone },
+                 new Category { Name = "Fun", AgeRating = AgeRating.Everyone },
+                 new Category { Name = "Sport", AgeRating = AgeRating.Everyone },
+                 new Category { Name = "Health", AgeRating = AgeRating.Everyone },
+                 new Category { Name = "In the Kitchen", AgeRating = AgeRating.Everyone },
+                 new Category { Name = "In the Name of the Law", AgeRating = AgeRating.Mature },
+                 new Category { Name = "Love is all Around", AgeRating = AgeRating.Mature },
+                 new Category { Name = "Communication Skills", AgeRating = AgeRating.Teen },
+                 new Category { Name = "18+ - For Adults Only", AgeRating = AgeRating.Adult },
+                 new Category { Name = "Geeks Zone - Dreams in Code", AgeRating = AgeRating.Children }
                 );
             }
 

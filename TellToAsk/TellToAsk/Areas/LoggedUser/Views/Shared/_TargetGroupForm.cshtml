@@ -1,0 +1,25 @@
+﻿@model TellToAsk.Model.Question
+
+<div class="control-group">
+    @Html.LabelFor(model => model.TargetedMinAge, new { @class = "control-label" })
+    <div class="controls">
+        @Html.EditorFor(model => model.TargetedMinAge)
+        @Html.ValidationMessageFor(model => model.TargetedMinAge, null, new { @class = "help-inline" })
+    </div>
+</div>
+
+<div class="control-group">
+    @Html.LabelFor(model => model.TargetedMaxAge, new { @class = "control-label" })
+    <div class="controls">
+        @Html.EditorFor(model => model.TargetedMaxAge)
+        @Html.ValidationMessageFor(model => model.TargetedMinAge, null, new { @class = "help-inline" })
+    </div>
+</div>
+
+@*<div class="control-group">
+        @Html.LabelFor(model => model.TargetedGender, new { @class = "control-label" })
+        <div class="controls">
+            @Html.DropDownListFor(model => model.TargetedGender, (IEnumerable<SelectListItem>)ViewBag.Genders)
+            @Html.ValidationMessageFor(model => model.TargetedGender, null, new { @class = "help-inline" })
+        </div>
+    </div>*@

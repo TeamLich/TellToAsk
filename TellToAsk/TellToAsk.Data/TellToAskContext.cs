@@ -21,19 +21,19 @@ namespace TellToAsk.Data
         {
 
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(m => m.MyQuestions);
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasMany(m => m.MyQuestions);
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(m => m.AnsweredQuestions)
-                .WithMany(p => p.Users)
-                .Map(m =>
-                {
-                    m.ToTable("QuestionsUsers");
-                    m.MapLeftKey("UserId");
-                    m.MapRightKey("QuetionId");
-                }
-                );
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasMany(m => m.AnsweredQuestions)
+            //    .WithMany(p => p.Users)
+            //    .Map(m =>
+            //    {
+            //        m.ToTable("QuestionsUsers");
+            //        m.MapLeftKey("UserId");
+            //        m.MapRightKey("QuetionId");
+            //    }
+            //    );
                
         }
     }

@@ -68,11 +68,11 @@ namespace TellToAsk.Models
         [Display(Name = "Birth Date")]
         public string BirthDate { get; set; }
 
-        [Required]
+       
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
 
-        public ICollection<CategoryModel> Categories { get; set; }
+
 
     }
 }

@@ -1,0 +1,20 @@
+﻿@model TellToAsk.Model.ApplicationUser
+
+<ul>
+    @foreach (var role in Model.Roles)
+    {
+        <li>
+            @role.Role.Name
+            @Ajax.ActionLink("Remove", "RemoveRole",
+                new { id = Model.Id, roleId = role.Role.Id }, new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "roles-list"
+            })
+        </li>
+    }
+</ul>
+
+
+

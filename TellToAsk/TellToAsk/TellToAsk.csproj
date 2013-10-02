@@ -263,6 +263,7 @@
     </Content>
     <Content Include="Areas\Administration\Views\Users\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Shared\_EditRoles.cshtml" />
+    <Content Include="Areas\Administration\Views\Shared\_Roles.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />

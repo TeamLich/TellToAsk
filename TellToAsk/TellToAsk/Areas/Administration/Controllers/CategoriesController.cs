@@ -42,6 +42,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Categories/Create
         public ActionResult Create()
         {
+            var list = this.PopulateAgeRatings();
+            ViewBag.AgeRatings = list;
             return View();
         }
 

@@ -163,6 +163,7 @@
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
     <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
+    <Compile Include="Areas\Administration\Models\CategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
     <Compile Include="Areas\Administration\Models\UserModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />

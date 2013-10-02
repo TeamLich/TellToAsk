@@ -54,7 +54,7 @@
                         <li>@role.Role.Name</li>
                     }
                 </ul>
-                @Ajax.ActionLink("Edit Roles", "EditRoles", "Users", new { id = Model.Id }, new AjaxOptions()
+                @Ajax.ActionLink("Edit Roles", "EditRoles", new { id = Model.Id }, new AjaxOptions()
                 {
                     HttpMethod = "GET",
                     InsertionMode = InsertionMode.Replace,
@@ -79,3 +79,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 
+<script>
+    function reload() {
+        $('#edit-roles').html("");
+        window.location = "/Administration/Users/Edit";
+    }
+</script>

@@ -5,18 +5,21 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TellToAsk.Data;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
+using TellToAsk.Areas.LoggedUser.Models;
 
 namespace TellToAsk.Controllers
 {
     public class HomeController : BaseController
     {
 
-          public HomeController()
+        public HomeController()
             : this(new UowData())
         {
         }
 
-          public HomeController(IUowData data)
+        public HomeController(IUowData data)
             : base(data)
         {
         }
@@ -24,7 +27,7 @@ namespace TellToAsk.Controllers
         public ActionResult Index()
         {
            
-             var questionsCount =  this.Data.Questions.All().Count();
+            var questionsCount = this.Data.Questions.All().Count();
 
             ViewBag.RegisteredUsers = this.Data.Users.All().Count();
 
@@ -40,7 +43,7 @@ namespace TellToAsk.Controllers
                  new { category = x.Name, value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount }).ToList();
 
             }
-         
+
             return View();
         }
 
@@ -56,6 +59,13 @@ namespace TellToAsk.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public JsonResult GetCategories([DataSourceRequest]DataSourceRequest request)
+        {
+            var categories = this.Data.Categories.All().Select(CategoryModel.FromCategory);
+            var x = categories.ToList().Count;
+            return Json(categories, JsonRequestBehavior.AllowGet);
         }
     }
 }

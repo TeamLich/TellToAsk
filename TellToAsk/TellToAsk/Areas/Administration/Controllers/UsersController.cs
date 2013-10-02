@@ -10,6 +10,10 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using System.Net;
 using TellToAsk.Model;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
@@ -67,6 +71,65 @@ namespace TellToAsk.Areas.Administration.Controllers
             ViewBag.Genders = genders;
 
             return View(user);
+        }
+
+        public ActionResult AddRole(string id, string roleId)
+        {
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            var roleExisting = user.Roles.FirstOrDefault(x => x.RoleId == roleId);
+            if (roleExisting == null)
+            {
+                //var IdentityManager = new AuthenticationIdentityManager(new IdentityStore(new TellToAskContext()));
+                //Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleAsync(roleId);
+                //var userRole = await getRoleTask;
+                //await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
+                user.Roles.Add(new UserRole() { UserId = user.Id, RoleId = roleId });
+                this.Data.SaveChanges();
+            }
+
+            return PartialView("_EditRoles", user);
+        }
+
+        public ActionResult EditRoles(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.Roles = this.Data.Roles.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.Id });
+            return PartialView("_EditRoles", user);
+        }
+
+        public ActionResult RemoveRole(string id, string roleId)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            var role = user.Roles.FirstOrDefault(x => x.RoleId == roleId);
+            if (role != null)
+            {
+                user.Roles.Remove(role);
+                this.Data.SaveChanges();
+            }
+
+            return PartialView("_EditRoles", user);
         }
 
         //

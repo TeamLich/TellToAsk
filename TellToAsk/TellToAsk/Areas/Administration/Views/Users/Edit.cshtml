@@ -48,8 +48,18 @@
         <div class="control-group">
             @Html.LabelFor(model => model.Roles, new { @class = "control-label" })
             <div class="controls">
-                @Html.EditorFor(model => model.Roles)
-                @Html.ValidationMessageFor(model => model.Roles, null, new { @class = "help-inline" })
+                <ul>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <li>@role.Role.Name</li>
+                    }
+                </ul>
+                @Ajax.ActionLink("Edit Roles", "EditRoles", new { id = Model.Id }, new AjaxOptions()
+                {
+                    HttpMethod = "GET",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "edit-roles"
+                })
             </div>
         </div>
 
@@ -59,6 +69,8 @@
     </fieldset>
 }
 
+<div id="edit-roles"></div>
+
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
@@ -67,3 +79,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 
+<script>
+    function reload() {
+        $('#edit-roles').html("");
+        window.location = "/Administration/Users/Edit";
+    }
+</script>

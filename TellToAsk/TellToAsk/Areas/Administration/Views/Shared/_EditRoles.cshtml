@@ -1,0 +1,57 @@
+﻿@model TellToAsk.Model.ApplicationUser
+
+@using (Ajax.BeginForm("AddRole", new { id = Model.Id}, new AjaxOptions()
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "edit-roles",
+    OnSuccess = "reload"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset class="form-horizontal">
+        <legend>Edit Roles</legend>
+        <ul>
+            @foreach (var role in Model.Roles)
+            {
+                <li>
+                    @role.Role.Name
+                    @Ajax.ActionLink("Remove", "RemoveRole", new { id = Model.Id, roleId = role.Role.Id }, new AjaxOptions()
+                        {
+                            HttpMethod = "GET",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "edit-roles"
+                        })
+                </li>
+            }
+
+        </ul>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.Roles, new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownList("roleId", (IEnumerable<SelectListItem>)ViewBag.Roles)
+                @Html.ValidationMessageFor(model => model.Roles, null, new { @class = "help-inline" })
+            </div>
+        </div>
+        <div class="form-actions no-color">
+            <input type="submit" value="Add Role" class="btn" />
+            <input type="button" value="Cancel" onclick="closeEditForm()" class="btn" />
+        </div>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function reload() {
+        $('#edit-roles').html("");
+        window.location = "/Administration/Users/Edit";
+    }
+    function closeEditForm() {
+        $('#edit-roles').html("");
+    }
+</script>

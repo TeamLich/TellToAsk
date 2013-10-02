@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using TellToAsk.Areas.LoggedUser.Models;
 using TellToAsk.Model;
 
 namespace TellToAsk.Models 
@@ -69,6 +71,8 @@ namespace TellToAsk.Models
         [Required]
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
+
+        public ICollection<CategoryModel> Categories { get; set; }
 
     }
 }

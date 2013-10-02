@@ -75,6 +75,7 @@ namespace TellToAsk.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            PopulateGenders();
             return View();
         }
 
@@ -85,17 +86,20 @@ namespace TellToAsk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var x = model.Categories;
             if (ModelState.IsValid)
             {
-
+                
                 // Create a local login before signing in the user
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
                     BirthDate = DateTime.Parse(model.BirthDate),
                     Gender = model.Gender,
-                    
+                     
                 };
+   
+                
 
                 var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
                 if (result.Success)
@@ -319,6 +323,25 @@ namespace TellToAsk.Controllers
             }
             base.Dispose(disposing);
         }
+
+        private void PopulateGenders()
+        {
+            IList<SelectListItem> genList = new List<SelectListItem>();
+            foreach (Gender gen in Enum.GetValues(typeof(Gender)))
+            {
+                SelectListItem item = new SelectListItem()
+                {
+                    Selected = false,
+                    Text = gen.ToString(),
+                    Value = ((int)gen).ToString(),
+                };
+
+                genList.Add(item);
+            }
+
+            ViewData["genders"] = genList;
+        }
+
 
         #region Helpers
         private void AddErrors(IdentityResult result) {

@@ -1,6 +1,7 @@
 @model TellToAsk.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
+    IEnumerable<SelectListItem> genderList = (IEnumerable<SelectListItem>)ViewData["genders"];
 }
 
 <hgroup class="title">
@@ -35,11 +36,7 @@
         <div class="control-group">
             @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
             <div class="controls">
-                @(Html.DropDownListFor(g=>g.Gender, new List<SelectListItem> {
-                   new SelectListItem { Value = "0", Text = TellToAsk.Model.Gender.Male.ToString()},
-                   new SelectListItem { Value = "1", Text = TellToAsk.Model.Gender.Female.ToString()},
-                 })
-                )
+                @(Html.DropDownListFor(g => g.Gender, genderList))
             </div>
         </div>
         <div class="control-group">
@@ -47,20 +44,54 @@
                 <div class="controls">
                    @(Html.Kendo().Calendar().Name("birthDate")
                    .Min(new DateTime(1901, 01, 01))
-                   .Max(new DateTime(2001, 12, 31))
+                   .Max(new DateTime(2007, 12, 31))
                    .Events(e => e.Change("change"))
                    )                   
                    @Html.TextBoxFor(m => m.BirthDate, new { @class = "hidden", @Id="birth-date" })
                  </div>
        </div>
-          
-        <div class="form-actions no-color">
-            <input type="submit" value="Register" class="btn" />
-        </div>
-    </fieldset>
+
+        <div class="control-group">
+            @Html.LabelFor(m => m.Categories, new { @class = "control-label" })
+                <div class="controls">
+                    @(Html.Kendo().MultiSelect()
+                      .Name("categories")
+                      .DataTextField("Name")
+                    .DataValueField("CategoryId")
+                      .Placeholder("Select categories...")
+                      .AutoBind(false)
+                      .Value(new[] { 
+                          new {  }, 
+                      })
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("GetCategories", "Home");
+                          })
+                          .ServerFiltering(true);
+                      })
+                    )
+                       
+                    </div>
+                </div>
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Register" class="btn" />
+                    </div>
+</fieldset>
 }
 
 <script>
+    $(document).ready(function () {
+        // create MultiSelect from select HTML element
+        var required = $("#required").kendoMultiSelect().data("kendoMultiSelect");
+       
+
+        //$("#get").click(function () {
+        //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
+        //});
+    });
+
     function change() {
         console.log("Change : " + kendo.toString(this.value(), 'd'));
         console.log(this.value());

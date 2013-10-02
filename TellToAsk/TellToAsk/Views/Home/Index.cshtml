@@ -45,7 +45,7 @@
                     ).HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
             .Series(series =>
             {
-                series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
+                series.Pie((IEnumerable<dynamic>)ViewBag.AnswersData)
                 .Labels(labels => labels
                     .Template("#= category #: #= value#%")
                     .Background("transparent")

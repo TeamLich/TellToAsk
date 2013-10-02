@@ -45,6 +45,13 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
+
+        public JsonResult URIDecode(string data)
+        {
+            string question = this.Server.UrlDecode(data);
+            return Json(question, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult QuestionAnswers(int? id)
         {
             var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);

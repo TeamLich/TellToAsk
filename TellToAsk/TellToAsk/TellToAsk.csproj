@@ -249,15 +249,12 @@
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\LoggedUser\Views\_ViewStart.cshtml" />
     <Content Include="Areas\LoggedUser\Views\LoggedUser\TakeQuestion.cshtml" />
-<<<<<<< HEAD
     <Content Include="Areas\LoggedUser\Views\LoggedUser\QuestionAnswers.cshtml" />
-=======
     <Content Include="Areas\Administration\Views\Answers\Create.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Delete.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Details.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Index.cshtml" />
->>>>>>> 8be9f053f478478e3f80e36d53c9ed6cf4a70d35
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />

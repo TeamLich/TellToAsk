@@ -44,7 +44,7 @@ else{
   
 
     @(Html.Kendo().Window().Name("Details")
-    .Title("Answer Details")
+        .Title(@Model.QuestionText)
     .Visible(false)
     .Modal(true)
     .Draggable(true)
@@ -53,7 +53,7 @@ else{
 
  <script type="text/x-kendo-template" id="template">
     <div id="details-container">
-        <em id="question-text-popup">@(Model.QuestionText);</em>
+        @*<em id="question-text-popup">@(this.Server.UrlEncode(Model.QuestionText))</em>*@
         <p>#= Comment #</p>
     </div>
 </script>
@@ -70,9 +70,6 @@ else{
     
     function showDetails(e) {
         e.preventDefault();
-        var htmlForEncode = $("#question-text-popup").text();
-        var da = htmlForEncode.replace('#','%23');
-        $("#question-text-popup").html(da);
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var wnd = $("#Details").data("kendoWindow");
@@ -80,8 +77,11 @@ else{
         wnd.content(detailsTemplate(dataItem));
         wnd.center().open();
 
-        var html = $("#question-text-popup").html();
-        $("#question-text-popup").html(html.replace('%23','#'));
+        //var html = $("#question-text-popup").text();
+
+        //$.getJSON("URIDecode", { Data: html}, function(data) {
+        //    $("#question-text-popup").html(data);
+        //});    
     }
 
     function getQuestionId() {

@@ -41,8 +41,7 @@
         <dd>
             @foreach (var answer in Model.Answers)
             {
-                //<spna>@answer.Comment</spna>
-                string isReported = answer.IsReported == false ? "Reported" : "";
+                string isReported = answer.IsReported == true ? "Reported" : "";
                 @Html.ActionLink(answer.Comment,
                     "Edit", "Answers", new { id = answer.AnswerId }, new { @class = "list-answer" });  
                 <span style="color:red">@isReported</span>

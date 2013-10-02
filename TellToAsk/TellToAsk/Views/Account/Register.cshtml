@@ -36,8 +36,8 @@
             @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
             <div class="controls">
                 @(Html.DropDownListFor(g=>g.Gender, new List<SelectListItem> {
-                   new SelectListItem { Value = "0", Text = "Male"},
-                   new SelectListItem { Value = "1", Text = "Female"},
+                   new SelectListItem { Value = "0", Text = TellToAsk.Model.Gender.Male.ToString()},
+                   new SelectListItem { Value = "1", Text = TellToAsk.Model.Gender.Female.ToString()},
                  })
                 )
             </div>

@@ -23,7 +23,12 @@
         </div>
         
         <div id="target-question-form" class="hidden">
-           @Html.Partial("_TargetGroupForm");
+           @Ajax.BeginForm("_TargetGroupForm", new AjaxOptions {
+                    
+            }))
+            {
+                
+            }
         </div>
         <input type="submit" class="btn btn-success" value="Answer" />
     </fieldset>
@@ -38,10 +43,6 @@
             var isHidden = $('#target-question-form').hasClass("hidden");
             if (!isHidden) {
                 debugger;
-                //$.get("RenderTargetGroupForm", function () {
-
-                //    console.log("ok rendered");
-                //})
 
                 $.getJSON("RenderTargetGroupForm", null, function () {
                     console.log("ok rendered");

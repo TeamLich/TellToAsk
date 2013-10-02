@@ -11,7 +11,6 @@ namespace TellToAsk.Model
     {
         public int QuestionId { get; set; }
 
-     
         [DataType(DataType.MultilineText)]
         [Required]
         public string Text { get; set; }

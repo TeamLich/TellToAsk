@@ -12,7 +12,7 @@
             // column.Bound(p => p.UserId);
             column.Bound(p => p.Username);
             column.Template(p => p.BirthDate)
-                .ClientTemplate("#= BirthDate.getFullYear() #-#= BirthDate.getDate() #-#= BirthDate.getDay() #").Title("Birth Date");
+                .ClientTemplate("#= BirthDate.toDateString() #").Title("Birth Date");
             column.Bound(p => p.Gender);
             column.Bound(p => p.Points);
             column.Template(p => p.Roles).ClientTemplate(

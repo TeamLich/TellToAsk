@@ -50,9 +50,19 @@ namespace TellToAsk.Areas.Administration.Controllers
 
         //
         // GET: /Administration/Users/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+         
+            return View(user);
         }
 
         //
@@ -67,6 +77,21 @@ namespace TellToAsk.Areas.Administration.Controllers
             if (user == null)
             {
                 return HttpNotFound();
+            }
+            ViewBag.Genders = genders;
+
+            return View(user);
+        }        
+        //
+        // POST: /Administration/Users/Edit/5
+        [HttpPost]
+        public ActionResult Edit(ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                this.Data.Users.Update(user);
+                this.Data.SaveChanges();
+                return RedirectToAction("Index");
             }
             ViewBag.Genders = genders;
 
@@ -135,23 +160,7 @@ namespace TellToAsk.Areas.Administration.Controllers
 
             return PartialView("_Roles", user);
         }
-
-        //
-        // POST: /Administration/Users/Edit/5
-        [HttpPost]
-        public ActionResult Edit(ApplicationUser user)
-        {
-            if (ModelState.IsValid)
-            {
-                this.Data.Users.Update(user);
-                this.Data.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Genders = genders;
-
-            return View(user);
-        }
-
+        
         public ActionResult BanUser(string id)
         {
             if (id == null)

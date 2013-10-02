@@ -12,7 +12,8 @@ namespace TellToAsk
             bundles.Add(new ScriptBundle("~/bundles/kendo").Include(
                         "~/Scripts/Kendo/jquery.min.js",
                         "~/Scripts/Kendo/kendo.all.min.js", // or kendo.all.min.js if you want to use Kendo UI Web and Kendo UI DataViz
-                        "~/Scripts/Kendo/kendo.aspnetmvc.min.js"));
+                        "~/Scripts/Kendo/kendo.aspnetmvc.min.js",
+                        "~/Scripts/jquery.unobtrusive-ajax.js"));
 
             // The Kendo CSS bundle
             bundles.Add(new StyleBundle("~/Content/kendo").Include(

@@ -161,8 +161,10 @@
     <Compile Include="Areas\Administration\Controllers\AnswersController.cs" />
     <Compile Include="Areas\Administration\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
+    <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
+    <Compile Include="Areas\Administration\Models\UserModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
     <Compile Include="Areas\LoggedUser\Models\AnswerModel.cs" />
@@ -256,10 +258,17 @@
     <Content Include="Areas\Administration\Views\Answers\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Index.cshtml" />
     <Content Include="Areas\LoggedUser\Views\LoggedUser\AskQuestion.cshtml" />
+    <Content Include="Areas\Administration\Views\Users\Edit.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Areas\Administration\Views\Users\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Shared\_EditRoles.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -297,7 +306,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Areas\LoggedUser\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>

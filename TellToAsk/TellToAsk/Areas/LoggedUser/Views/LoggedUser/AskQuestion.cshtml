@@ -1,0 +1,32 @@
+﻿
+@using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
+{
+    <fieldset>
+    <legend>Legend</legend>
+    <label>Label name</label>
+    <textarea placeholder="Question text...">
+    </textarea>
+    <div id="target-question-form">
+        <div class="control-group">
+            @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
+                <div class="controls">
+                    @(Html.DropDownListFor(g => g.Gender, new List<SelectListItem> {
+                       new SelectListItem { Value = ((int)TellToAsk.Model.Gender.Male).ToString(), Text = TellToAsk.Model.Gender.Male.ToString()},
+                       new SelectListItem { Value = ((int)TellToAsk.Model.Gender.Female).ToString(), Text = TellToAsk.Model.Gender.Male.ToString()},
+                 })
+                )
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
+                <div class="controls">
+                  <input type="number"/>
+                </div>
+        </div>
+    </div>
+    <button type="submit" class="btn">Submit</button>
+  </fieldset>
+
+    <textarea name="Comment"></textarea>
+    <input type="submit" class="btn btn-success" value="Answer" />
+}

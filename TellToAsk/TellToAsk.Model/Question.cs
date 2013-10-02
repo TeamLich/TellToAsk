@@ -21,6 +21,12 @@ namespace TellToAsk.Model
 
         public virtual ICollection<Answer> Answers { get; set; }
 
+        public Gender? TargetedGender { get; set; }
+
+        public int? TargetedMinAge { get; set; }
+
+        public int? TargetedMaxAge { get; set; }
+
         [Display(Name="Category")]
         public  int CategoryId { get; set; }
         public virtual Category Category { get; set; }

@@ -35,13 +35,23 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request)
         {
-          var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-          return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+
+            var userName = this.User.Identity.Name;
+
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+
+            var questions = this.Data.Questions.All().Where(u => u.Creator.Id == user.Id).Select(QuestionModel.FromQuestion);
+            return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetTargetedQuestions([DataSourceRequest]DataSourceRequest request)
         {
-            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+             var userName = this.User.Identity.Name;
+
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+
+            var questions = this.Data.Questions.All()
+                .Where( q => user.Categories.Contains(q.Category)).Select(QuestionModel.FromQuestion);
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 

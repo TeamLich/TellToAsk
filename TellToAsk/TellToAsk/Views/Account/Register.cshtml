@@ -1,7 +1,7 @@
 @model TellToAsk.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
-    IEnumerable<SelectListItem> genderList = (IEnumerable<SelectListItem>)ViewData["genders"];
+    IEnumerable<SelectListItem> genderList = (IEnumerable<SelectListItem>) ViewData["genders"];
 }
 
 <hgroup class="title">
@@ -36,7 +36,7 @@
         <div class="control-group">
             @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
             <div class="controls">
-                @(Html.DropDownListFor(g => g.Gender, genderList))
+                @(Html.DropDownListFor(g => g.Gender, (IEnumerable<SelectListItem>)ViewData["genders"]))
             </div>
         </div>
         <div class="control-group">
@@ -52,7 +52,7 @@
        </div>
 
         <div class="control-group">
-            @Html.LabelFor(m => m.Categories, new { @class = "control-label" })
+            <label class="control-label">Categories</label>
                 <div class="controls">
                     @(Html.Kendo().MultiSelect()
                       .Name("categories")
@@ -60,9 +60,6 @@
                     .DataValueField("CategoryId")
                       .Placeholder("Select categories...")
                       .AutoBind(false)
-                      .Value(new[] { 
-                          new {  }, 
-                      })
                       .DataSource(source =>
                       {
                           source.Read(read =>
@@ -84,8 +81,9 @@
 <script>
     $(document).ready(function () {
         // create MultiSelect from select HTML element
-        var required = $("#required").kendoMultiSelect().data("kendoMultiSelect");
-       
+        //var required = $("#Categories").kendoMultiSelect().data("kendoMultiSelect");
+        //console.log(required.value());
+      
 
         //$("#get").click(function () {
         //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
@@ -93,9 +91,7 @@
     });
 
     function change() {
-        console.log("Change : " + kendo.toString(this.value(), 'd'));
-        console.log(this.value());
-        console.log($("#birth-date"));
+        
         $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
     }
 

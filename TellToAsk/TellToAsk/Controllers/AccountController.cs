@@ -16,14 +16,16 @@ using TellToAsk.Model;
 namespace TellToAsk.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        public AccountController() 
+        public AccountController()
+            : this(null, new UowData())
         {
             IdentityManager = new AuthenticationIdentityManager(new IdentityStore(new TellToAskContext()));
         }
 
-        public AccountController(AuthenticationIdentityManager manager)
+        public AccountController(AuthenticationIdentityManager manager, IUowData data)
+            : base(data)
         {
             IdentityManager = manager;
         }
@@ -84,22 +86,31 @@ namespace TellToAsk.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, int[] categories)
         {
-            var x = model.Categories;
-            if (ModelState.IsValid)
+            List<Category> appruvedCategories = new List<Category>();
+            model.Gender = (Gender)model.Gender;
+            foreach (var catId in categories)
             {
-                
+                var cat = this.Data.Categories.GetById(catId);
+                if (cat != null)
+                {
+                    if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
+                    {
+                        appruvedCategories.Add(cat);
+                    }
+                }
+            }
+         
+            if (ModelState.IsValid && appruvedCategories.Count() >= 3)
+            {
                 // Create a local login before signing in the user
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
                     BirthDate = DateTime.Parse(model.BirthDate),
                     Gender = model.Gender,
-                     
                 };
-   
-                
 
                 var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
                 if (result.Success)
@@ -109,6 +120,18 @@ namespace TellToAsk.Controllers
                     Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleByNameAsync("User");
                     var userRole = await getRoleTask;
                     await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
+
+                   string uId = user.Id;
+                   var user2 = this.Data.Users.All().FirstOrDefault(u=>u.Id==uId);
+                   foreach (var cat in appruvedCategories)
+                    {
+                        if (cat != null)
+                        {
+                            user2.Categories.Add(cat);
+                        }
+                    }
+                    this.Data.SaveChanges();
+
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -145,6 +168,8 @@ namespace TellToAsk.Controllers
         // GET: /Account/Manage
         public async Task<ActionResult> Manage(string message)
         {
+           // PopulateGenders();
+
             ViewBag.StatusMessage = message ?? "";
             ViewBag.HasLocalPassword = await IdentityManager.Logins.HasLocalLoginAsync(User.Identity.GetUserId());
             ViewBag.ReturnUrl = Url.Action("Manage");

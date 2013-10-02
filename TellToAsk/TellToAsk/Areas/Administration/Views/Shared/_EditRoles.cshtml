@@ -1,0 +1,27 @@
+﻿@model TellToAsk.Model.ApplicationUser
+
+@using (Ajax.BeginForm("EditForm", new AjaxOptions()
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "edit-roles"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset class="form-horizontal">
+        <legend>Edit Roles</legend>
+        <ul>
+            @foreach (var role in Model.Roles)
+            {
+                <li>@role.Role.Name</li>
+                @Ajax.ActionLink("Remove", "RemoveRole", new { id = Model.Id, roleId = role.Role.Id }, new AjaxOptions()
+               {
+                   HttpMethod = "POST",
+                   InsertionMode = InsertionMode.Replace,
+                   UpdateTargetId = "edit-roles"
+               })
+            }
+        </ul>
+    </fieldset>
+}

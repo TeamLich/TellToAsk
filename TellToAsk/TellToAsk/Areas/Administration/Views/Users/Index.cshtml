@@ -18,6 +18,7 @@
              "#= Roles.join(', ') #").Title("Roles");
             column.Template(p => @Html.Action("Edit", "Users", new { id = p.UserId }))
                 .ClientTemplate("<a href='/Administration/Users/Edit?id=#= UserId #'>Edit</a> | " +
+                "<a href='/Administration/Users/Details?id=#= UserId #'>Details</a> | " +
                 "<a href='/Administration/Users/Delete?id=#= UserId #'>Banned</a>").Title("Action");
         })
      .Pageable()

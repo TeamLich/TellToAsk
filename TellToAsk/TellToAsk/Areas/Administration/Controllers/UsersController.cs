@@ -69,6 +69,21 @@ namespace TellToAsk.Areas.Administration.Controllers
             return View(user);
         }
 
+        public ActionResult EditRoles(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            return PartialView("_EditRoles", user);
+        }
+
         //
         // POST: /Administration/Users/Edit/5
         [HttpPost]

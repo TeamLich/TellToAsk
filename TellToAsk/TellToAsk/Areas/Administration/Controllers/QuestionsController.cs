@@ -54,7 +54,7 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
 
-            return Json(questions.ToDataSourceResult(request));
+            return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         // GET: /Administration/Questions/Create

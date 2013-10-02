@@ -52,7 +52,7 @@ namespace TellToAsk.Areas.Administration
         {
             var answers = this.Data.Answers.All().Select(AnswerModel.FromAnswer);
 
-            return Json(answers.ToDataSourceResult(request));
+            return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
 

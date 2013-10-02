@@ -36,7 +36,7 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             var categories = this.Data.Categories.All();
 
-            return Json(categories.ToDataSourceResult(request));
+            return Json(categories.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         // GET: /Administration/Categories/Create

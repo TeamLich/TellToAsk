@@ -24,7 +24,7 @@ namespace TellToAsk.Controllers
         public ActionResult Index()
         {
            
-            var questionsCount =  this.Data.Questions.All().Count();
+             var questionsCount =  this.Data.Questions.All().Count();
 
             ViewBag.RegisteredUsers = this.Data.Users.All().Count();
 

@@ -161,8 +161,10 @@
     <Compile Include="Areas\Administration\Controllers\AnswersController.cs" />
     <Compile Include="Areas\Administration\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
+    <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
+    <Compile Include="Areas\Administration\Models\UserModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
     <Compile Include="Areas\LoggedUser\Models\AnswerModel.cs" />
@@ -255,6 +257,8 @@
     <Content Include="Areas\Administration\Views\Answers\Details.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\Answers\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Users\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Users\Edit.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />

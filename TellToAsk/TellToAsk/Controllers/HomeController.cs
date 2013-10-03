@@ -14,11 +14,6 @@ namespace TellToAsk.Controllers
     public class HomeController : BaseController
     {
 
-        public HomeController()
-            : this(new UowData())
-        {
-        }
-
         public HomeController(IUowData data)
             : base(data)
         {

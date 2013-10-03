@@ -22,6 +22,24 @@ namespace TellToAsk.Controllers
 
         public IUowData Data { get; set; }
 
+        public IList<SelectListItem> PopulateGendersList()
+        {
+            IList<SelectListItem> genList = new List<SelectListItem>();
+            foreach (Gender gen in Enum.GetValues(typeof(Gender)))
+            {
+                SelectListItem item = new SelectListItem()
+                {
+                    Selected = false,
+                    Text = gen.ToString(),
+                    Value = ((int)gen).ToString(),
+                };
+
+                genList.Add(item);
+            }
+
+            return genList;
+        }
+
         protected IList<SelectListItem> PopulateAgeRatings()
         {
             var list = new List<SelectListItem>();

@@ -1,4 +1,4 @@
-﻿@model TellToAsk.Model.Question
+﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 <div class="control-group">
     @Html.LabelFor(model => model.TargetedMinAge, new { @class = "control-label" })
@@ -17,8 +17,9 @@
 </div>
 
 <div class="control-group">
-    @Html.LabelFor(m => m.TargetedGender, new { @class = "control-label" })
+    @Html.LabelFor(model => model.TargetedGender, new { @class = "control-label" })
     <div class="controls">
-        @(Html.DropDownListFor(g => g.TargetedGender, (IEnumerable<SelectListItem>)ViewData["genders"]))
+        @(Html.DropDownListFor(model => model.TargetedGender, (IEnumerable<SelectListItem>)ViewBag.genders))
+        @Html.ValidationMessageFor(model => model.TargetedGender, null, new { @class = "help-inline" })
     </div>
 </div>

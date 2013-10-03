@@ -1,17 +1,24 @@
-﻿@model TellToAsk.Areas.LoggedUser.Models.DetailsModel
+﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 <h1 class="break-word">
-    @Model.QuestionText
+    @Model.Text
 </h1>
 
+<table>
+    <thead>
+        <tr>
+            
+        </tr>
+    </thead>
+</table>
 
-@if (Model.Answers.Count() == 0)
+@*@if (Model.AnswersCount() == 0)
 {
      <p>
         No answer for this question, yet.
     </p>
 }
-else{
+else{*@
     
    
     
@@ -28,10 +35,12 @@ else{
 
         })
         .Groupable()
-        .Pageable()
+        .Pageable() 
         .Sortable()
+           
         .Scrollable()
         .Filterable()
+                
         .DataSource(dataSource => dataSource
         .Ajax()
             .Read(read => read.Action("GetQuestionAnswers", "LoggedUser").Data("getQuestionId")))
@@ -42,7 +51,7 @@ else{
   
 
     @(Html.Kendo().Window().Name("Details")
-        .Title(@Model.QuestionText)
+        .Title(@Model.Text)
     .Visible(false)
     .Modal(true)
     .Draggable(true)
@@ -58,14 +67,6 @@ else{
 
 <script type="text/javascript">
 
-    $( document ).ready(function() {
-       
-        debugger;
-       
-
-    });
-
-    
     function showDetails(e) {
         e.preventDefault();
 
@@ -93,4 +94,3 @@ else{
 </script>
     
     
-}

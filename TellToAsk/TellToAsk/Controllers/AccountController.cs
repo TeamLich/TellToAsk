@@ -12,6 +12,7 @@ using Microsoft.Owin.Security;
 using TellToAsk.Models;
 using TellToAsk.Data;
 using TellToAsk.Model;
+using TellToAsk.Areas.LoggedUser.Models;
 
 namespace TellToAsk.Controllers
 {
@@ -89,6 +90,8 @@ namespace TellToAsk.Controllers
         public async Task<ActionResult> Register(RegisterViewModel model, int[] categories)
         {
             List<Category> appruvedCategories = new List<Category>();
+           
+            string errorMsg = "";
             model.Gender = (Gender)model.Gender;
             foreach (var catId in categories)
             {
@@ -98,46 +101,63 @@ namespace TellToAsk.Controllers
                     if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
                     {
                         appruvedCategories.Add(cat);
+                       
+                    }
+                    else
+                    {
+                        errorMsg += cat.Name + " ; ";
                     }
                 }
             }
-         
-            if (ModelState.IsValid && appruvedCategories.Count() >= 3)
+             var appruvedCatModels =appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
+            if (appruvedCategories.Count() >= 3)
             {
-                // Create a local login before signing in the user
-                var user = new ApplicationUser
+                if (ModelState.IsValid && appruvedCategories.Count() >= 3)
                 {
-                    UserName = model.UserName,
-                    BirthDate = DateTime.Parse(model.BirthDate),
-                    Gender = model.Gender,
-                };
-
-                var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
-                if (result.Success)
-                {
-                    //add user to role
-                    await IdentityManager.Authentication.SignInAsync(AuthenticationManager, user.Id, isPersistent: false);
-                    Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleByNameAsync("User");
-                    var userRole = await getRoleTask;
-                    await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
-
-                   string uId = user.Id;
-                   var user2 = this.Data.Users.All().FirstOrDefault(u=>u.Id==uId);
-                   foreach (var cat in appruvedCategories)
+                    // Create a local login before signing in the user
+                    var user = new ApplicationUser
                     {
-                        if (cat != null)
-                        {
-                            user2.Categories.Add(cat);
-                        }
-                    }
-                    this.Data.SaveChanges();
+                        UserName = model.UserName,
+                        BirthDate = DateTime.Parse(model.BirthDate),
+                        Gender = model.Gender,
+                    };
 
-                    return RedirectToAction("Index", "Home");
+                    var result = await IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
+                    if (result.Success)
+                    {
+                        //add user to role
+                        await IdentityManager.Authentication.SignInAsync(AuthenticationManager, user.Id, isPersistent: false);
+                        Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleByNameAsync("User");
+                        var userRole = await getRoleTask;
+                        await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
+
+                        string uId = user.Id;
+                        var user2 = this.Data.Users.All().FirstOrDefault(u => u.Id == uId);
+                        foreach (var cat in appruvedCategories)
+                        {
+                            if (cat != null)
+                            {
+                                user2.Categories.Add(cat);
+                            }
+                        }
+                        this.Data.SaveChanges();
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                        PopulateGenders();
+                        return View(model);
+                    }
                 }
-                else
-                {
-                    AddErrors(result);
-                }
+            }
+            else
+            {
+                PopulateGenders();
+                ViewBag.error = "Categories NOT suitable for your age are:  " + errorMsg ;
+                ViewBag.catselected = appruvedCatModels;
+                return View(model);
             }
 
             // If we got this far, something failed, redisplay form
@@ -168,65 +188,112 @@ namespace TellToAsk.Controllers
         // GET: /Account/Manage
         public async Task<ActionResult> Manage(string message)
         {
-           // PopulateGenders();
-
+            PopulateGenders();
+            var userName = this.User.Identity.Name;
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+            var userCats = user.Categories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
+            ViewBag.catSelected = userCats;
+           
             ViewBag.StatusMessage = message ?? "";
             ViewBag.HasLocalPassword = await IdentityManager.Logins.HasLocalLoginAsync(User.Identity.GetUserId());
             ViewBag.ReturnUrl = Url.Action("Manage");
-            return View();
+
+            return View("_ChangeCategiriesPartial");
         }
 
         //
         // POST: /Account/Manage
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Manage(ManageUserViewModel model)
+        public async Task<ActionResult> Manage(ManageUserViewModel model, int[] categories)
         {
-            string userId = User.Identity.GetUserId();
-            bool hasLocalLogin = await IdentityManager.Logins.HasLocalLoginAsync(userId);
-            ViewBag.HasLocalPassword = hasLocalLogin;
-            ViewBag.ReturnUrl = Url.Action("Manage");
-            if (hasLocalLogin)
-            {               
-                if (ModelState.IsValid)
-                {
-                    IdentityResult result = await IdentityManager.Passwords.ChangePasswordAsync(User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
-                    if (result.Success)
-                    {
-                        return RedirectToAction("Manage", new { Message = "Your password has been changed." });
-                    }
-                    else
-                    {
-                        AddErrors(result);
-                    }
-                }
-            }
-            else
+            List<Category> appruvedCategories = new List<Category>();
+            string errorMsg = "";
+            model.Gender = (Gender)model.Gender;
+            foreach (var catId in categories)
             {
-                // User does not have a local password so remove any validation errors caused by a missing OldPassword field
-                ModelState state = ModelState["OldPassword"];
-                if (state != null)
+                var cat = this.Data.Categories.GetById(catId);
+                if (cat != null)
                 {
-                    state.Errors.Clear();
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // Create the local login info and link it to the user
-                    IdentityResult result = await IdentityManager.Logins.AddLocalLoginAsync(userId, User.Identity.GetUserName(), model.NewPassword);
-                    if (result.Success)
+                    if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
                     {
-                        return RedirectToAction("Manage", new { Message = "Your password has been set." });
+                        appruvedCategories.Add(cat);
                     }
                     else
                     {
-                        AddErrors(result);
+                        errorMsg += cat.Name + " ; ";
                     }
                 }
             }
+             var appruvedCatModels = appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
 
+             if (appruvedCategories.Count() >= 3)
+             {
+                 var userName = this.User.Identity.Name;
+                 var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+                 foreach (var cat in appruvedCategories)
+                 {
+                     if (cat != null)
+                     {
+                         user.Categories.Add(cat);
+                     }
+                 }
+                 this.Data.SaveChanges();
+                 //==============>
+                 string userId = User.Identity.GetUserId();
+                 bool hasLocalLogin = await IdentityManager.Logins.HasLocalLoginAsync(userId);
+                 ViewBag.HasLocalPassword = hasLocalLogin;
+                 ViewBag.ReturnUrl = Url.Action("Manage");
+                 if (hasLocalLogin)
+                 {
+                     if (ModelState.IsValid)
+                     {
+                         IdentityResult result = await IdentityManager.Passwords.ChangePasswordAsync(User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
+                         if (result.Success)
+                         {
+                             return RedirectToAction("Manage", new { Message = "Your password has been changed." });
+                         }
+                         else
+                         {
+                             AddErrors(result);
+                         }
+                     }
+                 }
+                 else
+                 {
+                     // User does not have a local password so remove any validation errors caused by a missing OldPassword field
+                     ModelState state = ModelState["OldPassword"];
+                     if (state != null)
+                     {
+                         state.Errors.Clear();
+                     }
+
+                     if (ModelState.IsValid)
+                     {
+                         // Create the local login info and link it to the user
+                         IdentityResult result = await IdentityManager.Logins.AddLocalLoginAsync(userId, User.Identity.GetUserName(), model.NewPassword);
+                         if (result.Success)
+                         {
+                             return RedirectToAction("Manage", new { Message = "Your password has been set." });
+                         }
+                         else
+                         {
+                             AddErrors(result);
+                         }
+                     }
+                 }
+                 // If we got this far, something failed, redisplay form
+                 return View("_ChangeCategiriesPartial", model);
+             }
+             else
+             {
+                PopulateGenders();
+                ViewBag.error = "Categories NOT suitable for your age are:  " + errorMsg ;
+                ViewBag.catselected = appruvedCatModels;
+                return View("_ChangeCategiriesPartial", model);
+             }
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View("_ChangeCategiriesPartial",model);
         }
 
         //

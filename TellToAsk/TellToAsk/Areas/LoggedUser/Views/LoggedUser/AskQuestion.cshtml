@@ -1,11 +1,11 @@
-﻿@model TellToAsk.Model.Question
+﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 @using (Html.BeginForm("CreateQuestion", "LoggedUser"))
 {
     
     <fieldset>
-        <legend>Ask question</legend>
-       <input class="btn btn-info" type="button" id="target-group-button" value="Target Group"/>
+       <legend>Ask question</legend>
+       <input class="btn btn-info" onclick="hideForm()" type="button" id="target-group-button" value="Make it simple"/>
         @Ajax.ActionLink("Target group", "RenderTargetGroupForm"
                  , null, new AjaxOptions
                  {
@@ -14,8 +14,9 @@
                      UpdateTargetId = "target-question-form",
                      LoadingElementId = "loading",
                      OnSuccess = "hideButton",
-                     OnFailure = "alertMessage"
-                 }, new { id = "ajax-button" })
+                     OnFailure = "alertMessage",
+
+                 }, new { id = "ajax-button", @class = "hidden btn btn-info" })
 
         <div class="control-group">
             @Html.LabelFor(model => model.Text, new { @class = "control-label" })
@@ -33,7 +34,7 @@
         </div>
         
         <div id="target-question-form">
-            
+            @Html.Partial("_TargetGroupForm")
         </div>
         <input type="submit" class="btn btn-success" value="Answer" />
     </fieldset>
@@ -42,35 +43,45 @@
 <script>
         function hideButton(data) {
             console.log(data);
-            $("#ajax-button").hide();
+            $("#ajax-button").addClass("hidden");
             $('#target-question-form').html(data);
+            $('#target-question-form').removeClass("hidden");
+            $('#target-group-button').removeClass("hidden");
+        }
+
+        function hideForm(data) {
+            console.log(data);
+            $("#ajax-button").removeClass("hidden");
+            $('#target-question-form').html(data);
+            $('#target-group-button').addClass("hidden");
+            $('#target-question-form').addClass("hidden");
         }
 
         function alertMessage() {
             alert("Something is terribly wrong!")
         }
 
-        $('#target-group-button').click(function (e) {
-            e.preventDefault;
-            debugger;
-            var isHidden = $('#target-question-form').hasClass("hidden");
-            if (!isHidden) {
-                debugger;
+        //$('#target-group-button').click(function (e) {
+        //    e.preventDefault;
+        //    debugger;
+        //    var isHidden = $('#target-question-form').hasClass("hidden");
+        //    if (!isHidden) {
+        //        debugger;
 
-                $.getJSON("RenderTargetGroupForm", null, function (data) {
-                    console.log(data);
-                    $('#target-question-form').html(data);
-                });
+        //        $.getJSON("RenderTargetGroupForm", null, function (data) {
+        //            console.log(data);
+        //            $('#target-question-form').html(data);
+        //        });
 
-                $(this).val("Target Group");
-                $('#target-question-form').addClass("hidden");
-            }
-            else {
-                debugger;
-                $(this).val("Hide");
-                $('#target-question-form').removeClass("hidden");
-            }
-        });
+        //        $(this).val("Target Group");
+        //        //$('#target-question-form').addClass("hidden");
+        //    }
+        //    else {
+        //        debugger;
+        //        $(this).val("Hide");
+        //        $('#target-question-form').removeClass("hidden");
+        //    }
+        //});
    
 </script>
 

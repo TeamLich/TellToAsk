@@ -6,7 +6,7 @@
     {
         columns.Bound(p => p.QuestionId).Visible(false);
         columns.Bound(p => p.Text).ClientTemplate(
-        "#= Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
+        "#: Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
 ).Groupable(false);
         columns.Bound(p => p.Category.Name);
         columns.Command(command => command.Custom("Answer").Click("showDetails"));
@@ -29,50 +29,42 @@
     .Visible(false)
     .Modal(true)
     .Draggable(true)
+    .Pinned(true)
     .Width(300)
+                .Actions(actions => actions.Maximize())
+                
 )
 
 <script type="text/x-kendo-template" id="template">
 
     <div id="details-container">
-        <em class="break-word">#= Text #</em>
-
-        @*@using (Ajax.BeginForm("AnswerToQuestion", new AjaxOptions
-        {
-            UpdateTargetId = "error-holder",
-            InsertionMode = InsertionMode.Replace
-        }))
-        {
-                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
-
-                @Html.TextArea("Comment", string.Empty, 10, 55, null)
-
-                    <input type="submit" class="btn btn-success" value="Answer" />
-        }*@
-      
-        @*<div id="error-holder"></div>*@
+        <em class="break-word">#: Text #</em>
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
-            if (@Model.QuestionId == 0)
-            {
-                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
-            <input type="hidden" name="Text" value="#= Text #" />
-            }
-            else
-            {
-                <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
-            <input type="hidden" name="Text" value="@(Model.Text)" />
-            }
-            
+           
 
                  <div class="control-group">
             @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
             <div class="controls">
                 @Html.EditorFor(model => model.Comment)
-                @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline" })
+                @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline", id = "commentInPopUp" })
             </div>
         </div>
+            
+             if (@Model.QuestionId == 0)
+            {
+                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
+                <input type="hidden" name="Text" value="#= Text #" />
+               
+            }
+             else
+             {
+                <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
+                <input type="hidden" name="Text" value="@(Model.Text)" />
+            }
+            
+            <input type="button" id="cancel-answer" onclick="closeKWin()" class="btn btn-success" value="Cancel" />
             <input type="submit" class="btn btn-success" value="Answer" />
         }
     </div>
@@ -80,14 +72,15 @@
 
 <script>
     $( document ).ready(function() {
+        var wnd = $("#Details").data("kendoWindow");
+
 
         var val = @(Model.QuestionId);
         var questText = "@(Model.Text)"
          questTextObj = { Text: questText}
-        debugger;
+       
         if (val != 0) {
             var detailsTemplate = kendo.template($("#template").html());
-            var wnd = $("#Details").data("kendoWindow");
 
             wnd.content(detailsTemplate(questTextObj));
             wnd.center().open();
@@ -96,11 +89,6 @@
 </script>
 
 <script type="text/javascript">
-   
-
-   
-
-    
 
     function showDetails(e) {
         e.preventDefault();
@@ -112,6 +100,16 @@
         wnd.center().open();
     }
    
+    function closeKWin(e) {
+          
+        var wnd = $("#Details").data("kendoWindow");
+
+        $("#commentInPopUp").html("");
+
+        wnd.close();
+      
+    }
+
 </script>
 @if (Model != null)
 {

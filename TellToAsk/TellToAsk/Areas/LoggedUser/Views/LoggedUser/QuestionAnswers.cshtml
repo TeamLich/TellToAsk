@@ -1,17 +1,24 @@
-﻿@model TellToAsk.Areas.LoggedUser.Models.DetailsModel
+﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 <h1 class="break-word">
-    @Model.QuestionText
+    @Model.Text
 </h1>
 
+<table>
+    <thead>
+        <tr>
+            
+        </tr>
+    </thead>
+</table>
 
-@if (Model.Answers.Count() == 0)
+@*@if (Model.AnswersCount() == 0)
 {
      <p>
         No answer for this question, yet.
     </p>
 }
-else{
+else{*@
     
    
     
@@ -22,16 +29,18 @@ else{
         columns.Bound(p => p.AnswerId).Visible(false);
         columns.Bound(p => p.Comment).Encoded(true).ClientTemplate(
 
-        "#= Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #"
+        "#: Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment #"
     ).Groupable(false);
         columns.Command(command => command.Custom("ViewDetails").Click("showDetails"));
 
         })
         .Groupable()
-        .Pageable()
+        .Pageable() 
         .Sortable()
+           
         .Scrollable()
         .Filterable()
+                
         .DataSource(dataSource => dataSource
         .Ajax()
             .Read(read => read.Action("GetQuestionAnswers", "LoggedUser").Data("getQuestionId")))
@@ -42,7 +51,7 @@ else{
   
 
     @(Html.Kendo().Window().Name("Details")
-        .Title(@Model.QuestionText)
+        .Title(@Model.Text)
     .Visible(false)
     .Modal(true)
     .Draggable(true)
@@ -52,20 +61,12 @@ else{
  <script type="text/x-kendo-template" id="template">
     <div id="details-container">
         @*<em id="question-text-popup">@(this.Server.UrlEncode(Model.QuestionText))</em>*@
-        <p class="break-word">#= Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #</p>
+        <p class="break-word">#: Comment #</p>
     </div>
 </script>
 
 <script type="text/javascript">
 
-    $( document ).ready(function() {
-       
-        debugger;
-       
-
-    });
-
-    
     function showDetails(e) {
         e.preventDefault();
 
@@ -93,4 +94,3 @@ else{
 </script>
     
     
-}

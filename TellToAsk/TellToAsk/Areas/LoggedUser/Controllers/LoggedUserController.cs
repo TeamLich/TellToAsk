@@ -9,6 +9,7 @@ using TellToAsk.Controllers;
 using TellToAsk.Data;
 using Kendo.Mvc.Extensions;
 using TellToAsk.Model;
+using System.Web.Routing;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
@@ -120,12 +121,16 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 return View("MyQuestions");
             }
 
-            return View("TakeQuestion",answerModel);
+            return View("TakeQuestion", answerModel);
         }
 
-        public ActionResult AskQuestion()
+       
+        public ActionResult AskQuestion(QuestionModel questionModel)
         {
+            ValidateNewQuestiionInput(questionModel);
+
             var list = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text= "---Select category---", Value= "-1"} };
+
 
             var categories = this.Data.Categories.All().OrderBy(c => c.Name).ToList().Select( c => new SelectListItem () { Value = c.CategoryId.ToString(), Text= c.Name } ).ToList();
 
@@ -133,74 +138,93 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             
             ViewBag.Categories = list;
 
-            return View();
+
+            var genders = this.PopulateGendersList();
+
+            var list1 = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select gender---", Value = "-1" } };
+
+            list1.AddRange(genders);
+
+            ViewBag.genders = list1;
+
+            return View(questionModel);
         }
 
-        public ActionResult CreateQuestion(Question question)
+        public ActionResult CreateQuestion(QuestionModel questionModel)
         {
 
-            if (question.TargetedMinAge != null && question.TargetedMaxAge != null)
-            {
-                if (question.TargetedMinAge > question.TargetedMaxAge)
-                {
-                    ModelState.AddModelError("TargetedMinAge", "Can not be lower than Max Age");
-                }
-            }
+            ValidateNewQuestiionInput(questionModel);
 
-            if (question.TargetedMinAge != null)
-            {
-                if (question.TargetedMinAge < 0 && question.TargetedMinAge > 100)
-	            {
-                    ModelState.AddModelError("TargetedMinAge", "Can not be lower than 0 and higher than 100");
-	            } 
-            }
-
-            if (question.TargetedMaxAge != null)
-            {
-                if (question.TargetedMaxAge < 0 && question.TargetedMinAge > 100)
-                {
-                    ModelState.AddModelError("TargetedMaxAge", "Can not be lower than 0 and higher than 100");
-                }
-            }
-
-            var userName = this.User.Identity.Name;
-
-            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
-            question.Creator = user;
+           
             if (ModelState.IsValid)
             {
-                this.Data.Questions.Add(question);
+                var userName = this.User.Identity.Name;
+                var currentUser = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+
+                var newQuestion = new Question()
+                {
+                    Text = questionModel.Text,
+                    CategoryId = questionModel.CategoryId,
+                    TargetedGender = (Gender)questionModel.TargetedGender,
+                    TargetedMaxAge = questionModel.TargetedMaxAge,
+                    TargetedMinAge = questionModel.TargetedMinAge,
+                    Creator = currentUser
+                };
+
+                var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+                newQuestion.Creator = user;
+                
+                this.Data.Questions.Add(newQuestion);
                 this.Data.SaveChanges();
                 return RedirectToAction("MyQuestions");
             }
 
-            return View(question);
+          
+            return RedirectToAction("AskQuestion", new RouteValueDictionary(
+             new 
+             { 
+                 controller = "LoggedUser", 
+                 action = "AskQuestion", 
+                 QuestionId = questionModel.QuestionId, 
+                 CategoryId = questionModel.CategoryId,
+                 TargetedGender = questionModel.TargetedGender,
+                 TargetedMaxAge = questionModel.TargetedMaxAge,
+                 TargetedMinAge = questionModel.TargetedMinAge,
+                 Text = questionModel.Text,
+             }));
+        }
+
+        private void ValidateNewQuestiionInput(QuestionModel questionModel)
+        {
+            if (questionModel.TargetedMinAge != null && questionModel.TargetedMaxAge != null)
+            {
+                if (questionModel.TargetedMinAge > questionModel.TargetedMaxAge)
+                {
+                    ModelState.AddModelError("TargetedMinAge", "Can not be lower than Max Age");
+                }
+            }
         }
 
         public ActionResult RenderTargetGroupForm()
         {
-            PopulateGenders();
+            var genders = this.PopulateGendersList();
+
+            var list1 = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select gender---", Value = "-1" } };
+
+            list1.AddRange(genders);
+
+            ViewBag.genders = list1;
+
+            var list = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select category---", Value = "-1" } };
+
+
+            var categories = this.Data.Categories.All().OrderBy(c => c.Name).ToList().Select(c => new SelectListItem() { Value = c.CategoryId.ToString(), Text = c.Name }).ToList();
+
+            list.AddRange(categories);
+
+            ViewBag.Categories = list;
+
             return PartialView("_TargetGroupForm");
         }
-
-        private void PopulateGenders()
-        {
-            IList<SelectListItem> genList = new List<SelectListItem>();
-            foreach (Gender gen in Enum.GetValues(typeof(Gender)))
-            {
-                SelectListItem item = new SelectListItem()
-                {
-                    Selected = false,
-                    Text = gen.ToString(),
-                    Value = ((int)gen).ToString(),
-                };
-
-                genList.Add(item);
-            }
-
-            ViewData["genders"] = genList;
-        }
 	}
-
-
 }

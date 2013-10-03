@@ -7,7 +7,8 @@
 <h2>Edit</h2>
 
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -17,9 +18,16 @@
         @Html.HiddenFor(model => model.AnswerId)
 
         <div class="control-group">
+            @Html.LabelFor(model => model.Question, new { @class = "control-label" })
+            <div class="controls">
+                @Html.ValueFor(model => model.Question.Text)
+            </div>
+        </div>
+
+        <div class="control-group">
             @Html.LabelFor(model => model.Comment, new { @class = "control-label" })
             <div class="controls">
-                @Html.EditorFor(model => model.Comment)
+                @Html.TextAreaFor(model => model.Comment)
                 @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline" })
             </div>
         </div>
@@ -39,7 +47,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to Answers List", "Index")
 </div>
 
 @section Scripts {

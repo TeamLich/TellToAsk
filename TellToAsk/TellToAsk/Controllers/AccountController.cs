@@ -89,6 +89,7 @@ namespace TellToAsk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, int[] categories)
         {
+            PopulateGenders();
             List<Category> appruvedCategories = new List<Category>();
            
             string errorMsg = "";
@@ -431,7 +432,7 @@ namespace TellToAsk.Controllers
                 genList.Add(item);
             }
 
-            ViewData["genders"] = genList;
+            ViewBag.genders = genList;
         }
 
 

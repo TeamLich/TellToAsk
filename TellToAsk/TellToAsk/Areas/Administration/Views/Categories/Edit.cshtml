@@ -1,11 +1,10 @@
-﻿@model TellToAsk.Model.Category
+﻿@model TellToAsk.Areas.Administration.Models.CategoryModel
 
 @{
     ViewBag.Title = "Edit category";
 }
 
-<h2>Edit</h2>
-
+<h2>Edit category</h2>
 
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
@@ -26,21 +25,19 @@
 
         <div class="control-group">
             @Html.LabelFor(model => model.AgeRating, new { @class = "control-label" })
-                <div class="controls">
-                    @Html.DropDownListFor(model => model.AgeRating, (IEnumerable<SelectListItem>)ViewBag.AgeRatings)
-                        @Html.ValidationMessageFor(model => model.AgeRating, null, new { @class = "help-inline" })
-                        </div>
-                    </div>
+            <div class="controls">
+                @Html.DropDownListFor(model => model.AgeRating, (IEnumerable<SelectListItem>)ViewBag.AgeRatings)
+                @Html.ValidationMessageFor(model => model.AgeRating, null, new { @class = "help-inline" })
+            </div>
+        </div>
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Save" class="btn" />
+        <div class="form-actions">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            <input type="button" value="Back to List" class="btn btn-primary"
+                   onclick="window.location = '/Administration/Categories/';">
         </div>
     </fieldset>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

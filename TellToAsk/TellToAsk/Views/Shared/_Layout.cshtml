@@ -29,8 +29,9 @@
                         
                             @if (this.User.IsInRole("User"))
                             {
-                                <li>
-                                    <ul>
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Questions <span class="caret"/></a>
+                                    <ul class="dropdown-menu">
                                         <li>@Html.ActionLink("My Questions", "MyQuestions", "LoggedUser", new { area = "LoggedUser" }, null)</li>
                                         
                                         <li>@Html.ActionLink("AskQuestion", "AskQuestion", "LoggedUser", new { area = "LoggedUser" }, null)</li>
@@ -41,8 +42,9 @@
                             @*Admin*@
                             @if (this.User.IsInRole("User"))
                             {
-                                    <li>
-                                        <ul>
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Administration <span class="caret"/></a>
+                                    <ul class="dropdown-menu">
                                             <li>@Html.ActionLink("Categories", "Index", "Categories", new { area = "Administration" }, null)</li>
                                             <li>@Html.ActionLink("Questions", "Index", "Questions", new { area = "Administration" }, null)</li>
                                             <li>@Html.ActionLink("Answers", "Index", "Answers", new { area = "Administration" }, null)</li>
@@ -61,7 +63,7 @@
         <br/>
         <br />
         <br />
-        <div class="container">
+        <div class="container well">
             @RenderBody()
             <hr />
             <footer class="text-center">

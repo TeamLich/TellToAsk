@@ -54,15 +54,28 @@
                         <li>@role.Role.Name</li>
                     }
                 </ul>
-                @Ajax.ActionLink("Edit Roles", "EditRoles", new { id = Model.Id }, new AjaxOptions()
+                @Ajax.ActionLink("Edit Roles", "EditRoles", "Users", new { id = Model.Id }, new AjaxOptions()
                 {
                     HttpMethod = "GET",
                     InsertionMode = InsertionMode.Replace,
                     UpdateTargetId = "edit-roles"
                 })
             </div>
+            <div class="controls">
+                <div>
+                    @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
+                {
+                    HttpMethod = "GET",
+                    OnComplete = "hideBanButton"
+                }, new { @class = "ban-user" })
+                    @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
+                {
+                    HttpMethod = "GET",
+                    OnComplete = "hideUnbanButton"
+                }, new { @class = "unban-user" })
+                </div>
+            </div>
         </div>
-
         <div class="form-actions no-color">
             <input type="submit" value="Save" class="btn" />
         </div>
@@ -80,8 +93,14 @@
 }
 
 <script>
-    function reload() {
-        $('#edit-roles').html("");
-        window.location = "/Administration/Users/Edit";
+    $(".unban-user").hide();
+    function hideBanButton() {
+        $(".ban-user").hide();
+        $(".unban-user").show();
+    }
+
+    function hideUnbanButton() {
+        $(".unban-user").hide();
+        $(".ban-user").show();
     }
 </script>

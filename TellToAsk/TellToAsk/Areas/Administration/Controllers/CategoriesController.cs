@@ -11,6 +11,7 @@ using TellToAsk.Data;
 using TellToAsk.Controllers;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
+using TellToAsk.Areas.Administration.Models;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
@@ -29,12 +30,12 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Categories/
         public ActionResult Index()
         {
-            return View(this.Data.Categories.All().ToList());
+            return View(this.Data.Categories.All().Select(CategoryModel.FromCategory).ToList());
         }
 
         public ActionResult Read([DataSourceRequest] DataSourceRequest request)
         {
-            var categories = this.Data.Categories.All();
+            var categories = this.Data.Categories.All().Select(CategoryModel.FromCategory);
 
             return Json(categories.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -42,6 +43,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Categories/Create
         public ActionResult Create()
         {
+            var list = this.PopulateAgeRatings();
+            ViewBag.AgeRatings = list;
             return View();
         }
 
@@ -76,6 +79,10 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
+
+            var list = this.PopulateAgeRatings();
+            ViewBag.AgeRatings = list;
+
             return View(category);
         }
 

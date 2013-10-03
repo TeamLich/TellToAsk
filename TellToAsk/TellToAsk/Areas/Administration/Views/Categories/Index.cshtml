@@ -1,7 +1,7 @@
-﻿@model IEnumerable<TellToAsk.Model.Category>
+﻿@model IEnumerable<TellToAsk.Areas.Administration.Models.CategoryModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Categories";
 }
 
 <h2>Categories</h2>
@@ -9,12 +9,14 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-@(Html.Kendo().Grid<TellToAsk.Model.Category>()
+
+@(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.CategoryModel>()
     .Name("categories")
     .Columns(column =>
         {
            // column.Bound(p => p.CategoryId);
             column.Bound(p => p.Name).Width(350);
+            column.Bound(p => p.AgeRating);
             column.Template(p => @Html.Action("Edit", "Categories", new { id = p.CategoryId }))
                 .ClientTemplate("<a href='/Administration/Categories/Edit?id=#= CategoryId #'>Edit</a> | " +
                 "<a href='/Administration/Categories/Delete?id=#= CategoryId #'>Delete</a>").Title("Action");
@@ -30,7 +32,6 @@
          .Model(model =>
          {
              model.Id(p => p.CategoryId);
-
          })
          .Read(read => read.Action("Read", "Categories")))
          )
@@ -54,7 +55,8 @@
         $("#categories").css("width", 500);
     });
 </script>
-@section Scripts{
+
+@section Scripts {
     @Scripts.Render("~/bundles/kendo")
-    }
+}
         

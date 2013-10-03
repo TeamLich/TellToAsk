@@ -1,17 +1,9 @@
 ﻿@model TellToAsk.Model.ApplicationUser
 
-@using (Ajax.BeginForm("AddRole", new { id = Model.Id}, new AjaxOptions()
-{
-    HttpMethod = "POST",
-    InsertionMode = InsertionMode.Replace,
-    UpdateTargetId = "edit-roles",
-    OnSuccess = "reload"
-}))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
-    <fieldset class="form-horizontal">
-        <legend>Edit Roles</legend>
+
+<fieldset class="form-horizontal">
+    <legend>Edit Roles</legend>
+    <div id="roles-list" class="controls">
         <ul>
             @foreach (var role in Model.Roles)
             {
@@ -21,15 +13,24 @@
                         {
                             HttpMethod = "GET",
                             InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "edit-roles"
+                            UpdateTargetId = "roles-list"
                         })
                 </li>
             }
 
         </ul>
-
+    </div>
+    @using (Ajax.BeginForm("AddRole", new { id = Model.Id }, new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "roles-list",
+    }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
         <div class="control-group">
-            @Html.LabelFor(model => model.Roles, new { @class = "control-label" })
+            @Html.Label("Select Role: ", new { @class = "control-label" })
             <div class="controls">
                 @Html.DropDownList("roleId", (IEnumerable<SelectListItem>)ViewBag.Roles)
                 @Html.ValidationMessageFor(model => model.Roles, null, new { @class = "help-inline" })
@@ -39,18 +40,14 @@
             <input type="submit" value="Add Role" class="btn" />
             <input type="button" value="Cancel" onclick="closeEditForm()" class="btn" />
         </div>
-    </fieldset>
-}
+    }
+</fieldset>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
 
 <script>
-    function reload() {
-        $('#edit-roles').html("");
-        window.location = "/Administration/Users/Edit";
-    }
     function closeEditForm() {
         $('#edit-roles').html("");
     }

@@ -50,9 +50,19 @@ namespace TellToAsk.Areas.Administration.Controllers
 
         //
         // GET: /Administration/Users/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+         
+            return View(user);
         }
 
         //
@@ -71,6 +81,21 @@ namespace TellToAsk.Areas.Administration.Controllers
             ViewBag.Genders = genders;
 
             return View(user);
+        }        
+        //
+        // POST: /Administration/Users/Edit/5
+        [HttpPost]
+        public ActionResult Edit(ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                this.Data.Users.Update(user);
+                this.Data.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.Genders = genders;
+
+            return View(user);
         }
 
         public ActionResult AddRole(string id, string roleId)
@@ -83,15 +108,19 @@ namespace TellToAsk.Areas.Administration.Controllers
             var roleExisting = user.Roles.FirstOrDefault(x => x.RoleId == roleId);
             if (roleExisting == null)
             {
-                //var IdentityManager = new AuthenticationIdentityManager(new IdentityStore(new TellToAskContext()));
-                //Task<IRole> getRoleTask = IdentityManager.Roles.FindRoleAsync(roleId);
-                //var userRole = await getRoleTask;
-                //await IdentityManager.Roles.AddUserToRoleAsync(user.Id, userRole.Id);
-                user.Roles.Add(new UserRole() { UserId = user.Id, RoleId = roleId });
+                var role = this.Data.Roles.All().FirstOrDefault(r => r.Id == roleId);
+                var userRole = new UserRole()
+                {
+                    RoleId = roleId,
+                    UserId = user.Id,
+                    User = user,
+                    Role = role
+                };
+                user.Roles.Add(userRole);
                 this.Data.SaveChanges();
             }
 
-            return PartialView("_EditRoles", user);
+            return PartialView("_Roles", user);
         }
 
         public ActionResult EditRoles(string id)
@@ -129,47 +158,39 @@ namespace TellToAsk.Areas.Administration.Controllers
                 this.Data.SaveChanges();
             }
 
-            return PartialView("_EditRoles", user);
+            return PartialView("_Roles", user);
         }
-
-        //
-        // POST: /Administration/Users/Edit/5
-        [HttpPost]
-        public ActionResult Edit(ApplicationUser user)
+        
+        public ActionResult BanUser(string id)
         {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                this.Data.Users.Update(user);
-                this.Data.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.Genders = genders;
-
-            return View(user);
-        }
-
-        //
-        // GET: /Administration/Users/Delete/5
-        public ActionResult Delete(int id)
-        {
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            user.Management.DisableSignIn = true;
+            this.Data.SaveChanges();
             return View();
         }
 
-        //
-        // POST: /Administration/Users/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult UnbanUser(string id)
         {
-            try
+            if (id == null)
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            catch
+            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            if (user == null)
             {
-                return View();
+                return HttpNotFound();
             }
+            user.Management.DisableSignIn = false;
+            this.Data.SaveChanges();
+            return View();
         }
     }
 }

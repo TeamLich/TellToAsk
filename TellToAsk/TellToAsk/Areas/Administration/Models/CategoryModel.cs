@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using TellToAsk.Model;
 
-namespace TellToAsk.Areas.LoggedUser.Models
+namespace TellToAsk.Areas.Administration.Models
 {
    public class CategoryModel
     {

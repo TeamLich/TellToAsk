@@ -163,6 +163,7 @@
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
     <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
+    <Compile Include="Areas\Administration\Models\CategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
     <Compile Include="Areas\Administration\Models\UserModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
@@ -263,9 +264,11 @@
     </Content>
     <Content Include="Areas\Administration\Views\Users\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Shared\_EditRoles.cshtml" />
+    <Content Include="Areas\Administration\Views\Shared\_Roles.cshtml" />
     <Content Include="Areas\LoggedUser\Views\Shared\_TargetGroupForm.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Areas\Administration\Views\Users\Details.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -306,6 +309,7 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\Kendo\jquery.min.map" />
+    <Content Include="Views\Account\_ChangeCategiriesPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

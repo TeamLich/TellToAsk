@@ -1,0 +1,82 @@
+﻿@model TellToAsk.Model.ApplicationUser
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>User Details</legend>
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Points)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Points)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MyQuestions)
+        </dt>
+
+        <dd>
+            <ul>
+                @foreach (var question in Model.MyQuestions)
+                {
+                    string isApproved = question.IsApproved == false ? "not Approved" : "Approved";
+                    <li>
+                        @Html.ActionLink(@question.Text, "Edit", "Questions", new { id = @question.QuestionId }, null) -
+                        <span style="color:red">@isApproved</span>
+                    </li>
+                }
+            </ul>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Answers)
+        </dt>
+
+        <dd>
+            <ul>
+                @foreach (var answer in Model.Answers)
+                {
+                    string IsReported = answer.IsReported == false ? "" : "Reported";
+                    <li>
+                        @Html.ActionLink(@answer.Comment, "Edit", "Questions", new { id = @answer.AnswerId }, null) -
+                        <span style="color:red">@IsReported</span>
+                    </li>
+                }
+            </ul>
+        </dd>
+
+    </dl>
+
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

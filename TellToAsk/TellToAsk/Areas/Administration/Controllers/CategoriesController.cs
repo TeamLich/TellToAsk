@@ -17,12 +17,6 @@ namespace TellToAsk.Areas.Administration.Controllers
 {
     public class CategoriesController : BaseController
     {
-
-        public CategoriesController()
-            : this(new UowData())
-        {
-        }
-
         public CategoriesController(IUowData data)
             : base(data)
         {

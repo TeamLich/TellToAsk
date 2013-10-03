@@ -49,11 +49,15 @@ namespace TellToAsk.Areas.Administration.Controllers
 		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Category category)
+        public ActionResult Create(CategoryModel category)
         {
             if (ModelState.IsValid)
             {
-                this.Data.Categories.Add(category);
+                Category newCategory = new Category();
+                newCategory.Name = category.Name;
+                newCategory.AgeRating = category.AgeRating;
+                
+                this.Data.Categories.Add(newCategory);
                 this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -74,10 +78,17 @@ namespace TellToAsk.Areas.Administration.Controllers
                 return HttpNotFound();
             }
 
+            CategoryModel model = new CategoryModel
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                AgeRating = category.AgeRating
+            };
+
             var list = this.PopulateAgeRatings();
             ViewBag.AgeRatings = list;
 
-            return View(category);
+            return View(model);
         }
 
         // POST: /Administration/Categories/Edit/5
@@ -87,11 +98,15 @@ namespace TellToAsk.Areas.Administration.Controllers
 		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Category category)
+        public ActionResult Edit(CategoryModel category)
         {
             if (ModelState.IsValid)
             {
-                this.Data.Categories.Update(category);
+                var editCategory = this.Data.Categories.GetById(category.CategoryId);
+                editCategory.Name = category.Name;
+                editCategory.AgeRating = category.AgeRating;
+
+                this.Data.Categories.Update(editCategory);
                 this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -110,7 +125,15 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
-            return View(category);
+
+            CategoryModel model = new CategoryModel
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                AgeRating = category.AgeRating
+            };
+
+            return View(model);
         }
 
         // POST: /Administration/Categories/Delete/5

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Web.Mvc;
 using TellToAsk.Model;
 
 namespace TellToAsk.Areas.Administration.Models
@@ -11,6 +12,7 @@ namespace TellToAsk.Areas.Administration.Models
     {
         public int CategoryId { get; set; }
 
+        [AllowHtml]
         public string Name { get; set; }
 
         public AgeRating AgeRating { get; set; }

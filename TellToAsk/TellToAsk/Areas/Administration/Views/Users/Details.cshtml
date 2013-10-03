@@ -66,7 +66,7 @@
                 {
                     string IsReported = answer.IsReported == false ? "" : "Reported";
                     <li>
-                        @Html.ActionLink(@answer.Comment, "Edit", "Questions", new { id = @answer.AnswerId }, null) -
+                        @Html.ActionLink(@answer.Comment, "Edit", "Answers", new { id = @answer.AnswerId }, null) -
                         <span style="color:red">@IsReported</span>
                     </li>
                 }

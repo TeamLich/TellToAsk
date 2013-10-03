@@ -6,20 +6,18 @@
 
 <h2>Categories</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
 @(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.CategoryModel>()
-    .Name("categories")
+    .Name("Categories")
     .Columns(column =>
         {
            // column.Bound(p => p.CategoryId);
-            column.Bound(p => p.Name).Width(350);
-            column.Bound(p => p.AgeRating);
+            column.Bound(p => p.Name);
+            column.Bound(p => p.AgeRating).Width(100);
             column.Template(p => @Html.Action("Edit", "Categories", new { id = p.CategoryId }))
-                .ClientTemplate("<a href='/Administration/Categories/Edit?id=#= CategoryId #'>Edit</a> | " +
-                "<a href='/Administration/Categories/Delete?id=#= CategoryId #'>Delete</a>").Title("Action");
+                .ClientTemplate(
+                "<a class='btn btn-primary' href='/Administration/Categories/Edit?id=#= CategoryId #'>Edit</a>  |  " +
+                "<a class='btn btn-primary' href='/Administration/Categories/Delete?id=#= CategoryId #'>Delete</a>")
+                .Title("Action").Width(150);
         })
      .Pageable()
      .Sortable()
@@ -36,6 +34,11 @@
          .Read(read => read.Action("Read", "Categories")))
          )
 
+<div>
+    <br/>
+    @Html.ActionLink("Create New", "Create", new { area = "Administration" }, new { @class = "btn btn-primary" })
+</div>
+
 <script>
     function error_handler(e) {
         if (e.errors) {
@@ -51,9 +54,6 @@
         }
     }
 
-    $(document).ready(function () {
-        $("#categories").css("width", 500);
-    });
 </script>
 
 @section Scripts {

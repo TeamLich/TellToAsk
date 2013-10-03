@@ -20,7 +20,7 @@
         {
             series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
             .Labels(labels => labels
-                .Template("#= category #: #= value#%")
+                .Template("#: category #: #= value#%")
                 .Background("transparent")
                 .Visible(true)
             )
@@ -47,7 +47,7 @@
             {
                 series.Pie((IEnumerable<dynamic>)ViewBag.AnswersData)
                 .Labels(labels => labels
-                    .Template("#= category #: #= value#%")
+                    .Template("#: category #: #= value#%")
                     .Background("transparent")
                     .Visible(true)
                 )

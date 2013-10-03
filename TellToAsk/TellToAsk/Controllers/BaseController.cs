@@ -10,11 +10,6 @@ namespace TellToAsk.Controllers
 {
     public class BaseController : Controller
     {
-        public BaseController()
-            : this(new UowData())
-        {
-        }
-
         public BaseController(IUowData data)
         {
             this.Data = data;

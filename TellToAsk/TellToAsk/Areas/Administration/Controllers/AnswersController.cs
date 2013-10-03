@@ -17,10 +17,6 @@ namespace TellToAsk.Areas.Administration
 {
     public class AnswersController : BaseController
     {
-        public AnswersController()
-            : this(new UowData())
-        {
-        }
 
         public AnswersController(IUowData data)
             : base(data)
@@ -32,61 +28,14 @@ namespace TellToAsk.Areas.Administration
             var answers = this.Data.Answers.All().Select(AnswerModel.FromAnswer);
             return View(answers.ToList());
         }
-
-        // GET: /Administration/Aswers/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Answer answer = this.Data.Answers.GetById((int)id);
-            if (answer == null)
-            {
-                return HttpNotFound();
-            }
-            return View(answer);
-        }
-
+              
         public ActionResult Read([DataSourceRequest] DataSourceRequest request)
         {
             var answers = this.Data.Answers.All().Select(AnswerModel.FromAnswer);
 
             return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
-
-
-        // GET: /Administration/Aswers/Create
-        public ActionResult Create()
-        {
-            ViewBag.Questions = this.Data.Questions.All().ToList()
-               .Select(x => new SelectListItem { Text = x.Text, Value = x.QuestionId.ToString() });
-            return View();
-        }
-
-        // POST: /Administration/Aswers/Create
-        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // 
-        // Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Answer answer)
-        {
-            if (ModelState.IsValid)
-            {
-                var question = this.Data.Questions.GetById(answer.Question.QuestionId);
-                answer.Question = question;
-                this.Data.Answers.Add(answer);
-                this.Data.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Questions = this.Data.Questions.All().ToList()
-               .Select(x => new SelectListItem { Text = x.Text, Value = x.QuestionId.ToString() });
-
-            return View(answer);
-        }
-
+        
         // GET: /Administration/Aswers/Edit/5
         public ActionResult Edit(int? id)
         {

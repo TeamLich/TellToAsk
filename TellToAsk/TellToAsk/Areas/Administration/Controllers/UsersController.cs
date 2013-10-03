@@ -19,11 +19,6 @@ namespace TellToAsk.Areas.Administration.Controllers
 {
     public class UsersController : BaseController
     {
-        public UsersController()
-            : this(new UowData())
-        {
-        }
-
         public UsersController(IUowData data)
             : base(data)
         {

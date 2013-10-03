@@ -22,7 +22,7 @@ else{
         columns.Bound(p => p.AnswerId).Visible(false);
         columns.Bound(p => p.Comment).Encoded(true).ClientTemplate(
 
-        "#= Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #"
+        "#: Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment #"
     ).Groupable(false);
         columns.Command(command => command.Custom("ViewDetails").Click("showDetails"));
 
@@ -52,7 +52,7 @@ else{
  <script type="text/x-kendo-template" id="template">
     <div id="details-container">
         @*<em id="question-text-popup">@(this.Server.UrlEncode(Model.QuestionText))</em>*@
-        <p class="break-word">#= Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #</p>
+        <p class="break-word">#: Comment #</p>
     </div>
 </script>
 

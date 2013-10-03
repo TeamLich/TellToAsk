@@ -68,7 +68,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
 
                var model = new DetailsModel() { Answers = answers, QuestionId = question.QuestionId, QuestionText = question.Text };
-
+               
                return View(model);
             }
             return View();
@@ -92,8 +92,8 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult TakeQuestion()
         {
-            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-            return View(questions);
+            //var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
+            return View(new AnswerModel());
         }
 
         public ActionResult AnswerToQuestion(AnswerModel answerModel)
@@ -120,7 +120,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 return View("MyQuestions");
             }
 
-            return PartialView("_AnswerQuestion", answerModel);
+            return View("TakeQuestion",answerModel);
         }
 
         public ActionResult AskQuestion()
@@ -130,7 +130,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             var categories = this.Data.Categories.All().OrderBy(c => c.Name).ToList().Select( c => new SelectListItem () { Value = c.CategoryId.ToString(), Text= c.Name } ).ToList();
 
             list.AddRange(categories);
-
+            
             ViewBag.Categories = list;
 
             return View();
@@ -139,9 +139,28 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
         public ActionResult CreateQuestion(Question question)
         {
 
-            if (question != null && question.TargetedMinAge != null && question.TargetedMaxAge != null)
+            if (question.TargetedMinAge != null && question.TargetedMaxAge != null)
             {
-                // validate
+                if (question.TargetedMinAge > question.TargetedMaxAge)
+                {
+                    ModelState.AddModelError("TargetedMinAge", "Can not be lower than Max Age");
+                }
+            }
+
+            if (question.TargetedMinAge != null)
+            {
+                if (question.TargetedMinAge < 0 && question.TargetedMinAge > 100)
+	            {
+                    ModelState.AddModelError("TargetedMinAge", "Can not be lower than 0 and higher than 100");
+	            } 
+            }
+
+            if (question.TargetedMaxAge != null)
+            {
+                if (question.TargetedMaxAge < 0 && question.TargetedMinAge > 100)
+                {
+                    ModelState.AddModelError("TargetedMaxAge", "Can not be lower than 0 and higher than 100");
+                }
             }
 
             var userName = this.User.Identity.Name;
@@ -160,7 +179,28 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult RenderTargetGroupForm()
         {
+            PopulateGenders();
             return PartialView("_TargetGroupForm");
         }
+
+        private void PopulateGenders()
+        {
+            IList<SelectListItem> genList = new List<SelectListItem>();
+            foreach (Gender gen in Enum.GetValues(typeof(Gender)))
+            {
+                SelectListItem item = new SelectListItem()
+                {
+                    Selected = false,
+                    Text = gen.ToString(),
+                    Value = ((int)gen).ToString(),
+                };
+
+                genList.Add(item);
+            }
+
+            ViewData["genders"] = genList;
+        }
 	}
+
+
 }

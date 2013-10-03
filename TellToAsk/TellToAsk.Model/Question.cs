@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace TellToAsk.Model
 {
+     //[ValidateInput(false)]
     public class Question
     {
         public int QuestionId { get; set; }
 
         [DataType(DataType.MultilineText)]
         [Required]
+        
         public string Text { get; set; }
 
         public bool IsApproved { get; set; }

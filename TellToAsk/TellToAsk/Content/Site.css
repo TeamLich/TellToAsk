@@ -33,3 +33,9 @@ input[type="checkbox"].input-validation-error {
   background-color: white;
   border-style:none;
 }
+
+.break-word {
+    word-wrap: break-word;
+    overflow:hidden;
+    width: 100% 
+}

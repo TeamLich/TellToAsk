@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TellToAsk.Areas.LoggedUser.Models.QuestionModel>
+﻿@model TellToAsk.Areas.LoggedUser.Models.AnswerModel
 
 @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
     .Name("Grid")
@@ -22,6 +22,8 @@
         .Read(read => read.Action("GetTargetedQuestions", "LoggedUser")))
 )
 
+
+
 @(Html.Kendo().Window().Name("Details")
     .Title("Answer Question")
     .Visible(false)
@@ -33,28 +35,90 @@
 <script type="text/x-kendo-template" id="template">
 
     <div id="details-container">
-        <em>#= Text #</em>
+        <em class="break-word">#= Text #</em>
+
+        @*@using (Ajax.BeginForm("AnswerToQuestion", new AjaxOptions
+        {
+            UpdateTargetId = "error-holder",
+            InsertionMode = InsertionMode.Replace
+        }))
+        {
+                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
+
+                @Html.TextArea("Comment", string.Empty, 10, 55, null)
+
+                    <input type="submit" class="btn btn-success" value="Answer" />
+        }*@
+      
+        @*<div id="error-holder"></div>*@
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
-            <input type="hidden" name="QuestionId" value="#= QuestionId #" />
+            if (@Model.QuestionId == 0)
+            {
+                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
+            <input type="hidden" name="Text" value="#= Text #" />
+            }
+            else
+            {
+                <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
+            <input type="hidden" name="Text" value="@(Model.Text)" />
+            }
+            
 
-                 @Html.TextArea("Comment", string.Empty, 10, 55, null)
+                 <div class="control-group">
+            @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
+            <div class="controls">
+                @Html.EditorFor(model => model.Comment)
+                @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline" })
+            </div>
+        </div>
             <input type="submit" class="btn btn-success" value="Answer" />
         }
     </div>
 </script>
 
+<script>
+    $( document ).ready(function() {
+
+        var val = @(Model.QuestionId);
+        var questText = "@(Model.Text)"
+         questTextObj = { Text: questText}
+        debugger;
+        if (val != 0) {
+            var detailsTemplate = kendo.template($("#template").html());
+            var wnd = $("#Details").data("kendoWindow");
+
+            wnd.content(detailsTemplate(questTextObj));
+            wnd.center().open();
+        }
+    });
+</script>
+
 <script type="text/javascript">
-    var detailsTemplate = kendo.template($("#template").html());
+   
+
+   
+
+    
 
     function showDetails(e) {
         e.preventDefault();
+        var detailsTemplate = kendo.template($("#template").html());
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var wnd = $("#Details").data("kendoWindow");
 
         wnd.content(detailsTemplate(dataItem));
         wnd.center().open();
     }
-
+   
 </script>
+@if (Model != null)
+{
+    <script type="text/javascript">
+       
+    </script>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

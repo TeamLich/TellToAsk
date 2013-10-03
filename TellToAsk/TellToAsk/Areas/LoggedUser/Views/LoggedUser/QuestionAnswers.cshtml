@@ -1,6 +1,6 @@
 ﻿@model TellToAsk.Areas.LoggedUser.Models.DetailsModel
 
-<h1>
+<h1 class="break-word">
     @Model.QuestionText
 </h1>
 
@@ -20,8 +20,9 @@ else{
     .Columns(columns =>
     {
         columns.Bound(p => p.AnswerId).Visible(false);
-        columns.Bound(p => p.Comment).ClientTemplate(
-        "#= Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment #"
+        columns.Bound(p => p.Comment).Encoded(true).ClientTemplate(
+
+        "#= Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #"
     ).Groupable(false);
         columns.Command(command => command.Custom("ViewDetails").Click("showDetails"));
 
@@ -51,7 +52,7 @@ else{
  <script type="text/x-kendo-template" id="template">
     <div id="details-container">
         @*<em id="question-text-popup">@(this.Server.UrlEncode(Model.QuestionText))</em>*@
-        <p>#= Comment #</p>
+        <p class="break-word">#= Comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') #</p>
     </div>
 </script>
 

@@ -6,6 +6,16 @@
     <fieldset>
         <legend>Ask question</legend>
        <input class="btn btn-info" type="button" id="target-group-button" value="Target Group"/>
+        @Ajax.ActionLink("Target group", "RenderTargetGroupForm"
+                 , null, new AjaxOptions
+                 {
+                     HttpMethod = "GET",
+                     InsertionMode = InsertionMode.Replace,
+                     UpdateTargetId = "target-question-form",
+                     LoadingElementId = "loading",
+                     OnSuccess = "hideButton",
+                     OnFailure = "alertMessage"
+                 }, new { id = "ajax-button" })
 
         <div class="control-group">
             @Html.LabelFor(model => model.Text, new { @class = "control-label" })
@@ -22,20 +32,23 @@
             </div>
         </div>
         
-        <div id="target-question-form" class="hidden">
-           @Ajax.BeginForm("_TargetGroupForm", new AjaxOptions {
-                    
-            }))
-            {
-                
-            }
+        <div id="target-question-form">
+            
         </div>
         <input type="submit" class="btn btn-success" value="Answer" />
     </fieldset>
 }
-
+ 
 <script>
-    $(document).ready(function () {
+        function hideButton(data) {
+            console.log(data);
+            $("#ajax-button").hide();
+            $('#target-question-form').html(data);
+        }
+
+        function alertMessage() {
+            alert("Something is terribly wrong!")
+        }
 
         $('#target-group-button').click(function (e) {
             e.preventDefault;
@@ -44,9 +57,10 @@
             if (!isHidden) {
                 debugger;
 
-                $.getJSON("RenderTargetGroupForm", null, function () {
-                    console.log("ok rendered");
-                });    
+                $.getJSON("RenderTargetGroupForm", null, function (data) {
+                    console.log(data);
+                    $('#target-question-form').html(data);
+                });
 
                 $(this).val("Target Group");
                 $('#target-question-form').addClass("hidden");
@@ -57,5 +71,11 @@
                 $('#target-question-form').removeClass("hidden");
             }
         });
-    });
+   
 </script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

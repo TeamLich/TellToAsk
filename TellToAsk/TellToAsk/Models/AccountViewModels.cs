@@ -29,6 +29,17 @@ namespace TellToAsk.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Birth Date")]
+        public string BirthDate { get; set; }
+
+        [Display(Name = "Gender")]
+        public Gender Gender { get; set; }
+
+        [Display(Name = "Categories")]
+        public string[] Categories { get; set; }
     }
 
     public class LoginViewModel
@@ -44,6 +55,8 @@ namespace TellToAsk.Models
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+      
     }
 
     public class RegisterViewModel

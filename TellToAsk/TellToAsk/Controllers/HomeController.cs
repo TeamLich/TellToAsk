@@ -28,7 +28,7 @@ namespace TellToAsk.Controllers
 
             if (questionsCount > 0)
             {
-                var quest = this.Data.Categories.All().Select(x => new { category = x.Name, value = x.Questions.Count * 100 / questionsCount }).ToList();
+                var quest = this.Data.Categories.All().ToList().Select(x => new { category = this.Server.HtmlEncode(x.Name), value = x.Questions.Count * 100 / questionsCount }).ToList();
 
                 ViewBag.QuestionsData = quest.Where(q => q.value != 0);
             }
@@ -37,7 +37,8 @@ namespace TellToAsk.Controllers
             if (answersCount > 0)
             {
                 var ans = this.Data.Categories.All().ToList().Select(x =>
-                 new { category = x.Name, value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount }).ToList();
+                 new { category = this.Server.HtmlEncode(x.Name), 
+                       value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount }).ToList();
 
                 ViewBag.AnswersData = ans.Where(a => a.value != 0);
             }

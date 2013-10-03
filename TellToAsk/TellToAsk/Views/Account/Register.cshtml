@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Register";
     IEnumerable<SelectListItem> genderList = (IEnumerable<SelectListItem>) ViewData["genders"];
+    var selectedCats = (List<TellToAsk.Areas.LoggedUser.Models.CategoryModel>)ViewBag.catselected;
 }
 
 <hgroup class="title">
@@ -50,16 +51,21 @@
                    @Html.TextBoxFor(m => m.BirthDate, new { @class = "hidden", @Id="birth-date" })
                  </div>
        </div>
-
         <div class="control-group">
-            <label class="control-label">Categories</label>
-                <div class="controls">
-                    @(Html.Kendo().MultiSelect()
+            <div class="controls">
+                <p> You must choose at least 3 categories that suit your age! </p>
+                <p id="error-holder" style="color:red;"><em> @ViewBag.error </em></p>
+                    </div>
+        </div>
+    <div class="control-group">
+        <label class="control-label">Categories</label>
+        <div class="controls">
+            @(Html.Kendo().MultiSelect()
                       .Name("categories")
                       .DataTextField("Name")
                     .DataValueField("CategoryId")
                       .Placeholder("Select categories...")
-                      .AutoBind(false)
+                  .AutoBind(false)
                       .DataSource(source =>
                       {
                           source.Read(read =>
@@ -68,40 +74,51 @@
                           })
                           .ServerFiltering(true);
                       })
-                    )
-                       
-                    </div>
-                </div>
-                    <div class="form-actions no-color">
-                        <input type="submit" value="Register" class="btn" />
-                    </div>
+                 
+            )
+
+        </div>
+    </div>
+    <div class="form-actions no-color">
+        <input type="submit" value="Register" class="btn" />
+    </div>
 </fieldset>
 }
+@*((IEnumerable<telltoask.areas.loggeduser.models.categorymodel> )ViewBag.catselected)
+    .Value(new List<TellToAsk.Areas.LoggedUser.Models.CategoryModel> { new TellToAsk.Areas.LoggedUser.Models.CategoryModel() { CategoryId = 1, Name = "18+ - For Adults Only" } })
+*@
+    <script>
+        $(document).ready(function () {
+            //// create MultiSelect from select HTML element
+            // var required = $("#categories").kendoMultiSelect().data("kendoMultiSelect");
+ 
+            var required = $("#categories").data("kendoMultiSelect");
 
-<script>
-    $(document).ready(function () {
-        // create MultiSelect from select HTML element
-        //var required = $("#Categories").kendoMultiSelect().data("kendoMultiSelect");
-        //console.log(required.value());
-      
+            //// Clean filtering
+            //required.dataSource.filter({});
+            //// Set new values
+           //var values =[];
+           //required.value(values);
 
-        //$("#get").click(function () {
-        //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
-        //});
-    });
+           //console.log(required.value());
+           //console.log(values);
 
-    function change() {
-        
-        $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
+            //$("#get").click(function () {
+            //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
+            //});
+        });
+
+        function change() {
+            $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
+        }
+
+        function navigate() {
+            // console.log("Navigate");
+        }
+    </script>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/kendo")
+        @Scripts.Render("~/bundles/jqueryval")
+
     }
-
-    function navigate() {
-        // console.log("Navigate");
-    }
-</script>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/kendo")
-    @Scripts.Render("~/bundles/jqueryval")
-
-}

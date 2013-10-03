@@ -38,22 +38,7 @@
 <script type="text/x-kendo-template" id="template">
 
     <div id="details-container">
-        <em class="break-word">#= Text #</em>
-
-        @*@using (Ajax.BeginForm("AnswerToQuestion", new AjaxOptions
-        {
-            UpdateTargetId = "error-holder",
-            InsertionMode = InsertionMode.Replace
-        }))
-        {
-                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
-
-                @Html.TextArea("Comment", string.Empty, 10, 55, null)
-
-                    <input type="submit" class="btn btn-success" value="Answer" />
-        }*@
-      
-        @*<div id="error-holder"></div>*@
+        <em class="break-word">#: Text #</em>
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
@@ -116,8 +101,6 @@
     }
    
     function closeKWin(e) {
-        
-       
           
         var wnd = $("#Details").data("kendoWindow");
 

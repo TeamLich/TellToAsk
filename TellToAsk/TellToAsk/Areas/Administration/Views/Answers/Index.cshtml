@@ -7,7 +7,7 @@
 <h2>Aswers</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "TakeQuestion", "LoggedUser", new { area = "LoggedUser" }, null)
 </p>
 @(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.AnswerModel>()
     .Name("answers")

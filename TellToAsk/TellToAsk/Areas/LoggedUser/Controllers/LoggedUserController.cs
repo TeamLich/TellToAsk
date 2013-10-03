@@ -15,11 +15,6 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
     public class LoggedUserController : BaseController
     {
 
-          public LoggedUserController()
-            : this(new UowData())
-        {
-        }
-
           public LoggedUserController(IUowData data)
             : base(data)
         {

@@ -17,5 +17,9 @@ namespace TellToAsk.Model
 
         public bool IsReported { get; set; }
 
+        public bool IsVoted { get; set; }
+
+        public DateTime DateAnswered { get; set; }
+
     }
 }

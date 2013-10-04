@@ -277,6 +277,7 @@ namespace TellToAsk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ManageUser(ManageUserProfilViewModel model, int[] categories)
         {
+           
             List<Category> appruvedCategories = new List<Category>();
             List<CategoryModel> appruvedCatModels = new List<CategoryModel>();
             string errorMsg = "";
@@ -350,6 +351,7 @@ namespace TellToAsk.Controllers
                                 }
                                 //=======
                                 this.Data.SaveChanges();
+                                PopulateGenders();
                                 return RedirectToAction("ManageUser", new { Message = "Your Profil has been updated." });
                             }
                             else
@@ -358,7 +360,7 @@ namespace TellToAsk.Controllers
                             }
                         }
                     }
-
+                    PopulateGenders();
                     // If we got this far, something failed, redisplay form
                     return View("_ChangeCategiriesPartial", model);
                 }

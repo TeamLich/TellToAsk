@@ -5,46 +5,49 @@
     .Columns(columns =>
     {
         columns.Bound(p => p.QuestionId).Visible(false);
-        columns.Bound(p => p.Text).ClientTemplate(
-        "#: Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
+        columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
+        "#: QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #"
 ).Groupable(false);
-        columns.Bound(p => p.Category.Name);
-        columns.Command(command => command.Custom("Answer").Click("showDetails"));
+        columns.Bound(p => p.Category.Name).Title("Category").Width("400px");
 
     })
     .Groupable()
     .Pageable()
     .Sortable()
-    .Scrollable()
+     .Selectable()
     .Filterable()
+     .Events(ev =>
+        {
+            ev.Change("showDetails");
+        })
     .DataSource(dataSource => dataSource
     .Ajax()
         .Read(read => read.Action("GetTargetedQuestions", "LoggedUser")))
 )
 
 
-
+@*TO DO multiple kendo windows*@
 @(Html.Kendo().Window().Name("Details")
     .Title("Answer Question")
     .Visible(false)
-    .Modal(true)
-    .Draggable(true)
+    .Modal(false)
+    .Draggable(false)
     .Pinned(true)
     .Width(300)
-                .Actions(actions => actions.Maximize())
-                
+    .Events(ev => ev.Activate("maximizeWindowOnLoad"))
+    .Actions(actions => actions.Pin())                
 )
 
 <script type="text/x-kendo-template" id="template">
 
     <div id="details-container">
-        <em class="break-word">#: Text #</em>
+        <em class="break-word">#: QuestionText #</em>
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
            
 
-                 <div class="control-group">
+          <div class="control-group">
             @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
             <div class="controls">
                 @Html.EditorFor(model => model.Comment)
@@ -52,16 +55,13 @@
             </div>
         </div>
             
-             if (@Model.QuestionId == 0)
+            if (Model.QuestionId == 0)
             {
                 <input type="hidden" name="QuestionId" value="#= QuestionId #" />
-                <input type="hidden" name="Text" value="#= Text #" />
-               
             }
-             else
-             {
+            else
+            {
                 <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
-                <input type="hidden" name="Text" value="@(Model.Text)" />
             }
             
             <input type="button" id="cancel-answer" onclick="closeKWin()" class="btn btn-success" value="Cancel" />
@@ -72,32 +72,45 @@
 
 <script>
     $( document ).ready(function() {
-        var wnd = $("#Details").data("kendoWindow");
 
+        window.manageAnswerWindow = function manageAnswerWindow(questionModel) {
+       
+            var wnd = $("#Details").data("kendoWindow");
+            $("#question-text-popup").html(questionModel);
+            wnd.content(detailsTemplate(questionModel));
+            wnd.maximize()
+            wnd.open();
+        };
 
         var val = @(Model.QuestionId);
-        var questText = "@(Model.Text)"
-         questTextObj = { Text: questText}
-       
+
         if (val != 0) {
-            var detailsTemplate = kendo.template($("#template").html());
-
-            wnd.content(detailsTemplate(questTextObj));
-            wnd.center().open();
+            
+            $.getJSON("GetQuestionById", { id: val}, function(questionModel) {
+                window.manageAnswerWindow(questionModel);
+            }); 
         }
+
+       var detailsTemplate = kendo.template($("#template").html());
+
+      
     });
-</script>
 
-<script type="text/javascript">
-
+    
+    function maximizeWindowOnLoad() {
+       $("#Details").data("kendoWindow");
+    }
+   
     function showDetails(e) {
-        e.preventDefault();
-        var detailsTemplate = kendo.template($("#template").html());
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var wnd = $("#Details").data("kendoWindow");
+        var grid = e.sender;
+        var currentDataItem = grid.dataItem(this.select()).QuestionId;
+       
+       
+        $.getJSON("GetQuestionById", { id: currentDataItem}, function(questionModel) {
+            window.manageAnswerWindow(questionModel);
+        }); 
 
-        wnd.content(detailsTemplate(dataItem));
-        wnd.center().open();
+       
     }
    
     function closeKWin(e) {
@@ -106,17 +119,12 @@
 
         $("#commentInPopUp").html("");
 
+        
         wnd.close();
       
     }
-
 </script>
-@if (Model != null)
-{
-    <script type="text/javascript">
-       
-    </script>
-}
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

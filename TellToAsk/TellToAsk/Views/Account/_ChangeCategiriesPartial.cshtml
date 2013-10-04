@@ -10,7 +10,7 @@
 }
 
 <p>You're logged in as <strong>@User.Identity.GetUserName()</strong>.</p>
-
+<h2 class="text-success"><strong>@ViewBag.StatusMessage</strong></h2>
 @using (Html.BeginForm("ManageUser", "Account"))
 {
     @Html.AntiForgeryToken()
@@ -35,7 +35,7 @@
         <div class="control-group">
             @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
             <div class="controls">
-                @(Html.DropDownListFor(g => g.Gender, (IEnumerable<SelectListItem>)ViewData["genders"]))
+                @(Html.DropDownListFor(g => g.Gender, (IEnumerable<SelectListItem>)ViewData["genders"],"Select Gender"))
             </div>
         </div>
         <div class="control-group">
@@ -46,7 +46,7 @@
                         .Min(new DateTime(1901, 01, 01))
                         .Max(new DateTime(2007, 12, 31))
                         .Events(e => e.Change("change"))
-                        .Value(ViewBag.BirthDate)
+                       
                         )
                     @Html.TextBoxFor(m => m.BirthDate, new { @class = "hidden", @Id = "birth-date" })
             </div>
@@ -94,7 +94,7 @@
 <script>
     function change() {
 
-        $("#birth-date").val(kendo.toString(this.value(), 'd'));
+        $("#birth-date").val(kendo.toString(this.value(), 'dd-MM-yyyy'));
         //console.log(kendo.toString(this.value(), 'yyyy-MM-dd'));
         //console.log(kendo.toString(this.value(), 'd'));
     }

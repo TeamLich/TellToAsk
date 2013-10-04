@@ -14,9 +14,12 @@ namespace TellToAsk.Areas.LoggedUser.Models
     {
         public int AnswerId { get; set; }
 
+        public string QuestionTitle { get; set; }
         
-        public string Text { get; set; }
+        public string QuestionText { get; set; }
         public int QuestionId { get; set; }
+
+        public DateTime DateAnswered { get; set; }
 
         [StringLength(500,MinimumLength=50)]
         [Required]
@@ -33,7 +36,9 @@ namespace TellToAsk.Areas.LoggedUser.Models
                     AnswerId = x.AnswerId,
                     Comment = x.Comment,
                     QuestionId = x.Question.QuestionId,
-                    Text = x.Question.Text
+                    QuestionTitle = x.Question.Text,
+                    QuestionText = x.Question.Title,
+                    DateAnswered = x.DateAnswered
 
                 };
             }

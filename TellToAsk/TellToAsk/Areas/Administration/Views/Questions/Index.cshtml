@@ -5,26 +5,29 @@
 }
 
 <h2>Questions</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 @(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.QuestionModel>()
     .Name("questions")
     .Columns(column =>
         {
             // column.Bound(p => p.QuestionId);
-            column.Bound(p => p.Text).Title("Question");
-            column.Bound(p => p.Creator);
-            column.Bound(p => p.AnswersCount).Title("Asnwers Count");
-            column.Bound(p => p.Category);
-            column.Bound(p => p.Approved).Title("Approved");            
+            column.Bound(p => p.Title).Title("Question").ClientTemplate(
+                "#: Title.length > 20 ? (Title.substring(0, 20).concat('...')) : Title #").Width(180);
+            column.Bound(p => p.Creator).ClientTemplate(
+                "#: Creator.length > 10 ? (Creator.substring(0, 10).concat('...')) : Creator #").Width(100);
+            column.Bound(p => p.AnswersCount).Title("Asnwers");
+            column.Bound(p => p.Category).ClientTemplate(
+                "#: Category.length > 20 ? (Category.substring(0, 20).concat('...')) : Category #").Width(180);
+            column.Bound(p => p.Approved).Title("Approved");
+            column.Bound(p => p.TargetedGender);
+            column.Bound(p => p.TargetedMinAgeAsString).Title("Min Age").Width(50);
+            column.Bound(p => p.TargetedMinAgeAsString).Title("Max Age");
             column.Template(p => @Html.Action("Edit", "Questions", new { id = p.QuestionId }))
-                .ClientTemplate("<a href='/Administration/Questions/Edit?id=#= QuestionId #'>Edit</a> | " +
-                "<a href='/Administration/Questions/Details?id=#= QuestionId #'>Details</a> | " +
-                "<a href='/Administration/Questions/Delete?id=#= QuestionId #'>Delete</a>").Title("Action");
+                .ClientTemplate("<a class='btn btn-primary' href='/Administration/Questions/Edit?id=#= QuestionId #'>Edit</a> " +
+                "<a class='btn btn-primary' href='/Administration/Questions/Details?id=#= QuestionId #'>Details</a> " +
+                "<a class='btn btn-primary' href='/Administration/Questions/Delete?id=#= QuestionId #'>Delete</a>").Title("Action");
         })
      .Pageable()
+     .Resizable(r => r.Columns(true))
      .Sortable()
      .Selectable()
      .DataSource(data => data
@@ -39,6 +42,11 @@
          })
          .Read(read => read.Action("Read", "Questions")))
 )
+
+<div>
+    <br />
+    @Html.ActionLink("Create New", "CreateQuestion", "LoggedUser", new { area = "LoggedUser" }, new { @class = "btn btn-primary" })
+</div>
 
 <script>
     function error_handler(e) {

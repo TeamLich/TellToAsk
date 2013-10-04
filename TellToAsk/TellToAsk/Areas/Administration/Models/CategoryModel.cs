@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -13,6 +14,7 @@ namespace TellToAsk.Areas.Administration.Models
         public int CategoryId { get; set; }
 
         [AllowHtml]
+        [Required]
         public string Name { get; set; }
 
         public AgeRating AgeRating { get; set; }

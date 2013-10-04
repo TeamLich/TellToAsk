@@ -51,7 +51,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            ApplicationUser user = this.Data.Users.GetById(id);
             if (user == null)
             {
                 return HttpNotFound();

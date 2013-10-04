@@ -1,8 +1,11 @@
 ﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 <h1 class="break-word">
-    @Model.Text
+    @Model.QuestionTitle
 </h1>
+<p class="break-word">
+    @Model.QuestionText
+</p>
 
 <table>
     <thead>
@@ -26,18 +29,27 @@ else{*@
     .Name("Grid")
     .Columns(columns =>
     {
-        columns.Bound(p => p.AnswerId).Visible(false);
-        columns.Bound(p => p.Comment).Encoded(true).ClientTemplate(
-
-        "#: Comment.length > 10 ? (Comment.substring(0, 10).concat('...')) : Comment #"
-    ).Groupable(false);
-        columns.Command(command => command.Custom("ViewDetails").Click("showDetails"));
+        columns.Bound(p => p.Comment).Title("Answer").Groupable(false);
+        columns.Bound(p => p.DateAnswered);
 
         })
+                 .ClientRowTemplate(
+                "<tr>" +
+                    "<td class='employeeID'>" +
+                        "#: Comment #"+
+                    "</td>" +
+                 "</tr>"
+            )
+            .ClientAltRowTemplate(
+                         "<tr>" +
+                            "<td class='employeeID'>" +
+                                "#: Comment #" +
+                            "</td>" +
+                         "</tr>"
+            )
         .Groupable()
         .Pageable() 
         .Sortable()
-           
         .Scrollable()
         .Filterable()
                 
@@ -47,42 +59,14 @@ else{*@
         )
 
    
-        @Scripts.Render("~/bundles/kendo")
+       
   
 
-    @(Html.Kendo().Window().Name("Details")
-        .Title(@Model.Text)
-    .Visible(false)
-    .Modal(true)
-    .Draggable(true)
-    .Width(300)       
-)
-
- <script type="text/x-kendo-template" id="template">
-    <div id="details-container">
-        @*<em id="question-text-popup">@(this.Server.UrlEncode(Model.QuestionText))</em>*@
-        <p class="break-word">#: Comment #</p>
-    </div>
-</script>
-
+  
+@Scripts.Render("~/bundles/kendo")
 <script type="text/javascript">
 
-    function showDetails(e) {
-        e.preventDefault();
-
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var wnd = $("#Details").data("kendoWindow");
-        var detailsTemplate = kendo.template($("#template").html());
-        wnd.content(detailsTemplate(dataItem));
-        wnd.center().open();
-
-        //var html = $("#question-text-popup").text();
-
-        //$.getJSON("URIDecode", { Data: html}, function(data) {
-        //    $("#question-text-popup").html(data);
-        //});    
-    }
-
+    
     function getQuestionId() {
 
         var val = @(Model.QuestionId);

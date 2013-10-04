@@ -7,7 +7,7 @@ using TellToAsk.Model;
 
 namespace TellToAsk.Areas.Administration.Models
 {
-    public class AnswerModel
+    public class AnswerModel : AnswerView
     {
         public static Expression<Func<Answer, AnswerModel>> FromAnswer
         {
@@ -15,8 +15,8 @@ namespace TellToAsk.Areas.Administration.Models
             {
                 return answer => new AnswerModel
                 {
-                    AnswerId = answer.AnswerId,
-                    Comment = answer.Comment,  
+                    Id = answer.AnswerId,
+                    Text = answer.Comment,  
                     Question = answer.Question.Text,
                     Creator = answer.User.UserName,
                     Reported = answer.IsReported == false ? "" : "Reported",
@@ -24,14 +24,9 @@ namespace TellToAsk.Areas.Administration.Models
             }
         }
 
-        public int AnswerId { get; set; }
-
-        public string Comment { get; set; }
-
         public string Question { get; set; }
 
         public string Creator { get; set; }
 
-        public string Reported { get; set; }
     }
 }

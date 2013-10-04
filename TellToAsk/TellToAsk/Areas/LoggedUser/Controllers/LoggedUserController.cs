@@ -15,6 +15,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 {
     public class LoggedUserController : BaseController
     {
+        private const int PointsForAnswer = 10;
 
           public LoggedUserController()
             : this(new UowData())
@@ -63,13 +64,27 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
         public ActionResult QuestionAnswers(int? id)
         {
             var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
-            
+
+           
             if (question != null)
             {
-               var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
+                
 
-               var model = new DetailsModel() { Answers = answers, QuestionId = question.QuestionId, QuestionText = question.Text };
-               
+                var model = new QuestionModel()
+                {
+                    QuestionId = question.QuestionId,
+                    QuestionText = question.Text,
+                    CategoryId = question.CategoryId,
+                    TargetedMaxAge = question.TargetedMaxAge,
+                    
+                    TargetedMinAge = question.TargetedMinAge,
+                };
+
+                if (question.TargetedGender != null)
+                {
+                    model.TargetedGender = (int)question.TargetedGender; 
+                }
+
                return View(model);
             }
             return View();
@@ -77,18 +92,21 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public JsonResult GetQuestionAnswers([DataSourceRequest]DataSourceRequest request, int? id)
         {
-           // var id = Convert.ToInt32(this.Request.Params["id"]);
-
             var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
 
             if (question != null)
             {
                 var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
                 return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-               
-                
             }
+
             return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetQuestionById(int id)
+        {
+            var question = this.Data.Questions.All().Select(QuestionModel.FromQuestion).FirstOrDefault(q => q.QuestionId == id);
+            return Json(question, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TakeQuestion()
@@ -111,14 +129,17 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                     IsReported = false,
                     Comment = answerModel.Comment,
                     User = user,
-                    Question = question
+                    Question = question,
+                    DateAnswered = DateTime.Now,
+                    
                 };
 
                 this.Data.Answers.Add(newAnswer);
 
                 this.Data.SaveChanges();
-
-                return View("MyQuestions");
+                user.Points =+ PointsForAnswer;
+                this.Data.SaveChanges();
+                return View("TakeQuestion", new AnswerModel());
             }
 
             return View("TakeQuestion", answerModel);
@@ -161,15 +182,26 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 var userName = this.User.Identity.Name;
                 var currentUser = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
 
+
                 var newQuestion = new Question()
                 {
-                    Text = questionModel.Text,
+                    Text = questionModel.QuestionText,
                     CategoryId = questionModel.CategoryId,
-                    TargetedGender = (Gender)questionModel.TargetedGender,
+                    
                     TargetedMaxAge = questionModel.TargetedMaxAge,
                     TargetedMinAge = questionModel.TargetedMinAge,
                     Creator = currentUser
                 };
+
+
+                if (questionModel.TargetedGender < 0)
+                {
+                    newQuestion.TargetedGender = null;
+                }
+                else
+                {
+                    newQuestion.TargetedGender = (Gender)questionModel.TargetedGender;   
+                }
 
                 var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
                 newQuestion.Creator = user;
@@ -190,7 +222,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                  TargetedGender = questionModel.TargetedGender,
                  TargetedMaxAge = questionModel.TargetedMaxAge,
                  TargetedMinAge = questionModel.TargetedMinAge,
-                 Text = questionModel.Text,
+                 Text = questionModel.QuestionText,
              }));
         }
 

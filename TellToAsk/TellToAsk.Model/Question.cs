@@ -12,9 +12,8 @@ namespace TellToAsk.Model
     {
         public int QuestionId { get; set; }
 
-        [DataType(DataType.MultilineText)]
         [Required]
-        
+        public string Title { get; set; }
         public string Text { get; set; }
 
         public bool IsApproved { get; set; }
@@ -29,6 +28,8 @@ namespace TellToAsk.Model
         public int? TargetedMinAge { get; set; }
 
         public int? TargetedMaxAge { get; set; }
+
+        public DateTime DateAsked { get; set; }
 
         [Required]
         [Display(Name="Category")]

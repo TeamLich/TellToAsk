@@ -16,8 +16,13 @@ namespace TellToAsk.Areas.LoggedUser.Models
 
         [AllowHtml]
         [Required]
+        [DataType(DataType.MultilineText)]
         [StringLength(500)]
-        public string Text { get; set; }
+        public string QuestionTitle { get; set; }
+
+        [AllowHtml]
+        [DataType(DataType.MultilineText)]
+        public string QuestionText { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage="Category is requerd.")]
         public int CategoryId { get; set; }
@@ -39,7 +44,8 @@ namespace TellToAsk.Areas.LoggedUser.Models
                 return x => new QuestionModel()
                 {
                     QuestionId = x.QuestionId,
-                    Text = x.Text,
+                    QuestionTitle = x.Title,
+                    QuestionText = x.Text,
                     Category = new List<Category>() { x.Category }.AsQueryable().Select(CategoryModel.FromCategory).FirstOrDefault(),
                     TargetedGender =  (int)x.TargetedGender,
                     TargetedMaxAge =  x.TargetedMaxAge,

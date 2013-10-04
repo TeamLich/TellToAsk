@@ -13,14 +13,14 @@
     .Name("answers")
     .Columns(column =>
         {
-            // column.Bound(p => p.AnswerId);
-            column.Bound(p => p.Comment);
+            // column.Bound(p => p.Id);
+            column.Bound(p => p.Text);
             column.Bound(p => p.Question);
             column.Bound(p => p.Creator).Title("Answered User");
             column.Bound(p => p.Reported);            
-            column.Template(p => @Html.Action("Edit", "Answers", new { id = p.AnswerId }))
-                .ClientTemplate("<a href='/Administration/Answers/Edit?id=#= AnswerId #'>Edit</a> | " +
-                "<a href='/Administration/Answers/Delete?id=#= AnswerId #'>Delete</a>").Title("Action");
+            column.Template(p => @Html.Action("Edit", "Answers", new { id = p.Id }))
+                .ClientTemplate("<a href='/Administration/Answers/Edit?id=#= Id #'>Edit</a> | " +
+                "<a href='/Administration/Answers/Delete?id=#= Id #'>Delete</a>").Title("Action");
         })
      .Pageable()
      .Sortable()
@@ -32,7 +32,7 @@
          .Events(events => events.Error("error_handler"))
          .Model(model =>
          {
-             model.Id(p => p.AnswerId);
+             model.Id(p => p.Id);
 
          })
              .Read(read => read.Action("Read", "Answers")))

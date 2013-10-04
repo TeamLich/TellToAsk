@@ -40,6 +40,11 @@ namespace TellToAsk.Data
             return this.DbSet.Find(id);
         }
 
+        public virtual T GetById(string id)
+        {
+            return this.DbSet.FirstOrDefault(t => t == id);
+        }
+
         public virtual void Add(T entity)
         {
             DbEntityEntry entry = this.Context.Entry(entity);

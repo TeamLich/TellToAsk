@@ -176,6 +176,7 @@
     <Compile Include="Areas\Administration\Controllers\QuestionsController.cs" />
     <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Administration\Models\AnswerModel.cs" />
+    <Compile Include="Areas\Administration\Models\AnswerView.cs" />
     <Compile Include="Areas\Administration\Models\CategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
     <Compile Include="Areas\Administration\Models\UserModel.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Areas\LoggedUser\Models\CategoryModel.cs" />
     <Compile Include="Areas\LoggedUser\Models\DetailsModel.cs" />
     <Compile Include="Areas\LoggedUser\Models\QuestionModel.cs" />
+    <Compile Include="Areas\Administration\Models\QuestionModelDetails.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -252,7 +254,6 @@
     <Content Include="Areas\Administration\Views\web.config" />
     <Content Include="Areas\Administration\Views\Categories\Create.cshtml" />
     <Content Include="Areas\Administration\Views\Categories\Delete.cshtml" />
-    <Content Include="Areas\Administration\Views\Categories\Details.cshtml" />
     <Content Include="Areas\Administration\Views\Categories\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\Categories\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Questions\Create.cshtml" />

@@ -19,10 +19,18 @@
                  }, new { id = "ajax-button", @class = "hidden btn btn-info" })
 
         <div class="control-group">
-            @Html.LabelFor(model => model.Text, new { @class = "control-label" })
+            @Html.LabelFor(model => model.QuestionTitle, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.EditorFor(model => model.QuestionTitle)
+                        @Html.ValidationMessageFor(model => model.QuestionTitle, null, new { @class = "help-inline" })
+                        </div>
+                    </div>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.QuestionText, new { @class = "control-label" })
             <div class="controls">
-                @Html.EditorFor(model => model.Text)
-                @Html.ValidationMessageFor(model => model.Text, null, new { @class = "help-inline" })
+                @Html.EditorFor(model => model.QuestionText)
+                @Html.ValidationMessageFor(model => model.QuestionText, null, new { @class = "help-inline" })
             </div>
         </div>
         <div class="control-group">
@@ -36,7 +44,7 @@
         <div id="target-question-form">
             @Html.Partial("_TargetGroupForm")
         </div>
-        <input type="submit" class="btn btn-success" value="Answer" />
+        <input type="submit" class="btn btn-success" value="Ask" />
     </fieldset>
 }
  
@@ -61,28 +69,7 @@
             alert("Something is terribly wrong!")
         }
 
-        //$('#target-group-button').click(function (e) {
-        //    e.preventDefault;
-        //    debugger;
-        //    var isHidden = $('#target-question-form').hasClass("hidden");
-        //    if (!isHidden) {
-        //        debugger;
-
-        //        $.getJSON("RenderTargetGroupForm", null, function (data) {
-        //            console.log(data);
-        //            $('#target-question-form').html(data);
-        //        });
-
-        //        $(this).val("Target Group");
-        //        //$('#target-question-form').addClass("hidden");
-        //    }
-        //    else {
-        //        debugger;
-        //        $(this).val("Hide");
-        //        $('#target-question-form').removeClass("hidden");
-        //    }
-        //});
-   
+       
 </script>
 
 @section Scripts {

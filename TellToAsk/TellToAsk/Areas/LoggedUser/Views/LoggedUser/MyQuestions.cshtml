@@ -5,16 +5,15 @@
     .Columns(columns =>
     {
         columns.Bound(p => p.QuestionId).Visible(false);
-        columns.Bound(p => p.Text).ClientTemplate(
-        "#= Text.length > 10 ? (Text.substring(0, 10).concat('...')) : Text #"
+        columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
+        "#= QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #"
 ).Groupable(false);
-    columns.Bound(p =>  p.Category.Name);
+        columns.Bound(p => p.Category.Name).Title("Category").Width("400px");
 
     })
     .Groupable()
     .Pageable()
     .Sortable()
-    .Scrollable()
     .Selectable()
     .Events(ev =>
         {
@@ -28,7 +27,7 @@
 
 <script>
     function onChange(e) {
-        grid = e.sender;
+       var grid = e.sender;
         var currentDataItem = grid.dataItem(this.select()).QuestionId;
         CallActionForShowingAllAnswers(currentDataItem);
     }

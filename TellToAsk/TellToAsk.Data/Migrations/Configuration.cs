@@ -53,7 +53,6 @@ namespace TellToAsk.Data.Migrations
                  new Category { Name = "Geeks Zone - Dreams in Code", AgeRating = AgeRating.Children }
                 );
             }
-
         }
     }
 }

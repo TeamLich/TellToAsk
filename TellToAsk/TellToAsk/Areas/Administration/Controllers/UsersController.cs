@@ -19,6 +19,7 @@ namespace TellToAsk.Areas.Administration.Controllers
 {
     public class UsersController : BaseController
     {
+         [Authorize(Roles = "User")]
         public UsersController(IUowData data)
             : base(data)
         {

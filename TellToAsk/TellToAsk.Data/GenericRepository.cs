@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using TellToAsk.Data;
 
 namespace TellToAsk.Data
 {
-    public class GenericRepository<T>: IRepository<T> where T : class
+    public class GenericRepository<T> : IRepository<T> where T : class
     {
         public GenericRepository()
             : this(new TellToAskContext())
@@ -80,6 +81,26 @@ namespace TellToAsk.Data
             {
                 this.DbSet.Attach(entity);
                 this.DbSet.Remove(entity);
+            }
+        }
+
+        public virtual void DeleteRange(Expression<Func<T, bool>> predicate)
+        {
+            var entities = this.DbSet.Where(predicate).ToList();
+            while (entities.Count() > 0)
+            {
+                var entity = entities.First();
+                DbEntityEntry entry = this.Context.Entry(entity);
+                if (entry.State != EntityState.Deleted)
+                {
+                    entry.State = EntityState.Deleted;
+                }
+                else
+                {
+                    this.DbSet.Attach(entity);
+                    this.DbSet.Remove(entity);
+                }
+                entities.Remove(entity);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿@model TellToAsk.Model.Question
+﻿@model TellToAsk.Areas.Administration.Models.QuestionModel
 
 @{
     ViewBag.Title = "Delete";
@@ -12,6 +12,13 @@
 
     <dl>
         <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Text)
         </dt>
 
@@ -20,20 +27,36 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IsApproved)
+            @Html.DisplayNameFor(model => model.Creator)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsApproved)
+            @Html.DisplayFor(model => model.Creator)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Approved)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Approved)
         </dd>
 
     </dl>
 </fieldset>
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
 
-    <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn" /> |
-        @Html.ActionLink("Back to List", "Index")
+    <div class="form-actions">
+        <input type="submit" value="Delete" class="btn btn-primary" /> |
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
     </div>
 }

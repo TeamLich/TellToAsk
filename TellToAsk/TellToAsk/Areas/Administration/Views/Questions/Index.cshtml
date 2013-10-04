@@ -11,14 +11,15 @@
         {
             // column.Bound(p => p.QuestionId);
             column.Bound(p => p.Title).Title("Question").ClientTemplate(
-                "#: Title.length > 20 ? (Title.substring(0, 20).concat('...')) : Title #").Width(180);
+                "#: Title.length > 16 ? (Title.substring(0, 16).concat('...')) : Title #").Width(150);
             column.Bound(p => p.Creator).ClientTemplate(
                 "#: Creator.length > 10 ? (Creator.substring(0, 10).concat('...')) : Creator #").Width(100);
+            column.Bound(p => p.AskDateAsString).Title("Asked Date");
             column.Bound(p => p.AnswersCount).Title("Asnwers");
             column.Bound(p => p.Category).ClientTemplate(
-                "#: Category.length > 20 ? (Category.substring(0, 20).concat('...')) : Category #").Width(180);
+                "#: Category.length > 16 ? (Category.substring(0, 16).concat('...')) : Category #").Width(150);
             column.Bound(p => p.Approved).Title("Approved");
-            column.Bound(p => p.TargetedGender);
+            column.Bound(p => p.TargetedGender).Title("Gender");
             column.Bound(p => p.TargetedMinAgeAsString).Title("Min Age").Width(50);
             column.Bound(p => p.TargetedMinAgeAsString).Title("Max Age");
             column.Template(p => @Html.Action("Edit", "Questions", new { id = p.QuestionId }))

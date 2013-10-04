@@ -22,6 +22,7 @@ namespace TellToAsk.Areas.Administration.Models
                     Text = question.Text,
                     AnswersCount = question.Answers.Count,
                     Creator = question.Creator.UserName,
+                    AskDate = question.DateAsked,
                     Approved = question.IsApproved == false ? "not approved" : "approved",
                     Category = question.Category.Name,
                     TargetedGender = question.TargetedGender == null ? "" : (question.TargetedGender == 0 ? "Male" : "Female"),

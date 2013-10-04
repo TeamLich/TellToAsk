@@ -15,10 +15,17 @@ namespace TellToAsk.Areas.LoggedUser
         public override void RegisterArea(AreaRegistrationContext context) 
         {
             context.MapRoute(
-                "LoggedUser_default",
-                "LoggedUser/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                "LoggedUser_custom",
+                "Logged/{action}/{id}",
+                new { controller = "LoggedUser", action = "Index", id = UrlParameter.Optional }
             );
+
+            //context.MapRoute(
+            //    "LoggedUser_default",
+            //    "LoggedUser/{controller}/{action}/{id}",
+            //    new { action = "Index", id = UrlParameter.Optional }
+            //);
+            
         }
     }
 }

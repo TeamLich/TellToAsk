@@ -18,11 +18,14 @@
             column.Bound(p => p.Creator);
             column.Bound(p => p.AnswersCount).Title("Asnwers Count");
             column.Bound(p => p.Category);
-            column.Bound(p => p.Approved).Title("Approved");            
+            column.Bound(p => p.Approved).Title("Approved");
+            column.Bound(p => p.TargetedGender);
+            column.Bound(p => p.TargetedMinAge);
+            column.Bound(p => p.TargetedMaxAge);
             column.Template(p => @Html.Action("Edit", "Questions", new { id = p.QuestionId }))
                 .ClientTemplate("<a href='/Administration/Questions/Edit?id=#= QuestionId #'>Edit</a> | " +
                 "<a href='/Administration/Questions/Details?id=#= QuestionId #'>Details</a> | " +
-                "<a href='/Administration/Questions/Delete?id=#= QuestionId #'>Delete</a>").Title("Action");
+                "<a href='/Administration/Questions/Delete?id=#= QuestionId #'>Delete</a>").Title("Action").Width(200);
         })
      .Pageable()
      .Sortable()

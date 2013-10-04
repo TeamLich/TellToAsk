@@ -17,11 +17,6 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
     {
         private const int PointsForAnswer = 10;
 
-          public LoggedUserController()
-            : this(new UowData())
-        {
-        }
-
           public LoggedUserController(IUowData data)
             : base(data)
         {

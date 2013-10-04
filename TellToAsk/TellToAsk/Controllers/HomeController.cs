@@ -57,12 +57,5 @@ namespace TellToAsk.Controllers
 
             return View();
         }
-
-        public JsonResult GetCategories([DataSourceRequest]DataSourceRequest request)
-        {
-            var categories = this.Data.Categories.All().Select(CategoryModel.FromCategory);
-            var x = categories.ToList().Count;
-            return Json(categories, JsonRequestBehavior.AllowGet);
-        }
     }
 }

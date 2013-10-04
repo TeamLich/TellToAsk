@@ -12,6 +12,7 @@ using TellToAsk.Controllers;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using TellToAsk.Areas.Administration.Models;
+using Microsoft.AspNet.Identity;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {

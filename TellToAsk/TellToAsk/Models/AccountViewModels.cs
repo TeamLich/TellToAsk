@@ -40,6 +40,7 @@ namespace TellToAsk.Models
 
         [Display(Name = "Categories")]
         public string[] Categories { get; set; }
+    
     }
 
     public class LoginViewModel
@@ -85,6 +86,26 @@ namespace TellToAsk.Models
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
 
+    }
+
+    public class ManageUserProfilViewModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Current password")]
+        public string OldPassword { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Birth Date")]
+        public string BirthDate { get; set; }
+
+        [Required]
+        [Display(Name = "Gender")]
+        public Gender Gender { get; set; }
+
+        [Required]
+        [Display(Name = "Categories")]
+        public string[] Categories { get; set; }
 
 
     }

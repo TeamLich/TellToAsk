@@ -38,7 +38,9 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = this.Data.Questions.GetById((int)id);
+            QuestionModelDetails question = this.Data.Questions.All()
+                .Select(QuestionModelDetails.FromQuestionDetails)
+                .FirstOrDefault(q => q.QuestionId == id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -52,40 +54,6 @@ namespace TellToAsk.Areas.Administration.Controllers
             var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
 
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-        }
-
-        // GET: /Administration/Questions/Create
-        public ActionResult Create()
-        {
-            ViewBag.Categories = this.Data.Categories.All().ToList()
-                .Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
-            return View();
-        }
-
-        // POST: /Administration/Questions/Create
-		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		// 
-		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Question question)
-        {
-            
-
-            var user = this.Data.Users.All().FirstOrDefault( u => u.UserName == this.User.Identity.Name);
-
-            question.Creator = user;
-
-            if (ModelState.IsValid)
-            {
-                this.Data.Questions.Add(question);
-                this.Data.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Categories = this.Data.Categories.All().ToList()
-                .Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
-            return View(question);
         }
 
         // GET: /Administration/Questions/Edit/5

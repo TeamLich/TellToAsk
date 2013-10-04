@@ -9,7 +9,7 @@ using TellToAsk.Model;
 
 namespace TellToAsk.Areas.LoggedUser.Models
 {
-    
+
     public class QuestionModel
     {
         public int QuestionId { get; set; }
@@ -24,7 +24,7 @@ namespace TellToAsk.Areas.LoggedUser.Models
         [DataType(DataType.MultilineText)]
         public string QuestionText { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage="Category is requerd.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Category is requerd.")]
         public int CategoryId { get; set; }
 
         public CategoryModel Category { get; set; }
@@ -47,10 +47,10 @@ namespace TellToAsk.Areas.LoggedUser.Models
                     QuestionTitle = x.Title,
                     QuestionText = x.Text,
                     Category = new List<Category>() { x.Category }.AsQueryable().Select(CategoryModel.FromCategory).FirstOrDefault(),
-                    TargetedGender =  (int)x.TargetedGender,
-                    TargetedMaxAge =  x.TargetedMaxAge,
-                    TargetedMinAge =  x.TargetedMinAge,
-                    CategoryId =  x.CategoryId,
+                    TargetedGender = (int)x.TargetedGender,
+                    TargetedMaxAge = x.TargetedMaxAge,
+                    TargetedMinAge = x.TargetedMinAge,
+                    CategoryId = x.CategoryId,
 
 
                 };

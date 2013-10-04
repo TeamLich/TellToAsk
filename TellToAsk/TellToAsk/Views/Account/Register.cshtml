@@ -70,7 +70,7 @@
                       {
                           source.Read(read =>
                           {
-                              read.Action("GetCategories", "Home");
+                              read.Action("GetCategories", "Base");
                           })
                           .ServerFiltering(true);
                       })
@@ -84,30 +84,8 @@
     </div>
 </fieldset>
 }
-@*((IEnumerable<telltoask.areas.loggeduser.models.categorymodel> )ViewBag.catselected)
-    .Value(new List<TellToAsk.Areas.LoggedUser.Models.CategoryModel> { new TellToAsk.Areas.LoggedUser.Models.CategoryModel() { CategoryId = 1, Name = "18+ - For Adults Only" } })
-*@
+
     <script>
-        $(document).ready(function () {
-            //// create MultiSelect from select HTML element
-            // var required = $("#categories").kendoMultiSelect().data("kendoMultiSelect");
- 
-            var required = $("#categories").data("kendoMultiSelect");
-
-            //// Clean filtering
-            //required.dataSource.filter({});
-            //// Set new values
-           //var values =[];
-           //required.value(values);
-
-           //console.log(required.value());
-           //console.log(values);
-
-            //$("#get").click(function () {
-            //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
-            //});
-        });
-
         function change() {
             $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
         }

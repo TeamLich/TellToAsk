@@ -182,10 +182,11 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 {
                     Text = questionModel.QuestionText,
                     CategoryId = questionModel.CategoryId,
-                    
+                    Title = questionModel.QuestionTitle,
                     TargetedMaxAge = questionModel.TargetedMaxAge,
                     TargetedMinAge = questionModel.TargetedMinAge,
-                    Creator = currentUser
+                    Creator = currentUser,
+                    DateAsked = DateTime.Now
                 };
 
 

@@ -89,28 +89,31 @@ namespace TellToAsk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, int[] categories)
         {
-            PopulateGenders();
+            //PopulateGenders();
             List<Category> appruvedCategories = new List<Category>();
-           
+            List<CategoryModel> appruvedCatModels = new List<CategoryModel>();
             string errorMsg = "";
             model.Gender = (Gender)model.Gender;
-            foreach (var catId in categories)
+            if (categories != null && categories.Length > 0)
             {
-                var cat = this.Data.Categories.GetById(catId);
-                if (cat != null)
+                foreach (var catId in categories)
                 {
-                    if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
+                    var cat = this.Data.Categories.GetById(catId);
+                    if (cat != null)
                     {
-                        appruvedCategories.Add(cat);
-                       
-                    }
-                    else
-                    {
-                        errorMsg += cat.Name + " ; ";
+                        if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
+                        {
+                            appruvedCategories.Add(cat);
+
+                        }
+                        else
+                        {
+                            errorMsg += cat.Name + " ; ";
+                        }
                     }
                 }
+                appruvedCatModels = appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
             }
-             var appruvedCatModels =appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
             if (appruvedCategories.Count() >= 3)
             {
                 if (ModelState.IsValid && appruvedCategories.Count() >= 3)
@@ -156,7 +159,7 @@ namespace TellToAsk.Controllers
             else
             {
                 PopulateGenders();
-                ViewBag.error = "Categories NOT suitable for your age are:  " + errorMsg ;
+                ViewBag.error = (string.IsNullOrEmpty(errorMsg) ? "Select at least 3 categories" : "Categories NOT suitable for your age are:  " + errorMsg);
                 ViewBag.catselected = appruvedCatModels;
                 return View(model);
             }
@@ -189,17 +192,11 @@ namespace TellToAsk.Controllers
         // GET: /Account/Manage
         public async Task<ActionResult> Manage(string message)
         {
-            PopulateGenders();
-            var userName = this.User.Identity.Name;
-            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
-            var userCats = user.Categories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
-            ViewBag.catSelected = userCats;
-           
             ViewBag.StatusMessage = message ?? "";
             ViewBag.HasLocalPassword = await IdentityManager.Logins.HasLocalLoginAsync(User.Identity.GetUserId());
             ViewBag.ReturnUrl = Url.Action("Manage");
 
-            return View("_ChangeCategiriesPartial");
+            return View();
         }
 
         //
@@ -208,93 +205,172 @@ namespace TellToAsk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Manage(ManageUserViewModel model, int[] categories)
         {
-            List<Category> appruvedCategories = new List<Category>();
-            string errorMsg = "";
-            model.Gender = (Gender)model.Gender;
-            foreach (var catId in categories)
+
+            string userId = User.Identity.GetUserId();
+            bool hasLocalLogin = await IdentityManager.Logins.HasLocalLoginAsync(userId);
+            ViewBag.HasLocalPassword = hasLocalLogin;
+            ViewBag.ReturnUrl = Url.Action("Manage");
+            if (hasLocalLogin)
             {
-                var cat = this.Data.Categories.GetById(catId);
-                if (cat != null)
+                if (ModelState.IsValid)
                 {
-                    if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= DateTime.Parse(model.BirthDate))
+                    IdentityResult result = await IdentityManager.Passwords.ChangePasswordAsync(User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
+                    if (result.Success)
                     {
-                        appruvedCategories.Add(cat);
+                        return RedirectToAction("Manage", new { Message = "Your password has been changed." });
                     }
                     else
                     {
-                        errorMsg += cat.Name + " ; ";
+                        AddErrors(result);
                     }
                 }
             }
-             var appruvedCatModels = appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
+            else
+            {
+                // User does not have a local password so remove any validation errors caused by a missing OldPassword field
+                ModelState state = ModelState["OldPassword"];
+                if (state != null)
+                {
+                    state.Errors.Clear();
+                }
 
-             if (appruvedCategories.Count() >= 3)
-             {
-                 var userName = this.User.Identity.Name;
-                 var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
-                 foreach (var cat in appruvedCategories)
-                 {
-                     if (cat != null)
-                     {
-                         user.Categories.Add(cat);
-                     }
-                 }
-                 this.Data.SaveChanges();
-                 //==============>
-                 string userId = User.Identity.GetUserId();
-                 bool hasLocalLogin = await IdentityManager.Logins.HasLocalLoginAsync(userId);
-                 ViewBag.HasLocalPassword = hasLocalLogin;
-                 ViewBag.ReturnUrl = Url.Action("Manage");
-                 if (hasLocalLogin)
-                 {
-                     if (ModelState.IsValid)
-                     {
-                         IdentityResult result = await IdentityManager.Passwords.ChangePasswordAsync(User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
-                         if (result.Success)
-                         {
-                             return RedirectToAction("Manage", new { Message = "Your password has been changed." });
-                         }
-                         else
-                         {
-                             AddErrors(result);
-                         }
-                     }
-                 }
-                 else
-                 {
-                     // User does not have a local password so remove any validation errors caused by a missing OldPassword field
-                     ModelState state = ModelState["OldPassword"];
-                     if (state != null)
-                     {
-                         state.Errors.Clear();
-                     }
-
-                     if (ModelState.IsValid)
-                     {
-                         // Create the local login info and link it to the user
-                         IdentityResult result = await IdentityManager.Logins.AddLocalLoginAsync(userId, User.Identity.GetUserName(), model.NewPassword);
-                         if (result.Success)
-                         {
-                             return RedirectToAction("Manage", new { Message = "Your password has been set." });
-                         }
-                         else
-                         {
-                             AddErrors(result);
-                         }
-                     }
-                 }
-                 // If we got this far, something failed, redisplay form
-                 return View("_ChangeCategiriesPartial", model);
-             }
-             else
-             {
-                PopulateGenders();
-                ViewBag.error = "Categories NOT suitable for your age are:  " + errorMsg ;
-                ViewBag.catselected = appruvedCatModels;
-                return View("_ChangeCategiriesPartial", model);
-             }
+                if (ModelState.IsValid)
+                {
+                    // Create the local login info and link it to the user
+                    IdentityResult result = await IdentityManager.Logins.AddLocalLoginAsync(userId, User.Identity.GetUserName(), model.NewPassword);
+                    if (result.Success)
+                    {
+                        return RedirectToAction("Manage", new { Message = "Your password has been set." });
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                    }
+                }
+            }
             // If we got this far, something failed, redisplay form
-            return View("_ChangeCategiriesPartial",model);
+            return View( model);
+        }
+
+        //
+        // GET: /Account/ManageUser
+        public async Task<ActionResult> ManageUser(string message)
+        {
+            PopulateGenders();
+            var userName = this.User.Identity.Name;
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+            var userCats = user.Categories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
+            ViewBag.catSelected = userCats;
+            ViewBag.Points = user.Points;
+            ViewBag.BirthDate =user.BirthDate.Value.ToString("yyyy-MM-dd");
+
+            ViewBag.StatusMessage = message ?? "";
+            ViewBag.HasLocalPassword = await IdentityManager.Logins.HasLocalLoginAsync(User.Identity.GetUserId());
+            ViewBag.ReturnUrl = Url.Action("ManageUser");
+
+            return View("_ChangeCategiriesPartial");
+        }
+
+        //
+        // POST: /Account/ManageUser
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ManageUser(ManageUserProfilViewModel model, int[] categories)
+        {
+            List<Category> appruvedCategories = new List<Category>();
+            List<CategoryModel> appruvedCatModels = new List<CategoryModel>();
+            string errorMsg = "";
+            model.Gender = (Gender)model.Gender;
+            DateTime userBd = new DateTime(1,1,1);
+            var userName = this.User.Identity.Name;
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+
+            bool hasNewBd = false;
+            if (model.BirthDate != null  )
+	        {
+                hasNewBd=DateTime.TryParse(model.BirthDate, out  userBd);
+	        }
+            if (!hasNewBd)
+            {
+                userBd = user.BirthDate.Value; 
+            }
+
+            if (categories != null && categories.Length > 0 && ModelState.IsValid)
+            {
+                foreach (var catId in categories)
+                {
+                    var cat = this.Data.Categories.GetById(catId);
+                    if (cat != null)
+                    {
+                        if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= userBd)
+                        {
+                            appruvedCategories.Add(cat);
+                        }
+                        else
+                        {
+                            errorMsg += cat.Name + " ; ";
+                        }
+                    }
+                }
+
+                appruvedCatModels = appruvedCategories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
+
+                if (appruvedCategories.Count() >= 3)
+                {
+                    string userId = User.Identity.GetUserId();
+                    bool hasLocalLogin = await IdentityManager.Logins.HasLocalLoginAsync(userId);
+                    ViewBag.HasLocalPassword = hasLocalLogin;
+                    ViewBag.ReturnUrl = Url.Action("ManageUser");
+                    if (hasLocalLogin)
+                    {
+                        if (ModelState.IsValid)
+                        {
+                            IdentityResult result = await IdentityManager.Authentication.CheckPasswordAndSignInAsync(AuthenticationManager, userName, model.OldPassword, false);
+                            if (result.Success)
+                            {
+                                if (hasNewBd)
+                                {
+                                    user.BirthDate = DateTime.Parse(model.BirthDate);
+                                }
+                                user.Gender = model.Gender;
+
+                                var oldCats = user.Categories.ToList();
+
+                                foreach (var cat in oldCats)
+                                {
+                                    user.Categories.Remove(cat);
+                                }
+
+                                foreach (var cat in appruvedCategories)
+                                {
+                                    if (cat != null)
+                                    {
+                                        user.Categories.Add(cat);
+                                    }
+                                }
+                                //=======
+                                this.Data.SaveChanges();
+                                return RedirectToAction("ManageUser", new { Message = "Your Profil has been updated." });
+                            }
+                            else
+                            {
+                                AddErrors(result);
+                            }
+                        }
+                    }
+
+                    // If we got this far, something failed, redisplay form
+                    return View("_ChangeCategiriesPartial", model);
+                }
+            }
+
+            PopulateGenders();
+            ViewBag.error = (string.IsNullOrEmpty(errorMsg) ? "Select at least 3 categories" : "Categories NOT suitable for your age are:  " + errorMsg);
+            ViewBag.catselected = appruvedCatModels;
+            return View("_ChangeCategiriesPartial", model);
+
+            // If we got this far, something failed, redisplay form
+            // return View("_ChangeCategiriesPartial", model);
         }
 
         //

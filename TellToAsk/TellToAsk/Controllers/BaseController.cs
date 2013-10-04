@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Kendo.Mvc.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TellToAsk.Areas.LoggedUser.Models;
 using TellToAsk.Data;
 using TellToAsk.Model;
 
@@ -49,6 +51,41 @@ namespace TellToAsk.Controllers
             }
 
             return list;
+        }
+
+        public JsonResult GetCategories([DataSourceRequest]DataSourceRequest request)
+        {
+            var categories = this.Data.Categories.All().Select(CategoryModel.FromCategory);
+            var x = categories.ToList().Count;
+            return Json(categories, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetUserCategories([DataSourceRequest]DataSourceRequest request)
+        {
+            var userName = this.User.Identity.Name;
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+            List<CategoryModel> suitableCategories = new List<CategoryModel>();
+            if (user != null)
+            {
+                var cats = this.Data.Categories.All().Select(CategoryModel.FromCategory);
+                foreach (var cat in cats)
+                {
+                    if (cat != null)
+                    {
+                        if (DateTime.Now.AddYears((-1) * (int)cat.AgeRating) >= user.BirthDate.Value)
+                        {
+                            suitableCategories.Add(cat);
+                        }
+                    }
+                }
+                var y = suitableCategories.Count();
+            }
+            else
+            {
+                suitableCategories = this.Data.Categories.All().Select(CategoryModel.FromCategory).ToList();
+            }
+
+            return Json(suitableCategories, JsonRequestBehavior.AllowGet);
         }
 	}
 }

@@ -40,6 +40,7 @@ namespace TellToAsk.Models
 
         [Display(Name = "Categories")]
         public string[] Categories { get; set; }
+    
     }
 
     public class LoginViewModel
@@ -85,6 +86,28 @@ namespace TellToAsk.Models
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
 
+    }
+
+    public class ManageUserProfilViewModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Current password")]
+        public string OldPassword { get; set; }
+
+        [DataType(DataType.Date)]
+        [Range(typeof(System.DateTime), "1/1/1901", "31/12/2007",
+        ErrorMessage = "Value for {0} must be between {1} and {2}")]
+        [Display(Name = "Birth Date")]
+        public string BirthDate { get; set; }
+
+        [Required]
+        [Display(Name = "Gender")]
+        public Gender Gender { get; set; }
+
+        [Required]
+        [Display(Name = "Categories")]
+        public string[] Categories { get; set; }
 
 
     }

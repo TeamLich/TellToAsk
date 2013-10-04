@@ -1,39 +1,36 @@
 @using Microsoft.AspNet.Identity
-@model TellToAsk.Models.ManageUserViewModel
+@model TellToAsk.Models.ManageUserProfilViewModel
 
 @{
     ViewBag.Title = "Manage User Account";
     IEnumerable<SelectListItem> genderList = (IEnumerable<SelectListItem>)ViewData["genders"];
     List<TellToAsk.Areas.LoggedUser.Models.CategoryModel> selectedCategories = ViewBag.catSelected;
+    
+    
 }
 
 <p>You're logged in as <strong>@User.Identity.GetUserName()</strong>.</p>
 
-@using (Html.BeginForm("Manage", "Account"))
+@using (Html.BeginForm("ManageUser", "Account"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
     <fieldset class="form-horizontal">
-        <legend>Change Password Form</legend>
-        <div class="control-group">
-            @Html.LabelFor(m => m.OldPassword, new { @class = "control-label" })
+        <legend>Change User Profil Form</legend>
+       
+       <div class="control-group">
+            @Html.Label("Points", new { @class = "control-label" })
             <div class="controls">
-                @Html.PasswordFor(m => m.OldPassword)
+               <p> @ViewBag.Points</p>
             </div>
         </div>
-        <div class="control-group">
-            @Html.LabelFor(m => m.NewPassword, new { @class = "control-label" })
-            <div class="controls">
-                @Html.PasswordFor(m => m.NewPassword)
-            </div>
+       @* <div class="control-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+        <div class="controls">
+            @Html.PasswordFor(m => m.ConfirmPassword)
         </div>
-        <div class="control-group">
-            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
-            <div class="controls">
-                @Html.PasswordFor(m => m.ConfirmPassword)
-            </div>
-        </div>
+    </div>*@
 
         <div class="control-group">
             @Html.LabelFor(m => m.Gender, new { @class = "control-label" })
@@ -44,10 +41,12 @@
         <div class="control-group">
             @Html.LabelFor(m => m.BirthDate, new { @class = "control-label" })
             <div class="controls">
-                    @(Html.Kendo().Calendar().Name("birthDate")
+                @(Html.Kendo().DatePicker()
+                        .Name("birthDate")
                         .Min(new DateTime(1901, 01, 01))
                         .Max(new DateTime(2007, 12, 31))
                         .Events(e => e.Change("change"))
+                        .Value(ViewBag.BirthDate)
                         )
                     @Html.TextBoxFor(m => m.BirthDate, new { @class = "hidden", @Id = "birth-date" })
             </div>
@@ -71,7 +70,7 @@
                     {
                         source.Read(read =>
                         {
-                            read.Action("GetCategories", "Home");
+                            read.Action("GetUserCategories", "Base");
                         })
                         .ServerFiltering(true);
                     })
@@ -80,32 +79,24 @@
             </div>
         </div>
 
+        <div class="control-group">
+            @Html.LabelFor(m => m.OldPassword, "Confirm Password", new { @class = "control-label" })
+                <div class="controls">
+                    @Html.PasswordFor(m => m.OldPassword)
+                    </div>
+                </div>
          <div class="form-actions no-color">
-             <input type="submit" value="Change password" class="btn" />
+             <input type="submit" value="Save Changes" class="btn" />
         </div>
     </fieldset>
 }
 
 <script>
-    //$(document).ready(function () {
-    //    //// create MultiSelect from select HTML element
-    //    var required = $("#categories").kendoMultiSelect().data("kendoMultiSelect");
-
-    //    //// Clean filtering
-    //    required.dataSource.filter({});
-    //    //// Set new values
-    //    var values = ["1", "2"]
-    //    required.value(values);
-    //    //console.log(required.value());
-
-    //    //$("#get").click(function () {
-    //    //    alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value());
-    //    //});
-    //});
-
     function change() {
 
-        $("#birth-date").val(kendo.toString(this.value(), 'yyyy-MM-dd'));
+        $("#birth-date").val(kendo.toString(this.value(), 'd'));
+        //console.log(kendo.toString(this.value(), 'yyyy-MM-dd'));
+        //console.log(kendo.toString(this.value(), 'd'));
     }
 
     function navigate() {

@@ -13,8 +13,9 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using TellToAsk.Areas.Administration.Models;
 
-namespace TellToAsk.Areas.Administration
+namespace TellToAsk.Areas.Administration.Controllers
 {
+     [Authorize(Roles = "User")]
     public class AnswersController : BaseController
     {
 

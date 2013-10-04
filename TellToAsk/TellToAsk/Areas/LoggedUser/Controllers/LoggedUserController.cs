@@ -10,9 +10,11 @@ using TellToAsk.Data;
 using Kendo.Mvc.Extensions;
 using TellToAsk.Model;
 using System.Web.Routing;
+using System.Net;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
+    [Authorize(Roles="User")]
     public class LoggedUserController : BaseController
     {
         private const int PointsForAnswer = 10;
@@ -253,6 +255,23 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             ViewBag.Categories = list;
 
             return PartialView("_TargetGroupForm");
+        }
+
+        public ActionResult MarkAnswerAsSpam(int id)
+        {
+            var answer = this.Data.Answers.All().FirstOrDefault(a => a.AnswerId == id);
+
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            return Json(answer, JsonRequestBehavior.AllowGet);
         }
 	}
 }

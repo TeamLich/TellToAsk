@@ -7,7 +7,7 @@
     @Model.QuestionText
 </p>
 
-<table>
+<table >
     <thead>
         <tr>
             
@@ -15,28 +15,28 @@
     </thead>
 </table>
 
-@*@if (Model.AnswersCount() == 0)
-{
-     <p>
-        No answer for this question, yet.
-    </p>
-}
-else{*@
-    
-   
-    
     @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.AnswerModel>()
     .Name("Grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.Comment).Title("Answer").Groupable(false);
+        columns.Bound(p => p.AnswerId).Visible(false);
         columns.Bound(p => p.DateAnswered);
 
         })
                  .ClientRowTemplate(
                 "<tr>" +
                     "<td class='employeeID'>" +
-                        "#: Comment #"+
+                        "#: Comment # <br/>"+
+                        "<button class='btn btn-sucsses' onclick='requestActionOnComment" +
+                                                 "(\"useful\", #: AnswerId #)" +
+                                        "'>Useful</button>" +
+                                "<button class='btn btn-error' onclick='requestActionOnComment" +
+                                                        "(\"not useful\", #: AnswerId #)" +
+                                        "'>Not useful</button>" +
+                                 "<button class='btn btn-warrning' onclick='requestActionOnComment" +
+                                        "(\"spam\", #: AnswerId #)" +
+                                        "'>Spam</button>" +
                     "</td>" +
                  "</tr>"
             )
@@ -66,6 +66,40 @@ else{*@
 @Scripts.Render("~/bundles/kendo")
 <script type="text/javascript">
 
+    function requestActionOnComment(actionName, answerId) {
+
+        var com = confirm("Are you sure you want to mark this comment as " + actionName + "?");
+
+        if (com) {
+
+            switch (actionName) {
+
+                case "spam":
+                    $.getJSON("MarkAnswerAsSpam", { id: answerId}, function(questionModel) {
+                        $("#Grid").data("kendoGrid").dataSource.read();
+                    }); 
+                    break;
+
+                case "useful":
+                    $.getJSON("VoteForAnswer", { id: answerId}, function(questionModel) {
+                       
+                        $("#Grid").data("kendoGrid").dataSource.read();
+                    }); 
+                    break;
+
+                case "not useful":
+                    $.getJSON("VoteForAnswer", { id: answerId}, function(questionModel) {
+                        $("#Grid").data("kendoGrid").dataSource.read();
+                    }); 
+                    break;
+
+                default:
+        
+            }
+            
+        }
+
+    }
     
     function getQuestionId() {
 

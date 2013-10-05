@@ -17,11 +17,15 @@ namespace TellToAsk.Areas.LoggedUser.Models
         public string QuestionTitle { get; set; }
         
         public string QuestionText { get; set; }
+
+       
+     
+        
         public int QuestionId { get; set; }
 
         public DateTime DateAnswered { get; set; }
 
-        [StringLength(500,MinimumLength=50)]
+        [StringLength(int.MaxValue, MinimumLength = 20)]
         [Required]
         [DataType(DataType.MultilineText)]
         [AllowHtml]

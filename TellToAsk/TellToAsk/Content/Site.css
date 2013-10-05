@@ -39,3 +39,17 @@ input[type="checkbox"].input-validation-error {
     overflow:hidden;
     width: 100% 
 }
+
+.width100Pro {
+    width: 100%
+}
+
+.width80Pro {
+    width: 80%
+}
+
+.footer-main {
+
+    color: #999999;
+    background-color:#1C1C1C
+}

@@ -26,7 +26,7 @@
                             <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
                         
-                            @if (this.User.IsInRole("User"))
+                            @if (this.User.Identity.IsAuthenticated)
                             {
                                 <li class="dropdown">
                                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">Questions <span class="caret"/></a>
@@ -59,18 +59,19 @@
                 </div>
             </div>
         </div>
-        <br/>
-        <br />
-        <br />
+      
         <div class="container">
             @RenderBody()
-            <hr />
-            <footer class="text-center">
-                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-            </footer>
+            
+            
         </div>
 
         @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
+
+        <footer class="navbar navbar-fixed-bottom text-center footer-main">
+           
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>
     </body>
 </html>

@@ -17,9 +17,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
+     [Authorize(Roles = "User")]
     public class UsersController : BaseController
     {
-         [Authorize(Roles = "User")]
+        
         public UsersController(IUowData data)
             : base(data)
         {

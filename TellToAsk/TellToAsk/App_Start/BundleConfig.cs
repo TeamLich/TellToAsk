@@ -8,6 +8,9 @@ namespace TellToAsk
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/bundles/cookieExtension").Include(
+                        "~/Scripts/jquery.cookie.js"));
+
             // The Kendo JavaScript bundle
             bundles.Add(new ScriptBundle("~/bundles/kendo").Include(
                         "~/Scripts/Kendo/jquery.min.js",
@@ -33,8 +36,9 @@ namespace TellToAsk
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css",
-                      "~/Content/bootstrap-responsive.css"));
+                      "~/Content/bootstrap-responsive.css",
+                      "~/Content/site.css"
+                      ));
 
             // Clear all items from the ignore list to allow minified CSS and JavaScript files in debug mode
             bundles.IgnoreList.Clear();

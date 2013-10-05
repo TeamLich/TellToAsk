@@ -11,18 +11,20 @@ using Kendo.Mvc.Extensions;
 using TellToAsk.Model;
 using System.Web.Routing;
 using System.Net;
+using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
-    [Authorize(Roles="User")]
+    //[Authorize(Roles="User")]
+    [Authorize()]
     public class LoggedUserController : BaseController
     {
         private const int PointsForAnswer = 10;
-
           public LoggedUserController(IUowData data)
             : base(data)
-        {
-        }
+            {
+            }
 
         public ActionResult MyQuestions()
         {
@@ -31,7 +33,6 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request)
         {
-
             var userName = this.User.Identity.Name;
 
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
@@ -51,7 +52,6 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-
         public JsonResult URIDecode(string data)
         {
             string question = this.Server.UrlDecode(data);
@@ -62,10 +62,8 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
         {
             var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
 
-           
             if (question != null)
             {
-                
 
                 var model = new QuestionModel()
                 {
@@ -108,10 +106,8 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult TakeQuestion()
         {
-            //var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
             return View(new AnswerModel());
         }
-
         public ActionResult AnswerToQuestion(AnswerModel answerModel)
         {
             if (ModelState.IsValid)
@@ -141,38 +137,38 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
             return View("TakeQuestion", answerModel);
         }
-
        
-        public ActionResult AskQuestion(QuestionModel questionModel)
+        public ActionResult AskQuestion()
         {
-            ValidateNewQuestiionInput(questionModel);
+            this.LoadDropDownModelsInViewBag();
 
-            var list = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text= "---Select category---", Value= "-1"} };
+            return View();
+        }
+
+        private void LoadDropDownModelsInViewBag()
+        {
+            var list = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select category---", Value = "-1" } };
 
 
-            var categories = this.Data.Categories.All().OrderBy(c => c.Name).ToList().Select( c => new SelectListItem () { Value = c.CategoryId.ToString(), Text= c.Name } ).ToList();
+            var categories = this.PopulateSuitableCategories().Select(c => new SelectListItem() { Value = c.CategoryId.ToString(), Text = c.Name }).ToList();
 
             list.AddRange(categories);
-            
+
             ViewBag.Categories = list;
 
 
             var genders = this.PopulateGendersList();
 
-            var list1 = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select gender---", Value = "-1" } };
+            var listGenders = new List<SelectListItem>() { new SelectListItem() { Selected = true, Text = "---Select gender---", Value = "-1" } };
 
-            list1.AddRange(genders);
+            listGenders.AddRange(genders);
 
-            ViewBag.genders = list1;
-
-            return View(questionModel);
+            ViewBag.genders = listGenders;
         }
 
         public ActionResult CreateQuestion(QuestionModel questionModel)
         {
-
             ValidateNewQuestiionInput(questionModel);
-
            
             if (ModelState.IsValid)
             {
@@ -208,20 +204,14 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 this.Data.SaveChanges();
                 return RedirectToAction("MyQuestions");
             }
+            this.LoadDropDownModelsInViewBag();
 
-          
-            return RedirectToAction("AskQuestion", new RouteValueDictionary(
-             new 
-             { 
-                 controller = "LoggedUser", 
-                 action = "AskQuestion", 
-                 QuestionId = questionModel.QuestionId, 
-                 CategoryId = questionModel.CategoryId,
-                 TargetedGender = questionModel.TargetedGender,
-                 TargetedMaxAge = questionModel.TargetedMaxAge,
-                 TargetedMinAge = questionModel.TargetedMinAge,
-                 Text = questionModel.QuestionText,
-             }));
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                string json = js.Serialize(questionModel);
+
+
+                ViewBag.JsonModel = json;
+            return View("AskQuestion", questionModel);
         }
 
         private void ValidateNewQuestiionInput(QuestionModel questionModel)

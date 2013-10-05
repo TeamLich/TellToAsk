@@ -19,7 +19,7 @@ namespace TellToAsk.Controllers
 
         public IUowData Data { get; set; }
 
-        public IList<SelectListItem> PopulateGendersList()
+        protected IList<SelectListItem> PopulateGendersList()
         {
             IList<SelectListItem> genList = new List<SelectListItem>();
             foreach (Gender gen in Enum.GetValues(typeof(Gender)))
@@ -60,7 +60,7 @@ namespace TellToAsk.Controllers
             return Json(categories, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetUserCategories([DataSourceRequest]DataSourceRequest request)
+        protected IList<CategoryModel> PopulateSuitableCategories()
         {
             var userName = this.User.Identity.Name;
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
@@ -84,6 +84,13 @@ namespace TellToAsk.Controllers
             {
                 suitableCategories = this.Data.Categories.All().Select(CategoryModel.FromCategory).ToList();
             }
+
+            return suitableCategories;
+        }
+
+        public JsonResult GetUserCategories([DataSourceRequest]DataSourceRequest request)
+        {
+            var suitableCategories = PopulateSuitableCategories();
 
             return Json(suitableCategories, JsonRequestBehavior.AllowGet);
         }

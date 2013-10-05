@@ -31,11 +31,39 @@
     .Title("Answer Question")
     .Visible(false)
     .Modal(false)
-    .Draggable(false)
+    .Draggable(true)
     .Pinned(true)
-    .Width(300)
+        .Animation(animation =>
+            {
+                animation.Open(open =>
+                {
+                    open.Expand(ExpandDirection.Vertical);
+                   
+                    open.Zoom(ZoomDirection.In);
+                   
+                    open.Fade(FadeDirection.In);
+                    
+                });
+
+                animation.Close(close =>
+                {
+                    close.Reverse(true);
+
+                    close.Expand(ExpandDirection.Vertical);
+
+                    close.Zoom(ZoomDirection.Out);
+                    
+                    close.Reverse(false);
+
+                    close.Fade(FadeDirection.In);
+
+                });
+            })
+    .Resizable()
+    .Width(1200)
+    .Height(450)
     .Events(ev => ev.Activate("maximizeWindowOnLoad"))
-    .Actions(actions => actions.Pin())                
+    .Actions(actions => actions.Maximize())                
 )
 
 <script type="text/x-kendo-template" id="template">
@@ -45,27 +73,39 @@
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
-           
-
           <div class="control-group">
             @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
             <div class="controls">
-                @Html.EditorFor(model => model.Comment)
-                @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline", id = "commentInPopUp" })
+                <div class="row">
+                    <div class="span10">
+                        @Html.TextAreaFor(model => model.Comment, new { @class = "width100Pro", @rows = 10 })
+                    </div>
+                    <div class="span2">
+                        <input type="button" id="cancel-answer" onclick="closeKWin()" class="btn btn-success" value="Cancel" />
+                        
+                        <br />
+                        <br />
+                        <br />
+
+                        <input type="submit" class="btn btn-success" value="Answer" />
+                    </div>
+                </div>
+                
+
+                @if (Model.QuestionId == 0)
+                {
+                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
+                }
+                else
+                {
+                <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
+                }
+
+                @Html.ValidationMessageFor(model => model.Comment)
             </div>
         </div>
             
-            if (Model.QuestionId == 0)
-            {
-                <input type="hidden" name="QuestionId" value="#= QuestionId #" />
-            }
-            else
-            {
-                <input type="hidden" name="QuestionId" value="@(Model.QuestionId)" />
-            }
-            
-            <input type="button" id="cancel-answer" onclick="closeKWin()" class="btn btn-success" value="Cancel" />
-            <input type="submit" class="btn btn-success" value="Answer" />
+           
         }
     </div>
 </script>
@@ -77,8 +117,15 @@
        
             var wnd = $("#Details").data("kendoWindow");
             $("#question-text-popup").html(questionModel);
+            wnd.title(questionModel.QuestionTitle);
+            
+           // .draggable();
+
+            if (!questionModel.QuestionText) {
+                questionModel.QuestionText = ""; 
+            }
+
             wnd.content(detailsTemplate(questionModel));
-            wnd.maximize()
             wnd.open();
         };
 
@@ -117,7 +164,7 @@
           
         var wnd = $("#Details").data("kendoWindow");
 
-        $("#commentInPopUp").html("");
+        //$("#commentInPopUp").html("");
 
         
         wnd.close();

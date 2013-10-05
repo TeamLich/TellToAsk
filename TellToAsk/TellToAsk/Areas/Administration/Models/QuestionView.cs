@@ -7,16 +7,16 @@ using System.Web.Mvc;
 
 namespace TellToAsk.Areas.Administration.Models
 {
-    public class AnswerView
+    public class QuestionView
     {
-        public int Id { get; set; }
+        public int QuestionId { get; set; }
 
-        [StringLength(500, MinimumLength = 50)]
+        [AllowHtml]
         [Required]
         [DataType(DataType.MultilineText)]
-        [AllowHtml]
-        public string Text { get; set; }
+        [StringLength(500)]
+        public string Title { get; set; }
 
-        public string Reported { get; set; }
+        public string Approved { get; set; }
     }
 }

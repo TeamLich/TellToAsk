@@ -45,7 +45,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Answer answer = this.Data.Answers.GetById((int)id);
+            AnswerModel answer = this.Data.Answers.All().Select(AnswerModel.FromAnswer)
+                .FirstOrDefault(a => a.Id == id);
             if (answer == null)
             {
                 return HttpNotFound();
@@ -60,11 +61,18 @@ namespace TellToAsk.Areas.Administration.Controllers
         // Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Answer answer)
+        public ActionResult Edit(AnswerModel answer)
         {
             if (ModelState.IsValid)
             {
-                this.Data.Answers.Update(answer);
+                var editedAnswer = new Answer()
+                {
+                    AnswerId = answer.Id,
+                    Comment = answer.Text,
+                    DateAnswered = answer.AnsweredDate,
+                    IsReported = answer.IsReported,
+                };
+                this.Data.Answers.Update(editedAnswer);
                 this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -78,7 +86,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Answer answer = this.Data.Answers.GetById((int)id);
+            AnswerModel answer = this.Data.Answers.All().Select(AnswerModel.FromAnswer)
+                .FirstOrDefault(a => a.Id == id);
             if (answer == null)
             {
                 return HttpNotFound();

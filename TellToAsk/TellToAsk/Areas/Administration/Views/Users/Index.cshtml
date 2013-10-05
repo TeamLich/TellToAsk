@@ -10,7 +10,8 @@
     .Columns(column =>
         {
             // column.Bound(p => p.UserId);
-            column.Bound(p => p.Username);
+            column.Bound(p => p.Username).ClientTemplate(
+                "#: Username.length > 20 ? (Username.substring(0, 20).concat('...')) : Username #").Width(180);
             column.Template(p => p.BirthDate)
                 .ClientTemplate("#= BirthDate.toDateString() #").Title("Birth Date");
             column.Bound(p => p.Gender);
@@ -18,8 +19,8 @@
             column.Template(p => p.Roles).ClientTemplate(
              "#= Roles.join(', ') #").Title("Roles");
             column.Template(p => @Html.Action("Edit", "Users", new { id = p.UserId }))
-                .ClientTemplate("<a href='/Administration/Users/Edit?id=#= UserId #'>Edit</a> | " +
-                "<a href='/Administration/Users/Details?id=#= UserId #'>Details</a>").Title("Action");
+                .ClientTemplate("<a class='btn btn-primary' href='/Administration/Users/Edit?id=#= UserId #'>Edit</a> | " +
+                "<a class='btn btn-primary' href='/Administration/Users/Details?id=#= UserId #'>Details</a>").Title("Action");
         })
      .Pageable()
      .Sortable()

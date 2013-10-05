@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<h2>Edit User</h2>
 
 
 @using (Html.BeginForm())
@@ -13,30 +13,11 @@
     @Html.ValidationSummary(true)
 
     <fieldset class="form-horizontal">
-        <legend>UserModel</legend>
+        <legend>@Model.UserName</legend>
+        @Html.HiddenFor(model => model.UserName)
+        @Html.HiddenFor(model => model.BirthDate)
+        @Html.HiddenFor(model => model.Gender)
 
-        <div class="control-group">
-            @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
-            <div class="controls">
-                @Html.EditorFor(model => model.UserName)
-                @Html.ValidationMessageFor(model => model.UserName, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="control-group">
-            @Html.LabelFor(model => model.BirthDate, new { @class = "control-label" })
-            <div class="controls">
-                @Html.EditorFor(model => model.BirthDate)
-                @Html.ValidationMessageFor(model => model.BirthDate, null, new { @class = "help-inline" })
-            </div>
-        </div>
-        <div class="control-group">
-            @Html.LabelFor(model => model.Gender, new { @class = "control-label" })
-            <div class="controls">
-                @Html.DropDownListFor(model => model.Gender, (IEnumerable<SelectListItem>)ViewBag.Genders)
-                @Html.ValidationMessageFor(model => model.Gender, null, new { @class = "help-inline" })
-            </div>
-        </div>
         <div class="control-group">
             @Html.LabelFor(model => model.Points, new { @class = "control-label" })
             <div class="controls">
@@ -59,25 +40,21 @@
                     HttpMethod = "GET",
                     InsertionMode = InsertionMode.Replace,
                     UpdateTargetId = "edit-roles"
-                })
-            </div>
-            <div class="controls">
-                <div>
-                    @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
+                }, new { @class = "btn btn btn-primary" })
+                @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
                 {
                     HttpMethod = "GET",
                     OnComplete = "hideBanButton"
-                }, new { @class = "ban-user" })
-                    @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
+                }, new { @class = "btn btn btn-primary ban-user" })
+                @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
                 {
                     HttpMethod = "GET",
                     OnComplete = "hideUnbanButton"
-                }, new { @class = "unban-user" })
-                </div>
+                }, new { @class = "btn btn btn-primary unban-user" })
             </div>
         </div>
-        <div class="form-actions no-color">
-            <input type="submit" value="Save" class="btn" />
+        <div class="form-actions">
+            <input type="submit" value="Save" class="btn btn btn-primary" />
         </div>
     </fieldset>
 }
@@ -85,7 +62,7 @@
 <div id="edit-roles"></div>
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
 </div>
 
 @section Scripts {

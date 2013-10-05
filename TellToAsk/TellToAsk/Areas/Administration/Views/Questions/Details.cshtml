@@ -14,17 +14,19 @@
             @Html.DisplayNameFor(model => model.Title)
         </dt>
 
-        <dd>
+        <dd class=".break-word">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
+        @if (Model.Text != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Text)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-
+            <dd class=".break-word">
+                @Html.DisplayFor(model => model.Text)
+            </dd>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.Creator)
         </dt>
@@ -34,48 +36,65 @@
         </dd>
 
         <dt>
+            @Html.DisplayName("Asked Date")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AskDate)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Category)
         </dt>
 
-        <dd>
+        <dd class="break-word">
             @Html.DisplayFor(model => model.Category)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TargetedGender)
-        </dt>
+        @if (Model.TargetedGender != "")
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.TargetedGender)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.TargetedGender)
+            </dd>
+        }
+        @if (Model.TargetedMinAgeAsString != "")
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.TargetedMinAge)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TargetedGender)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TargetedMinAge)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.TargetedMinAgeAsString)
+            </dd>
+        }
+        @if (Model.TargetedMaxAgeAsString != "")
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.TargetedMaxAge)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TargetedMinAgeAsString)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TargetedMaxAge)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.TargetedMaxAgeAsString)
+            </dd>
+        }
+        @if (Model.Answers.Count() > 0)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Answers)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TargetedMaxAgeAsString)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Answers)
-        </dt>
-
-        <dd>
-            @foreach (var answer in Model.Answers)
-            {
-                @Html.ActionLink(answer.Text,
-                    "Edit", "Answers", new { id = answer.Id }, new { @class = "list-answer" });
-                <span style="color:red">@answer.Reported</span>
-                <br />
-            }
-        </dd>
-
+            <dd>
+                @foreach (var answer in Model.Answers)
+                {
+                    @Html.ActionLink(answer.Text,
+                             "Edit", "Answers", new { id = answer.Id }, new { @class = "list-answer break-word" });
+                    <span style="color:red">@answer.Reported</span>
+                    <br />
+                }
+            </dd>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.Approved)
         </dt>
@@ -86,7 +105,8 @@
 
     </dl>
 </fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.QuestionId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="form-actions">
+
+    @Html.ActionLink("Edit", "Edit", new { id = Model.QuestionId }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+</div>

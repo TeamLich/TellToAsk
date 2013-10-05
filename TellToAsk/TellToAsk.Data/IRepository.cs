@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 
 namespace TellToAsk.Data
@@ -18,6 +19,8 @@ namespace TellToAsk.Data
         void Update(T entity);
 
         void Delete(T entity);
+
+        void DeleteRange(Expression<Func<T, bool>> predicate);
 
         void Delete(int id);
 

@@ -1,4 +1,4 @@
-﻿@model TellToAsk.Model.ApplicationUser
+﻿@model TellToAsk.Areas.Administration.Models.UserDetailsModel
 
 @{
     ViewBag.Title = "Details";
@@ -10,11 +10,11 @@
     <legend>User Details</legend>
     <dl>
         <dt>
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayNameFor(model => model.Username)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UserName)
+            @Html.DisplayFor(model => model.Username)
         </dd>
 
         <dt>
@@ -41,42 +41,45 @@
             @Html.DisplayFor(model => model.Points)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.MyQuestions)
+            @Html.DisplayNameFor(model => model.Questions)
         </dt>
+        @if (Model.Questions.Count() > 0)
+        {
+            <dd>
+                <ul>
+                    @foreach (var question in Model.Questions)
+                    {
+                        <li class=".break-word">
+                            @Html.ActionLink(@question.Title, "Edit", "Questions", new { id = @question.QuestionId }, null) -
+                            <span style="color:red">@question.Approved</span>
+                        </li>
+                    }
+                </ul>
+            </dd>
+        }
+        @if (Model.Answers.Count() > 0)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Answers)
+            </dt>
 
-        <dd>
-            <ul>
-                @foreach (var question in Model.MyQuestions)
-                {
-                    string isApproved = question.IsApproved == false ? "not Approved" : "Approved";
-                    <li>
-                        @Html.ActionLink(@question.Text, "Edit", "Questions", new { id = @question.QuestionId }, null) -
-                        <span style="color:red">@isApproved</span>
-                    </li>
-                }
-            </ul>
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Answers)
-        </dt>
-
-        <dd>
-            <ul>
-                @foreach (var answer in Model.Answers)
-                {
-                    string IsReported = answer.IsReported == false ? "" : "Reported";
-                    <li>
-                        @Html.ActionLink(@answer.Comment, "Edit", "Answers", new { id = @answer.AnswerId }, null) -
-                        <span style="color:red">@IsReported</span>
-                    </li>
-                }
-            </ul>
-        </dd>
-
+            <dd>
+                <ul>
+                    @foreach (var answer in Model.Answers)
+                    {
+                        <li class="break-word">
+                            @Html.ActionLink(@answer.Text, "Edit", "Answers", new { id = @answer.Id }, null)
+                            <span style="color:red">@answer.Reported</span>
+                        </li>
+                    }
+                </ul>
+            </dd>
+        }
     </dl>
 
 </fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="form-actions">
+    @Html.ActionLink("Edit", "Edit", new { id = Model.UserId }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+</div>
+

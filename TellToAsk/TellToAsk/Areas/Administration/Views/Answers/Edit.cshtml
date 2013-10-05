@@ -1,4 +1,4 @@
-﻿@model TellToAsk.Model.Answer
+﻿@model TellToAsk.Areas.Administration.Models.AnswerModel
 
 @{
     ViewBag.Title = "Edit";
@@ -15,40 +15,39 @@
     <fieldset class="form-horizontal">
         <legend>Answer</legend>
 
-        @Html.HiddenFor(model => model.AnswerId)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Creator)
+        @Html.HiddenFor(model => model.AnsweredDate)
 
         <div class="control-group">
             @Html.LabelFor(model => model.Question, new { @class = "control-label" })
             <div class="controls">
-                @Html.ValueFor(model => model.Question.Text)
+                @Html.ValueFor(model => model.Question)
             </div>
         </div>
 
         <div class="control-group">
-            @Html.LabelFor(model => model.Comment, new { @class = "control-label" })
+            @Html.LabelFor(model => model.Text, new { @class = "control-label" })
             <div class="controls">
-                @Html.TextAreaFor(model => model.Comment)
-                @Html.ValidationMessageFor(model => model.Comment, null, new { @class = "help-inline" })
+                @Html.TextAreaFor(model => model.Text)
+                @Html.ValidationMessageFor(model => model.Text, null, new { @class = "help-inline" })
             </div>
         </div>
 
         <div class="control-group">
-            @Html.LabelFor(model => model.IsReported, new { @class = "control-label" })
+            @Html.LabelFor(model => model.Reported, new { @class = "control-label" })
             <div class="controls">
                 @Html.EditorFor(model => model.IsReported)
                 @Html.ValidationMessageFor(model => model.IsReported, null, new { @class = "help-inline" })
             </div>
         </div>
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Save" class="btn" />
+        <div class="form-actions">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
         </div>
     </fieldset>
 }
-
-<div>
-    @Html.ActionLink("Back to Answers List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

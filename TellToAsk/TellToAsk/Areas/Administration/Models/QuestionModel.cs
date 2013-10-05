@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
+using System.Web.Mvc;
 using TellToAsk.Model;
 
 namespace TellToAsk.Areas.Administration.Models
 {
-    public class QuestionModel
+    public class QuestionModel : QuestionView
     {
         public static Expression<Func<Question, QuestionModel>> FromQuestion
         {
@@ -20,6 +22,7 @@ namespace TellToAsk.Areas.Administration.Models
                     Text = question.Text,
                     AnswersCount = question.Answers.Count,
                     Creator = question.Creator.UserName,
+                    AskDate = question.DateAsked,
                     Approved = question.IsApproved == false ? "not approved" : "approved",
                     Category = question.Category.Name,
                     TargetedGender = question.TargetedGender == null ? "" : (question.TargetedGender == 0 ? "Male" : "Female"),
@@ -28,18 +31,24 @@ namespace TellToAsk.Areas.Administration.Models
                 };
             }
         }
-
-        public int QuestionId { get; set; }
-
-        public string Title { get; set; }
-
+               
+        [AllowHtml]
+        [DataType(DataType.MultilineText)]
         public string Text { get; set; }
+
+        public DateTime AskDate { get; set; }
+
+        public string AskDateAsString 
+        {
+            get
+            {
+                return this.AskDate.ToString("yyyy-MM-dd HH:mm");
+            }
+        }
 
         public int AnswersCount { get; set; }
 
         public string Creator { get; set; }
-
-        public string Approved { get; set; }
 
         public string Category { get; set; }
 

@@ -17,16 +17,22 @@ namespace TellToAsk.Areas.Administration.Models
                 {
                     Id = answer.AnswerId,
                     Text = answer.Comment,  
-                    Question = answer.Question.Text,
+                    Question = answer.Question.Title,
                     Creator = answer.User.UserName,
+                    IsReported = answer.IsReported,
                     Reported = answer.IsReported == false ? "" : "Reported",
+                    AnsweredDate = answer.DateAnswered
                 };
             }
         }
 
+        public bool IsReported { get; set; }
+
         public string Question { get; set; }
 
         public string Creator { get; set; }
+
+        public DateTime AnsweredDate { get; set; }
 
     }
 }

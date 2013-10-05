@@ -15,11 +15,11 @@ using TellToAsk.Areas.Administration.Models;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-     [Authorize(Roles = "User")]
+    [Authorize(Roles = "User")]
     public class QuestionsController : BaseController
     {
 
-       public QuestionsController(IUowData data)
+        public QuestionsController(IUowData data)
             : base(data)
         {
         }
@@ -45,7 +45,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
-           
+
             return View(question);
         }
 
@@ -63,7 +63,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = this.Data.Questions.GetById((int)id);
+            QuestionEditModel question = this.Data.Questions.All()
+                .Select(QuestionEditModel.FromEditQuestion).FirstOrDefault(q => q.Id == id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -74,22 +75,31 @@ namespace TellToAsk.Areas.Administration.Controllers
         }
 
         // POST: /Administration/Questions/Edit/5
-		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		// 
-		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // 
+        // Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Question question)
+        public ActionResult Edit(QuestionEditModel question)
         {
             if (ModelState.IsValid)
             {
-                this.Data.Questions.Update(question);
+                var category = this.Data.Categories.GetById(question.Category);
+                var editedQuestion = this.Data.Questions.GetById(question.Id);
+                if (editedQuestion == null)
+                {
+                    return HttpNotFound();
+                }
+                editedQuestion.Title = question.Title;
+                editedQuestion.Text = question.Content;
+                editedQuestion.IsApproved = question.IsApproved;
+                editedQuestion.Category = category;
                 this.Data.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Category = this.Data.Categories.All()
-               .ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
+            ViewBag.Category = this.Data.Categories.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString(), Selected = true });
             return View(question);
         }
 
@@ -98,9 +108,10 @@ namespace TellToAsk.Areas.Administration.Controllers
         {
             if (id == null)
             {
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Question question = this.Data.Questions.GetById((int)id);
+            QuestionModel question = this.Data.Questions.All().Select(QuestionModel.FromQuestion)
+                .FirstOrDefault(q => q.QuestionId == id);
             if (question == null)
             {
                 return HttpNotFound();
@@ -112,7 +123,9 @@ namespace TellToAsk.Areas.Administration.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
-        {          
+        {
+            var question = this.Data.Questions.GetById(id);
+            this.Data.Answers.DeleteRange(a => a.Question.QuestionId == id);
             this.Data.Questions.Delete(id);
             this.Data.SaveChanges();
             return RedirectToAction("Index");

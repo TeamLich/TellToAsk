@@ -180,7 +180,9 @@
     <Compile Include="Areas\Administration\Models\CategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionEditModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModel.cs" />
+    <Compile Include="Areas\Administration\Models\QuestionView.cs" />
     <Compile Include="Areas\Administration\Models\UserModel.cs" />
+    <Compile Include="Areas\Administration\Models\UserDetailsModel.cs" />
     <Compile Include="Areas\LoggedUser\Controllers\LoggedUserController.cs" />
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
     <Compile Include="Areas\LoggedUser\Models\AnswerModel.cs" />

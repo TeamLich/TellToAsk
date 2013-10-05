@@ -1,26 +1,26 @@
 ﻿@model IEnumerable<TellToAsk.Areas.Administration.Models.AnswerModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Answers";
 }
 
-<h2>Aswers</h2>
+<h2>Answers</h2>
 
-<p>
-    @Html.ActionLink("Create New", "TakeQuestion", "LoggedUser", new { area = "LoggedUser" }, null)
-</p>
 @(Html.Kendo().Grid<TellToAsk.Areas.Administration.Models.AnswerModel>()
     .Name("answers")
     .Columns(column =>
         {
             // column.Bound(p => p.Id);
-            column.Bound(p => p.Text);
-            column.Bound(p => p.Question);
-            column.Bound(p => p.Creator).Title("Answered User");
-            column.Bound(p => p.Reported);            
+            column.Bound(p => p.Text).ClientTemplate(
+                "#: Text.length > 100 ? (Text.substring(0, 100).concat('...')) : Text #");
+            column.Bound(p => p.Question).ClientTemplate(
+                "#: Question.length > 20 ? (Question.substring(0, 20).concat('...')) : Question #").Width(180);
+            column.Bound(p => p.Creator).ClientTemplate(
+                "#: Creator.length > 20 ? (Creator.substring(0, 20).concat('...')) : Creator #").Width(180).Title("Answered User");
+            column.Bound(p => p.Reported);
             column.Template(p => @Html.Action("Edit", "Answers", new { id = p.Id }))
-                .ClientTemplate("<a href='/Administration/Answers/Edit?id=#= Id #'>Edit</a> | " +
-                "<a href='/Administration/Answers/Delete?id=#= Id #'>Delete</a>").Title("Action");
+                .ClientTemplate("<a class='btn btn-primary' href='/Administration/Answers/Edit?id=#= Id #'>Edit</a> | " +
+                "<a class='btn btn-primary' href='/Administration/Answers/Delete?id=#= Id #'>Delete</a>").Title("Action").Width(160);
         })
      .Pageable()
      .Sortable()
@@ -37,6 +37,10 @@
          })
              .Read(read => read.Action("Read", "Answers")))
 )
+<div>
+    <br />
+    @Html.ActionLink("Create New", "TakeQuestion", "LoggedUser", new { area = "LoggedUser" }, new { @class = "btn btn-primary" })
+</div>
 
 <script>
     function error_handler(e) {

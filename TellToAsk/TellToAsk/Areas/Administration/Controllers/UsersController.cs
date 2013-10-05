@@ -53,7 +53,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser user = this.Data.Users.GetById(id);
+            UserDetailsModel user = this.Data.Users.All()
+                .Select(UserDetailsModel.FromUsersDetails).FirstOrDefault(u => u.UserId == id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -70,7 +71,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser user = this.Data.Users.All().FirstOrDefault(u => u.Id == id);
+            ApplicationUser user = this.Data.Users.GetById(id);
             if (user == null)
             {
                 return HttpNotFound();

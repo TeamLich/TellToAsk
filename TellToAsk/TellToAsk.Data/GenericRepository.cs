@@ -43,7 +43,7 @@ namespace TellToAsk.Data
 
         public virtual T GetById(string id)
         {
-            return this.DbSet.FirstOrDefault(t => t == id);
+            return this.DbSet.Find(id);
         }
 
         public virtual void Add(T entity)

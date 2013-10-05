@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.Title)
         </dt>
 
-        <dd>
+        <dd class=".break-word">
             @Html.DisplayFor(model => model.Title)
         </dd>
         @if (Model.Text != null)
@@ -23,7 +23,7 @@
                 @Html.DisplayNameFor(model => model.Text)
             </dt>
 
-            <dd>
+            <dd class=".break-word">
                 @Html.DisplayFor(model => model.Text)
             </dd>
         }
@@ -89,7 +89,7 @@
                 @foreach (var answer in Model.Answers)
                 {
                     @Html.ActionLink(answer.Text,
-                        "Edit", "Answers", new { id = answer.Id }, new { @class = "list-answer" });
+                             "Edit", "Answers", new { id = answer.Id }, new { @class = "list-answer break-word" });
                     <span style="color:red">@answer.Reported</span>
                     <br />
                 }

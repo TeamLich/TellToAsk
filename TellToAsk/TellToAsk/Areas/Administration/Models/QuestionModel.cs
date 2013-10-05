@@ -9,7 +9,7 @@ using TellToAsk.Model;
 
 namespace TellToAsk.Areas.Administration.Models
 {
-    public class QuestionModel
+    public class QuestionModel : QuestionView
     {
         public static Expression<Func<Question, QuestionModel>> FromQuestion
         {
@@ -31,15 +31,7 @@ namespace TellToAsk.Areas.Administration.Models
                 };
             }
         }
-
-        public int QuestionId { get; set; }
-
-        [AllowHtml]
-        [Required]
-        [DataType(DataType.MultilineText)]
-        [StringLength(500)]
-        public string Title { get; set; }
-
+               
         [AllowHtml]
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }
@@ -57,8 +49,6 @@ namespace TellToAsk.Areas.Administration.Models
         public int AnswersCount { get; set; }
 
         public string Creator { get; set; }
-
-        public string Approved { get; set; }
 
         public string Category { get; set; }
 

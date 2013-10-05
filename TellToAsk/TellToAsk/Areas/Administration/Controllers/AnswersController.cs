@@ -86,7 +86,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Answer answer = this.Data.Answers.GetById((int)id);
+            AnswerModel answer = this.Data.Answers.All().Select(AnswerModel.FromAnswer)
+                .FirstOrDefault(a => a.Id == id);
             if (answer == null)
             {
                 return HttpNotFound();

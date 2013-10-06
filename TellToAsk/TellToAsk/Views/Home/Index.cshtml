@@ -3,62 +3,88 @@
 }
 
 
-<h1 class="text-success text-center">@ViewBag.RegisteredUsers users are waiting for your questions.</h1>
-<div>
-    <div class="chart-wrapper">
+<h1 class="text-warning text-center">@ViewBag.RegisteredUsers users are waiting for your questions.</h1>
+<div class="text-center">
+    <canvas id="myCanvas" width="578" height="250"></canvas>
+</div>
+<div class="row">
+    <div class="chart-wrapper span6">
 
         @(Html.Kendo().Chart()
         .Name("chart2")
                 .Title(title => title
                     .Text("You ask the most about ...?")
-                    .Position(ChartTitlePosition.Bottom))
+                    .Position(ChartTitlePosition.Top))
         .Legend(legend => legend
             .Visible(false)
         )
                 .HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
         .Series(series =>
         {
-            series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData)
-            .Labels(labels => labels
-                .Template("#: category #: #= value#%")
-                .Background("transparent")
-                .Visible(true)
-            )
-            .StartAngle(150);
+            series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData);
         })
         .Tooltip(tooltip => tooltip
             .Visible(true)
-            .Format("{0}%")
+                    .Template("#= category # - #= value # %")
         )
         )
     </div>
     
-    <div class="chart-wrapper">
+    <div class="chart-wrapper span6">
 
         @(Html.Kendo().Chart()
             .Name("chart")
                     .Title(title => title
-                        .Text("You asnwer the most...?")
-                        .Position(ChartTitlePosition.Bottom))
-            .Legend(legend => legend
-                .Visible(false)
-                    ).HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
-            .Series(series =>
-            {
-                series.Pie((IEnumerable<dynamic>)ViewBag.AnswersData)
-                .Labels(labels => labels
-                    .Template("#: category #: #= value#%")
-                    .Background("transparent")
+                    .Text("You asnwer the most...?")
+                    .Position(ChartTitlePosition.Top))
+                    .Legend(legend => legend
+                        .Visible(false))
+                        .Series(series =>
+                        {
+                            series.Pie((IEnumerable<dynamic>)ViewBag.AnswersData);
+                        })
+                    .Tooltip(tooltip => tooltip
                     .Visible(true)
-                )
-                
-                .StartAngle(550);
-            })
-            .Tooltip(tooltip => tooltip
-                .Visible(true)
-                .Format("{0}%")
-            )
+                             .Template("#= category # - #= value # %")
+                 )
         )
     </div>
    
 </div>
+
+
+<script>
+    function drawTextAlongArc(context, str, centerX, centerY, radius, angle) {
+        var len = str.length, s;
+        context.save();
+        context.translate(centerX, centerY);
+        context.rotate(-1 * angle / 2);
+        context.rotate(-1 * (angle / len) / 2);
+        for (var n = 0; n < len; n++) {
+            context.rotate(angle / len);
+            context.save();
+            context.translate(0, -1 * radius);
+            s = str[n];
+            context.fillText(s, 0, 0);
+            context.restore();
+        }
+        context.restore();
+    }
+    var canvas = document.getElementById('myCanvas'),
+      context = canvas.getContext('2d'),
+      centerX = canvas.width / 2,
+      centerY = canvas.height - 30,
+      angle = Math.PI * 0.8,
+      radius = 150;
+
+    context.font = '30pt Calibri';
+    context.textAlign = 'center';
+    context.fillStyle = 'blue';
+    context.strokeStyle = 'blue';
+    context.lineWidth = 4;
+    drawTextAlongArc(context, 'Tell to Ask', centerX, centerY, radius, angle);
+
+    // draw circle underneath text
+    context.arc(centerX, centerY, radius - 10, 0, 2 * Math.PI, false);
+    context.stroke();
+</script>

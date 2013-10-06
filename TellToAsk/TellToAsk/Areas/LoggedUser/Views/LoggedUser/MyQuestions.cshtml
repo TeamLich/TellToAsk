@@ -6,24 +6,22 @@
     {
         columns.Bound(p => p.QuestionId).Visible(false);
         columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
-        "#= QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #"
-).Groupable(false);
-        columns.Bound(p => p.Category.Name).Title("Category").Width("400px");
-
+        "#= QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #");
+        columns.Bound(p => p.Category.Name).Title("Category").Width("400px").Visible(false);
+        columns.Bound(p => p.DateAsked).Title("Asked on").Width("400px");
     })
-    .Groupable()
-    .Pageable()
     .Sortable()
     .Selectable()
     .Events(ev =>
-        {
-            ev.Change("onChange");
-        })
-    .Filterable()
-    .DataSource(dataSource => dataSource
-    .Ajax()
-    .Read(read => read.Action("GetMyQuestions", "LoggedUser")))
-    )
+    {
+        ev.Change("showDetails").Change("onChange");
+    })
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .Group(groups => groups.Add(p => p.Category.Name))
+        .Read(read => read.Action("GetMyQuestionsSimple", "LoggedUser")))
+     )
+
 
 <script>
     function onChange(e) {

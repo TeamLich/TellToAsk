@@ -1,0 +1,60 @@
+﻿@(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.CategoryModel>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.CategoryId).Visible(false);
+        columns.Bound(e => e.Name).Title("Category");
+    })
+    .Sortable()
+    .Scrollable()
+    .ClientDetailTemplateId("template")
+    .HtmlAttributes(new { style = "height:430px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("GetMyQuestions", "LoggedUser"))
+    )
+   
+)
+
+
+<script id="template" type="text/kendo-tmpl">
+
+                    @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
+                                .Name("grid_#=Name#")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(p => p.QuestionId).Visible(false);
+                            columns.Bound(p => p.QuestionTitle).Title("Question");
+                            columns.Bound(p => p.DateAsked).Title("Asked on").Width("250px");
+                        })
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .PageSize(5)
+                                    .Read(read => read.Action("GetMyQuestions", "LoggedUser", new { id = "#=CategoryId#" }))
+                                )
+                               .Pageable()
+                                .Sortable()
+                                .Selectable()
+                                .Events(ev =>
+                                {
+                                    ev.Change("showDetails").Change("onChange");
+                                })
+                        .ToClientTemplate())
+</script>
+
+<script>
+        function onChange(e) {
+            var grid = e.sender;
+            var currentDataItem = grid.dataItem(this.select()).QuestionId;
+            CallActionForShowingAllAnswers(currentDataItem);
+        }
+
+    function CallActionForShowingAllAnswers(id) {
+        window.location.href = "QuestionAnswers?id=" + id;
+    }
+    </script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+}

@@ -187,7 +187,6 @@
     <Compile Include="Areas\LoggedUser\LoggedUserAreaRegistration.cs" />
     <Compile Include="Areas\LoggedUser\Models\AnswerModel.cs" />
     <Compile Include="Areas\LoggedUser\Models\CategoryModel.cs" />
-    <Compile Include="Areas\LoggedUser\Models\DetailsModel.cs" />
     <Compile Include="Areas\LoggedUser\Models\QuestionModel.cs" />
     <Compile Include="Areas\Administration\Models\QuestionModelDetails.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -283,7 +282,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Areas\Administration\Views\Users\Details.cshtml" />
+    <Content Include="Areas\LoggedUser\Views\LoggedUser\Index.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\http-requester.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -298,6 +299,7 @@
     <Content Include="Scripts\Kendo\kendo.all.min.js" />
     <Content Include="Scripts\Kendo\kendo.aspnetmvc.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\rsvp.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

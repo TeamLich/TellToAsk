@@ -44,8 +44,12 @@ input[type="checkbox"].input-validation-error {
     width: 100%
 }
 
-.width80Pro {
-    width: 80%
+.inline-block-el {
+    display:inline-block;
+}
+
+.text-justify {
+    text-align: justify;
 }
 
 .footer-main {

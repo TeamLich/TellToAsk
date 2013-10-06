@@ -13,14 +13,18 @@ using System.Web.Routing;
 using System.Net;
 using Newtonsoft.Json;
 using System.Web.Script.Serialization;
+using Microsoft.AspNet.Identity;
 
 namespace TellToAsk.Areas.LoggedUser.Controllers
 {
     //[Authorize(Roles="User")]
-    [Authorize()]
+    [Authorize]
     public class LoggedUserController : BaseController
     {
         private const int PointsForAnswer = 10;
+        private const int PointsForUsefullAnswer = 5;
+        private const int PointsForUselessAnswer = -5;
+
           public LoggedUserController(IUowData data)
             : base(data)
             {
@@ -31,14 +35,42 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             return View();
         }
 
-        public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request)
+        public JsonResult GetMyQuestionsSimple([DataSourceRequest]DataSourceRequest request)
         {
             var userName = this.User.Identity.Name;
 
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
 
-            var questions = this.Data.Questions.All().Where(u => u.Creator.Id == user.Id).Select(QuestionModel.FromQuestion);
+            var questions =
+                this.Data.Questions.All()
+                .Where(u => u.Creator.Id == user.Id).OrderBy(q => q.Category.Questions.Count)
+                .Select(QuestionModel.FromQuestion);
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        // not in use
+        public JsonResult GetMyQuestions([DataSourceRequest]DataSourceRequest request, int? id)
+        {
+            var userName = this.User.Identity.Name;
+
+            var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+
+            if (id != null)
+            {
+
+                var questions =
+                    this.Data.Questions.All()
+                    .Where(q => q.Creator.Id == user.Id && q.CategoryId == id).Select(QuestionModel.FromQuestion);
+
+                return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var categories = user.Categories.OrderBy(c => c.Name).AsQueryable().Select(CategoryModel.FromCategory);
+                return Json(categories.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            }
+
+
         }
 
         public JsonResult GetTargetedQuestions([DataSourceRequest]DataSourceRequest request)
@@ -60,7 +92,15 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult QuestionAnswers(int? id)
         {
+
             var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
+
+            // just in case of evil hacker
+            var currUserId = this.User.Identity.GetUserId();
+            if (currUserId != question.Creator.Id)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
 
             if (question != null)
             {
@@ -69,9 +109,11 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
                 {
                     QuestionId = question.QuestionId,
                     QuestionText = question.Text,
+                    QuestionTitle = question.Title,
                     CategoryId = question.CategoryId,
+                    TargetedGender = question.TargetedGender != null ? (int)question.TargetedGender : -1,
+                    TargetedGenderValue = question.TargetedGender != null ? question.TargetedGender.ToString() : null,
                     TargetedMaxAge = question.TargetedMaxAge,
-                    
                     TargetedMinAge = question.TargetedMinAge,
                 };
 
@@ -82,32 +124,55 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
                return View(model);
             }
-            return View();
+            return new HttpStatusCodeResult(HttpStatusCode.NotFound);
         }
 
         public JsonResult GetQuestionAnswers([DataSourceRequest]DataSourceRequest request, int? id)
         {
-            var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
+            //// just in case of evil hacker
+            //var question = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
 
-            if (question != null)
-            {
-                var answers = question.Answers.AsQueryable().Select(AnswerModel.FromAnswer);
-                return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-            }
+            //var currUserId = this.User.Identity.GetUserId();
+            //if (currUserId != question.Creator.Id)
+            //{
+            //    return null;
+            //}
 
-            return Json(null, JsonRequestBehavior.AllowGet);
+            var answers = this.Data.Answers.All()
+                .Where(q => q.Question.QuestionId == id && q.IsReported == false)
+                .Select(AnswerModel.FromAnswer);
+            
+            return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+
         }
 
         public JsonResult GetQuestionById(int id)
         {
+            //// just in case of evil hacker
+            //var questionFull = this.Data.Questions.All().FirstOrDefault(q => q.QuestionId == id);
+            //var currUserId = this.User.Identity.GetUserId();
+            //if (currUserId != questionFull.Creator.Id)
+            //{
+            //    return null;
+            //}
+
             var question = this.Data.Questions.All().Select(QuestionModel.FromQuestion).FirstOrDefault(q => q.QuestionId == id);
+            return Json(question, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAnswerById(int id)
+        {
+            var question = this.Data.Answers.All().Select(AnswerModel.FromAnswer).FirstOrDefault(q => q.AnswerId == id);
             return Json(question, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TakeQuestion()
         {
+            // needed for check id in js
             return View(new AnswerModel());
         }
+
+        [ValidateAntiForgeryToken]
         public ActionResult AnswerToQuestion(AnswerModel answerModel)
         {
             if (ModelState.IsValid)
@@ -166,6 +231,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             ViewBag.genders = listGenders;
         }
 
+        [ValidateAntiForgeryToken]
         public ActionResult CreateQuestion(QuestionModel questionModel)
         {
             ValidateNewQuestiionInput(questionModel);
@@ -249,19 +315,56 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
         public ActionResult MarkAnswerAsSpam(int id)
         {
+            var currenUserId = this.User.Identity.GetUserId();
             var answer = this.Data.Answers.All().FirstOrDefault(a => a.AnswerId == id);
 
-            try
+            // check just in case of evil hacker
+            if (DoesUserHavePermissionsToVote(currenUserId, answer))
             {
-
+                answer.IsReported = true;
+                this.Data.SaveChanges();
             }
-            catch (Exception)
+            else
             {
-
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
+            return new HttpStatusCodeResult(HttpStatusCode.NoContent);
+        }
 
-            return Json(answer, JsonRequestBehavior.AllowGet);
+        public ActionResult VoteForAnswer(int id, bool isPositiveVote)
+        {
+            var currenUserId = this.User.Identity.GetUserId();
+            var answer = this.Data.Answers.All().FirstOrDefault(a => a.AnswerId == id);
+
+            // check just in case of evil hacker
+            if (DoesUserHavePermissionsToVote(currenUserId, answer))
+            {
+                answer.IsVoted = true;
+
+                int points;
+
+                if (isPositiveVote)
+                {
+                    points = PointsForUsefullAnswer;
+                }
+                else
+                {
+                    points = PointsForUselessAnswer;
+                }
+                answer.User.Points += points;
+                this.Data.SaveChanges();
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.NoContent);
+        }
+
+        private static bool DoesUserHavePermissionsToVote(string currenUserId, Answer answer)
+        {
+            var id = answer.Question.Creator.Id;
+            return currenUserId == id;
         }
 	}
 }

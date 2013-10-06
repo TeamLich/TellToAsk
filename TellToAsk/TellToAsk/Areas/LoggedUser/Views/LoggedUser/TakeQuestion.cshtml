@@ -6,25 +6,26 @@
     {
         columns.Bound(p => p.QuestionId).Visible(false);
         columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
-        "#: QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #"
-).Groupable(false);
+        "#: QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #").Groupable(false).Sortable(false);
         columns.Bound(p => p.Category.Name).Title("Category").Width("400px");
+        columns.Bound(p => p.DateAsked).Title("Asked on").Width("400px");
 
     })
     .Groupable()
     .Pageable()
     .Sortable()
-     .Selectable()
+    .Selectable()
     .Filterable()
      .Events(ev =>
         {
             ev.Change("showDetails");
         })
-    .DataSource(dataSource => dataSource
-    .Ajax()
+          .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(5)
         .Read(read => read.Action("GetTargetedQuestions", "LoggedUser")))
-)
-
+     )
+        
 
 @*TO DO multiple kendo windows*@
 @(Html.Kendo().Window().Name("Details")
@@ -63,33 +64,35 @@
     .Width(1200)
     .Height(450)
     .Events(ev => ev.Activate("maximizeWindowOnLoad"))
-    .Actions(actions => actions.Maximize())                
+        .Actions(actions => actions.Maximize())                
 )
 
 <script type="text/x-kendo-template" id="template">
 
     <div id="details-container">
-        <em class="break-word">#: QuestionText #</em>
+        
 
         @using (Html.BeginForm("AnswerToQuestion", "LoggedUser"))
         {
+             @Html.AntiForgeryToken()
           <div class="control-group">
             @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
             <div class="controls">
-                <div class="row">
+                <div class="row-fluid">
                     <div class="span10">
+                        @*on change of the name of text area the id will be changed -> chak where js uses it*@
                         @Html.TextAreaFor(model => model.Comment, new { @class = "width100Pro", @rows = 10 })
-                    </div>
-                    <div class="span2">
-                        <input type="button" id="cancel-answer" onclick="closeKWin()" class="btn btn-success" value="Cancel" />
-                        
-                        <br />
-                        <br />
-                        <br />
+                                </div>
+                            <div class="span2 text-center">
+                                <button type="button" id="cancel-answer" class="btn btn-success width100Pro">Cancel</button>
 
-                        <input type="submit" class="btn btn-success" value="Answer" />
+                                <br />
+                                <br />
+                                <br />
+
+                                <button type="submit" class="btn btn-success width100Pro">Answer</button>
+                            </div>
                     </div>
-                </div>
                 
 
                 @if (Model.QuestionId == 0)
@@ -107,6 +110,8 @@
             
            
         }
+
+        <em class="break-word">#: QuestionText #</em>
     </div>
 </script>
 
@@ -127,6 +132,10 @@
 
             wnd.content(detailsTemplate(questionModel));
             wnd.open();
+
+            $("#cancel-answer").on("click", function () {
+                    closeKWin();
+                });
         };
 
         var val = @(Model.QuestionId);
@@ -136,9 +145,11 @@
             $.getJSON("GetQuestionById", { id: val}, function(questionModel) {
                 window.manageAnswerWindow(questionModel);
             }); 
+
         }
 
        var detailsTemplate = kendo.template($("#template").html());
+
 
       
     });
@@ -155,6 +166,7 @@
        
         $.getJSON("GetQuestionById", { id: currentDataItem}, function(questionModel) {
             window.manageAnswerWindow(questionModel);
+            $("#Comment").val("");
         }); 
 
        
@@ -164,7 +176,7 @@
           
         var wnd = $("#Details").data("kendoWindow");
 
-        //$("#commentInPopUp").html("");
+        $("#Comment").val("");
 
         
         wnd.close();

@@ -36,18 +36,24 @@ namespace TellToAsk.Areas.LoggedUser.Models
         [Display(Name = "Targeted Gender")]
         public int? TargetedGender { get; set; }
 
-        [Display(Name = "Targeted Max Age")]
+        [DisplayFormat(NullDisplayText = "Not specified")]
+        public string TargetedGenderValue { get; set; }
+
+        [Display(Name = "Targeted Min Age")]
+        [DisplayFormat(NullDisplayText = "Not specified")]
         [Range(1, 100, ErrorMessage = "Must be a positive number int the range of 1 to 100.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Must be a positive number int the range of 1 to 100.")]
         public int? TargetedMinAge { get; set; }
 
         [Display(Name="Targeted Max Age")]
+        [DisplayFormat(NullDisplayText = "Not specified")]
         [Range(1, 100, ErrorMessage = "Must be a positive number int the range of 1 to 100.")]
         [RegularExpression(@"[0-9]*", ErrorMessage = "Must be a positive number int the range of 1 to 100.")]
         public int? TargetedMaxAge { get; set; }
 
-       
 
+        [DisplayFormat(DataFormatString = "{0:dddd dd MMMM HH:mm:ss}")]
+        public DateTime DateAsked { get; set; }
         public static Expression<Func<Question, QuestionModel>> FromQuestion
         {
             get
@@ -62,6 +68,7 @@ namespace TellToAsk.Areas.LoggedUser.Models
                     TargetedMaxAge = x.TargetedMaxAge,
                     TargetedMinAge = x.TargetedMinAge,
                     CategoryId = x.CategoryId,
+                    DateAsked = x.DateAsked
 
 
                 };

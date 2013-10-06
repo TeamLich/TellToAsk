@@ -11,6 +11,10 @@ namespace TellToAsk
             bundles.Add(new ScriptBundle("~/bundles/cookieExtension").Include(
                         "~/Scripts/jquery.cookie.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/ajax-promises").Include(
+                        "~/Scripts/rsvp.min.js",
+                        "~/Scripts/http-requester.js"));
+
             // The Kendo JavaScript bundle
             bundles.Add(new ScriptBundle("~/bundles/kendo").Include(
                         "~/Scripts/Kendo/jquery.min.js",

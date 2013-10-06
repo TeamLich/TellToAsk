@@ -3,7 +3,7 @@
 @model TellToAsk.Areas.LoggedUser.Models.QuestionModel
 
 @using (Html.BeginForm("CreateQuestion", "LoggedUser"))
-{
+{    @Html.AntiForgeryToken()
     <div id="error-message" class="alert alert-error hidden">
         <p>
             <strong>Oh snap!</strong> Change a few things up and try submitting again.

@@ -3,94 +3,181 @@
 <h1 class="break-word">
     @Model.QuestionTitle
 </h1>
-<p class="break-word">
-    @Model.QuestionText
-</p>
 
-<table >
-    <thead>
-        <tr>
-            
-        </tr>
-    </thead>
-</table>
-
+<div class="break-word">
     @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.AnswerModel>()
     .Name("Grid")
     .Columns(columns =>
     {
-        columns.Bound(p => p.Comment).Title("Answer").Groupable(false);
         columns.Bound(p => p.AnswerId).Visible(false);
         columns.Bound(p => p.DateAnswered);
-
-        })
-                 .ClientRowTemplate(
-                "<tr>" +
-                    "<td class='employeeID'>" +
-                        "#: Comment # <br/>"+
-                        "<button class='btn btn-sucsses' onclick='requestActionOnComment" +
-                                                 "(\"useful\", #: AnswerId #)" +
-                                        "'>Useful</button>" +
-                                "<button class='btn btn-error' onclick='requestActionOnComment" +
-                                                        "(\"not useful\", #: AnswerId #)" +
-                                        "'>Not useful</button>" +
-                                 "<button class='btn btn-warrning' onclick='requestActionOnComment" +
-                                        "(\"spam\", #: AnswerId #)" +
-                                        "'>Spam</button>" +
-                    "</td>" +
-                 "</tr>"
-            )
-            .ClientAltRowTemplate(
-                         "<tr>" +
-                            "<td class='employeeID'>" +
-                                "#: Comment #" +
-                            "</td>" +
-                         "</tr>"
-            )
+        columns.Bound(p => p.Comment).Title("Answer").ClientTemplate(
+        "<em class='break-word'>#: Comment.length > 500 ? (Comment.substring(0, 500).concat('...')) : Comment #</em>").Width(500).Groupable(false);
+    })
         .Groupable()
-        .Pageable() 
+        .Pageable()
         .Sortable()
-        .Scrollable()
-        .Filterable()
-                
-        .DataSource(dataSource => dataSource
+        .Selectable()
+        .Events(ev =>
+        {
+            ev.Change("showDetails");
+        })
+          .DataSource(dataSource => dataSource
         .Ajax()
-            .Read(read => read.Action("GetQuestionAnswers", "LoggedUser").Data("getQuestionId")))
-        )
+        .PageSize(5)
+        .Read(read => read.Action("GetQuestionAnswers", "LoggedUser").Data("getQuestionId")))
+    )
+</div>
 
-   
+<p class="break-word">
+    @Model.QuestionText
+</p>
+
+<dl>
+    <dt>
+       Gender:
+    </dt>
+    <dd>
+       @Html.DisplayFor(model => model.TargetedGenderValue)
        
+    </dd>
+    <dt>
+       Age: 
+    </dt>
+    <dd>
+        <em>Min:</em>  @Html.DisplayFor(model => model.TargetedMinAge)
+    </dd>
+    <dd>
+        <em>Max:</em> @Html.DisplayFor(model => model.TargetedMaxAge)
+    </dd>
+</dl>
+
+@*TO DO multiple kendo windows*@
+@(Html.Kendo().Window().Name("Details")
+    .Title("Answer Question")
+    .Visible(false)
+    .Modal(false)
+    .Draggable(true)
+    .Pinned(true)
+        .Animation(animation =>
+            {
+                animation.Open(open =>
+                {
+                    open.Expand(ExpandDirection.Vertical);
+
+                    open.Zoom(ZoomDirection.In);
+
+                    open.Fade(FadeDirection.In);
+
+                });
+
+                animation.Close(close =>
+                {
+                    close.Reverse(true);
+
+                    close.Expand(ExpandDirection.Vertical);
+
+                    close.Zoom(ZoomDirection.Out);
+
+                    close.Reverse(false);
+
+                    close.Fade(FadeDirection.In);
+
+                });
+            })
+    .Resizable()
+    .Width(1200)
+    .Height(450)
+
+        .Actions(actions => actions.Maximize().Close())
+)
+
+<script type="text/x-kendo-template" id="template">
+
+    <div id="details-container">
+            <div class="control-group">
+                <div class="controls">
+                    <div class="row-fluid">
+
+                        @*if no buttons the class "span.." for comment will be removed*@
+                        <div class="span10 text-justify" id="comment-field">
+                            <em class="break-word text-justify">#: Comment #</em>
+                            <input type="hidden" id="current-answer-id" value="#= AnswerId #" />
+                        </div>
+                        <div id ="voting-buttons" class="span2 text-center">
+                           
+                            <button class='btn btn-success width100Pro' onclick="requestActionOnComment('useful')">Useful</button>
+
+                            <br />
+                            <br />
+                            <br />
+
+                            <button class='btn btn-danger width100Pro' onclick='requestActionOnComment("not useful")'>Useless</button>
+
+                            <br />
+                            <br />
+                            <br />
+
+                            <button class='btn btn-inverse width100Pro' onclick='requestActionOnComment("spam")'>Spam</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</script>
   
 
-  
-@Scripts.Render("~/bundles/kendo")
 <script type="text/javascript">
 
-    function requestActionOnComment(actionName, answerId) {
+    function requestActionOnComment(actionName) {
 
         var com = confirm("Are you sure you want to mark this comment as " + actionName + "?");
-
+        var httpRequester = new HttpRequester();
         if (com) {
 
+            var answerId = $("#current-answer-id").val();
+            var data = { id: answerId};
             switch (actionName) {
 
                 case "spam":
-                    $.getJSON("MarkAnswerAsSpam", { id: answerId}, function(questionModel) {
-                        $("#Grid").data("kendoGrid").dataSource.read();
-                    }); 
+                    data.isPositiveVote = true;
+                    httpRequester.postJSON("MarkAnswerAsSpam", data)
+                        .then(function (result) {
+                        
+                            closeKWin();
+                            var selectedRow = $("*[aria-selected]")
+                            debugger;
+
+                            selectedRow.remove();
+
+                    }, function (error) {
+                        console.log(error.responseText);
+                    });
+                    
                     break;
 
                 case "useful":
-                    $.getJSON("VoteForAnswer", { id: answerId}, function(questionModel) {
-                       
-                        $("#Grid").data("kendoGrid").dataSource.read();
-                    }); 
+                    data.isPositiveVote = true;
+                    debugger;
+                    httpRequester.postJSON("VoteForAnswer", data)
+                        .then(function (result) {
+                            removeVotingButtons();
+                        }, function (error) {
+                            console.log(error.responseText);
+                        });
+                    
                     break;
 
                 case "not useful":
-                    $.getJSON("VoteForAnswer", { id: answerId}, function(questionModel) {
-                        $("#Grid").data("kendoGrid").dataSource.read();
-                    }); 
+                    data.isPositiveVote = true;
+                    httpRequester.postJSON("VoteForAnswer", data)
+                        .then(function (result) {
+                        removeVotingButtons();
+                    }, function (error) {
+                        console.log(error.responseText);
+                    });
+                    
                     break;
 
                 default:
@@ -100,7 +187,39 @@
         }
 
     }
-    
+
+    function removeVotingButtons() {
+        $("#comment-field").removeClass("span10");
+        $("#voting-buttons").remove();
+    }
+
+    function showDetails(e) {
+        
+        var grid = e.sender;
+        var currentDataItem = grid.dataItem(this.select()).AnswerId;
+        var detailsTemplate = kendo.template($("#template").html());
+        $.getJSON("GetAnswerById", { id: currentDataItem}, function(answerModel) {
+
+            var wnd = $("#Details").data("kendoWindow");
+            wnd.content(detailsTemplate(answerModel));
+            wnd.center().open();
+            if (answerModel.IsVoted) {
+                removeVotingButtons();
+            }
+        }); 
+
+       
+    }
+
+
+    function closeKWin(e) {
+          
+        var wnd = $("#Details").data("kendoWindow");
+
+        wnd.close();
+      
+    }
+
     function getQuestionId() {
 
         var val = @(Model.QuestionId);
@@ -111,4 +230,19 @@
     }
 </script>
     
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/ajax-promises")
+
+}
     
+@*var promise = new RSVP.Promise(function (resolve, reject) {
+        httpRequester.postJSON(url, userData).then(function (result) {
+            resolve(result);
+            saveSession(result);
+        }, function (error) {
+            reject(error);
+            console.log(error.responseText);
+        });
+    });*@

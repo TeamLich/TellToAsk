@@ -1,6 +1,11 @@
 ﻿@*TO DO Prevent user for entreing not number in age fields*@
-
 @model TellToAsk.Areas.LoggedUser.Models.QuestionModel
+
+@{
+    ViewBag.Title = "Ask question";
+}
+
+<legend>@ViewBag.Title</legend>
 
 @using (Html.BeginForm("CreateQuestion", "LoggedUser"))
 {    @Html.AntiForgeryToken()
@@ -23,8 +28,7 @@
                       OnFailure = "showForm",
                   }, new { id = "ajax-button", @class = "btn btn-info" })
 
-        <legend>Ask question</legend>
-        
+
         <div class="control-group">
             @Html.LabelFor(model => model.QuestionTitle, new { @class = "control-label" })
                 <div>
@@ -104,6 +108,11 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/cookieExtension")
     
+}
+
+@section Styles {
+
+    @Styles.Render("~/Content/kendo-client-side")
 }
     
     

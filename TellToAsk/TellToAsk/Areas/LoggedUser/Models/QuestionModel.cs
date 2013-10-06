@@ -33,6 +33,9 @@ namespace TellToAsk.Areas.LoggedUser.Models
 
         public CategoryModel Category { get; set; }
 
+        [Display(Name = "New messages")]
+        public int NewMessagesCount { get; set; }
+
         [Display(Name = "Targeted Gender")]
         public int? TargetedGender { get; set; }
 
@@ -68,9 +71,8 @@ namespace TellToAsk.Areas.LoggedUser.Models
                     TargetedMaxAge = x.TargetedMaxAge,
                     TargetedMinAge = x.TargetedMinAge,
                     CategoryId = x.CategoryId,
-                    DateAsked = x.DateAsked
-
-
+                    DateAsked = x.DateAsked,
+                    NewMessagesCount = x.Answers.Where(a => !a.IsRead).Count(),
                 };
             }
         }

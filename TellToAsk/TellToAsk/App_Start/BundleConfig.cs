@@ -26,6 +26,12 @@ namespace TellToAsk
                         "~/Content/Kendo/kendo.common.min.css",
                         "~/Content/Kendo/Themes/kendo.bootstrap.min.css"));
 
+
+            // The Kendo CSS bundle
+            bundles.Add(new StyleBundle("~/Content/kendo-client-side").Include(
+                        "~/Content/Kendo/kendo.common.min.css",
+                        "~/Content/Kendo/Themes/kendo.blueopal.min.css"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*",
                         "~/Scripts/jquery.unobtrusive-ajax.js"));

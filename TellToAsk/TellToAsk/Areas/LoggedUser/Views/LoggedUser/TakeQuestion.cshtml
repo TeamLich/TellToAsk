@@ -1,5 +1,11 @@
 ﻿@model TellToAsk.Areas.LoggedUser.Models.AnswerModel
 
+@{
+    ViewBag.Title = "Take question";
+}
+
+<legend>@ViewBag.Title</legend>
+
 @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
     .Name("Grid")
     .Columns(columns =>
@@ -16,6 +22,7 @@
     .Sortable()
     .Selectable()
     .Filterable()
+        .Scrollable(c => c.Height("500px"))
      .Events(ev =>
         {
             ev.Change("showDetails");
@@ -76,7 +83,8 @@
         {
              @Html.AntiForgeryToken()
           <div class="control-group">
-            @*@Html.LabelFor(model => model.Comment, new { @class = "control-label" })*@
+              <strong class="break-word">#: QuestionTitle #</strong>
+
             <div class="controls">
                 <div class="row-fluid">
                     <div class="span10">
@@ -84,7 +92,7 @@
                         @Html.TextAreaFor(model => model.Comment, new { @class = "width100Pro", @rows = 10 })
                                 </div>
                             <div class="span2 text-center">
-                                <button type="button" id="cancel-answer" class="btn btn-success width100Pro">Cancel</button>
+                                <button type="button" id="cancel-answer" class="btn width100Pro">Cancel</button>
 
                                 <br />
                                 <br />
@@ -122,7 +130,7 @@
        
             var wnd = $("#Details").data("kendoWindow");
             $("#question-text-popup").html(questionModel);
-            wnd.title(questionModel.QuestionTitle);
+            //wnd.title(questionModel.QuestionTitle);
             
            // .draggable();
 
@@ -131,7 +139,7 @@
             }
 
             wnd.content(detailsTemplate(questionModel));
-            wnd.open();
+            wnd.center().open();
 
             $("#cancel-answer").on("click", function () {
                     closeKWin();
@@ -186,4 +194,10 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+@section Styles {
+    
+    @Styles.Render("~/Content/kendo-client-side")
 }

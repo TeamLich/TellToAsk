@@ -18,7 +18,6 @@
         .Legend(legend => legend
             .Visible(false)
         )
-                .HtmlAttributes(new { style = "margin:0 auto;border:none; width: 100%;" })
         .Series(series =>
         {
             series.Pie((IEnumerable<dynamic>)ViewBag.QuestionsData);

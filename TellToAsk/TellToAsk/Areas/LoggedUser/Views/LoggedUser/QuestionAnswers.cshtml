@@ -1,19 +1,26 @@
 ﻿@model TellToAsk.Areas.LoggedUser.Models.QuestionModel
+@{
+    ViewBag.Title = "Question Answers";
+}
 
 <h1 class="break-word">
     @Model.QuestionTitle
 </h1>
-
+<img src="../img/msg-unread.png">
 <div class="break-word">
     @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.AnswerModel>()
     .Name("Grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.AnswerId).Visible(false);
-        columns.Bound(p => p.DateAnswered);
+        columns.Bound(p => p.IsVoted).Visible(false);
+        columns.Bound(p => p.IsRead).ClientTemplate("<img src='../img/msg-#: IsRead ? (!IsVoted ? \"for-evaluation\" : \"read\") :  \"unread\" #.png'/>").Width("100px");
+        columns.Bound(p => p.DateAnswered).Format("{0:dd/MM/yyyy}").Width("100px"); ;
         columns.Bound(p => p.Comment).Title("Answer").ClientTemplate(
-        "<em class='break-word'>#: Comment.length > 500 ? (Comment.substring(0, 500).concat('...')) : Comment #</em>").Width(500).Groupable(false);
+        "<em class='break-word'>#: Comment.length > 500 ? (Comment.substring(0, 500).concat('...')) : Comment #</em>").Width(500).Groupable(false).Sortable(false);
     })
+
+        .Scrollable(c => c.Height("500px"))
         .Groupable()
         .Pageable()
         .Sortable()
@@ -89,7 +96,7 @@
     .Width(1200)
     .Height(450)
 
-        .Actions(actions => actions.Maximize().Close())
+        .Actions(actions => actions.Maximize())
 )
 
 <script type="text/x-kendo-template" id="template">
@@ -104,22 +111,30 @@
                             <em class="break-word text-justify">#: Comment #</em>
                             <input type="hidden" id="current-answer-id" value="#= AnswerId #" />
                         </div>
-                        <div id ="voting-buttons" class="span2 text-center">
+                        <div class="span2 text-center">
+                            <button id="cancel-btn" class='btn width100Pro'>Cancel</button>
+
+                            <br />
+                            <br />
+                            <br />
+
+                            <div id="voting-buttons">
+                                <button class='btn btn-success width100Pro' onclick="requestActionOnComment('useful')">Useful</button>
+
+                                <br />
+                                <br />
+                                <br />
+
+                                <button class='btn btn-danger width100Pro' onclick='requestActionOnComment("not useful")'>Useless</button>
+
+                                <br />
+                                <br />
+                                <br />
+
+                                <button class='btn btn-inverse width100Pro' onclick='requestActionOnComment("spam")'>Spam</button>
+
+                            </div>
                            
-                            <button class='btn btn-success width100Pro' onclick="requestActionOnComment('useful')">Useful</button>
-
-                            <br />
-                            <br />
-                            <br />
-
-                            <button class='btn btn-danger width100Pro' onclick='requestActionOnComment("not useful")'>Useless</button>
-
-                            <br />
-                            <br />
-                            <br />
-
-                            <button class='btn btn-inverse width100Pro' onclick='requestActionOnComment("spam")'>Spam</button>
-
                         </div>
                     </div>
                 </div>
@@ -146,7 +161,7 @@
                         .then(function (result) {
                         
                             closeKWin();
-                            var selectedRow = $("*[aria-selected]")
+                            var selectedRow = $("*[aria-selected='true']").first();
                             debugger;
 
                             selectedRow.remove();
@@ -189,33 +204,58 @@
     }
 
     function removeVotingButtons() {
-        $("#comment-field").removeClass("span10");
+       // $("#comment-field").removeClass("span10");
         $("#voting-buttons").remove();
     }
 
     function showDetails(e) {
-        
+       
         var grid = e.sender;
         var currentDataItem = grid.dataItem(this.select()).AnswerId;
         var detailsTemplate = kendo.template($("#template").html());
-        $.getJSON("GetAnswerById", { id: currentDataItem}, function(answerModel) {
 
-            var wnd = $("#Details").data("kendoWindow");
-            wnd.content(detailsTemplate(answerModel));
-            wnd.center().open();
-            if (answerModel.IsVoted) {
-                removeVotingButtons();
-            }
-        }); 
+        var httpRequester = new HttpRequester();
+        var data = { id: currentDataItem};
 
-       
+        httpRequester.postJSON("MarkAnswerAsRead", data)
+                       .then(function (answerModel) {
+                           var wnd = $("#Details").data("kendoWindow");
+                           wnd.content(detailsTemplate(answerModel));
+                           wnd.center().open();
+                           if (answerModel.IsVoted) {
+                               removeVotingButtons();
+                           }
+
+                           $("#cancel-btn").on("click", function () {
+
+                               closeKWin();
+
+                               httpRequester.postJSON("MarkAnswerAsRead", data)
+                               .then(function (answerModelUpdated) {
+                                  
+                                   var selectedRowImg = $("*[aria-selected='true']").find(">:first-child > img").first();
+                                    debugger;
+                                
+                                    selectedRowImg.attr("src", "/img/msg-read.png");
+
+                                    if (!answerModelUpdated.IsVoted) {
+                                    
+                                        selectedRowImg.attr("src", "/img/msg-for-evaluation.png");
+                                    }
+                                
+
+                               }, function (error) {
+                                   console.log(error);
+                               });
+
+                           });
+
+                       })
     }
 
-
     function closeKWin(e) {
-          
         var wnd = $("#Details").data("kendoWindow");
-
+        
         wnd.close();
       
     }
@@ -235,6 +275,11 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/ajax-promises")
 
+}
+
+@section Styles {
+
+    @Styles.Render("~/Content/kendo-client-side")
 }
     
 @*var promise = new RSVP.Promise(function (resolve, reject) {

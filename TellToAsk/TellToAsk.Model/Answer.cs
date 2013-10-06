@@ -16,7 +16,7 @@ namespace TellToAsk.Model
         public virtual ApplicationUser User { get; set; }
 
         public bool IsReported { get; set; }
-
+        public bool IsRead { get; set; }
         public bool IsVoted { get; set; }
 
         public DateTime DateAnswered { get; set; }

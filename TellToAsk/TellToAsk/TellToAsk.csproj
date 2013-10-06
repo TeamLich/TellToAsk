@@ -248,8 +248,13 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\msg-no-new.png" />
     <Content Include="img\glyphicons-halflings-white.png" />
     <Content Include="img\glyphicons-halflings.png" />
+    <Content Include="img\msg-for-evaluation.png" />
+    <Content Include="img\msg-read.png" />
+    <Content Include="img\msg-unread.png" />
+    <Content Include="img\msg-new-msg.png" />
     <Content Include="KendoMVC\Kendo.Mvc.dll" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

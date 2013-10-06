@@ -21,28 +21,46 @@ namespace TellToAsk.Controllers
 
         public ActionResult Index()
         {
-           
-            var questionsCount = this.Data.Questions.All().Count();
 
-            ViewBag.RegisteredUsers = this.Data.Users.All().Count();
-
-            if (questionsCount > 0)
+            if (this.HttpContext.Cache["HomePageTellToAskQuestionsData"] == null)
             {
-                var quest = this.Data.Categories.All().ToList().Select(x => new { category = this.Server.HtmlEncode(x.Name), value = x.Questions.Count * 100 / questionsCount }).ToList();
+                IEnumerable<dynamic> questionsData = null;
+                IEnumerable<dynamic> answersData = null;
 
-                ViewBag.QuestionsData = quest.Where(q => q.value != 0);
+                var questionsCount = this.Data.Questions.All().Count();
+
+                var regUsersCount = this.Data.Users.All().Count();
+
+                
+
+                if (questionsCount > 0)
+                {
+                    var quest = this.Data.Categories.All().ToList().Select(x => new { category = this.Server.HtmlEncode(x.Name), value = x.Questions.Count * 100 / questionsCount }).ToList();
+
+                    questionsData = quest.Where(q => q.value != 0);
+                }
+
+                var answersCount = this.Data.Answers.All().Count();
+                if (answersCount > 0)
+                {
+                    var ans = this.Data.Categories.All().ToList().Select(x =>
+                     new
+                     {
+                         category = this.Server.HtmlEncode(x.Name),
+                         value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount
+                     }).ToList();
+
+                    answersData = ans.Where(a => a.value != 0);
+                }
+
+                this.HttpContext.Cache.Add("HomePageTellToAskRegUsersData", regUsersCount, null, DateTime.Now.AddMinutes(1), TimeSpan.Zero, System.Web.Caching.CacheItemPriority.Default, null);
+                this.HttpContext.Cache.Add("HomePageTellToAskAnswersData", answersData, null, DateTime.Now.AddMinutes(1), TimeSpan.Zero, System.Web.Caching.CacheItemPriority.Default, null);
+                this.HttpContext.Cache.Add("HomePageTellToAskQuestionsData", questionsData, null, DateTime.Now.AddMinutes(1), TimeSpan.Zero, System.Web.Caching.CacheItemPriority.Default, null);
             }
 
-            var answersCount = this.Data.Answers.All().Count();
-            if (answersCount > 0)
-            {
-                var ans = this.Data.Categories.All().ToList().Select(x =>
-                 new { category = this.Server.HtmlEncode(x.Name), 
-                       value = this.Data.Answers.All().Where(a => a.Question.CategoryId == x.CategoryId).Count() * 100 / answersCount }).ToList();
-
-                ViewBag.AnswersData = ans.Where(a => a.value != 0);
-            }
-
+             ViewBag.AnswersData = this.HttpContext.Cache["HomePageTellToAskAnswersData"];
+             ViewBag.QuestionsData = this.HttpContext.Cache["HomePageTellToAskQuestionsData"];
+             ViewBag.RegisteredUsers = this.HttpContext.Cache["HomePageTellToAskRegUsersData"];
             return View();
         }
 

@@ -18,6 +18,8 @@ namespace TellToAsk.Areas.LoggedUser.Models
         public int QuestionId { get; set; }
         public bool IsVoted { get; set; }
 
+        public bool IsRead { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:dddd dd MMMM HH:mm:ss}")]
         public DateTime DateAnswered { get; set; }
 
@@ -39,7 +41,9 @@ namespace TellToAsk.Areas.LoggedUser.Models
                     QuestionTitle = x.Question.Text,
                     QuestionText = x.Question.Title,
                     DateAnswered = x.DateAnswered,
-                    IsVoted = x.IsVoted
+                    IsVoted = x.IsVoted,
+                    IsRead = x.IsRead
+                    
 
                 };
             }

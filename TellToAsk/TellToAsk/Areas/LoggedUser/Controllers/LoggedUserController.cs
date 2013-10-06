@@ -43,8 +43,8 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
             var questions =
                 this.Data.Questions.All()
-                .Where(u => u.Creator.Id == user.Id).OrderBy(q => q.Category.Questions.Count)
-                .Select(QuestionModel.FromQuestion);
+                .Where(u => u.Creator.Id == user.Id)
+                .Select(QuestionModel.FromQuestion).OrderByDescending(m => m.NewMessagesCount);
             return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -139,7 +139,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             //}
 
             var answers = this.Data.Answers.All()
-                .Where(q => q.Question.QuestionId == id && q.IsReported == false)
+                .Where(q => q.Question.QuestionId == id && q.IsReported == false).OrderByDescending(x => x.DateAnswered)
                 .Select(AnswerModel.FromAnswer);
             
             return Json(answers.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -160,10 +160,16 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
             return Json(question, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetAnswerById(int id)
+        public JsonResult MarkAnswerAsRead(int id)
         {
-            var question = this.Data.Answers.All().Select(AnswerModel.FromAnswer).FirstOrDefault(q => q.AnswerId == id);
-            return Json(question, JsonRequestBehavior.AllowGet);
+            var answer = this.Data.Answers.All().FirstOrDefault(q => q.AnswerId == id);
+
+            answer.IsRead = true;
+            this.Data.SaveChanges();
+
+            var answerModel = new List<Answer> { answer }.AsQueryable().Select(AnswerModel.FromAnswer).FirstOrDefault();
+
+            return Json(answerModel, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TakeQuestion()

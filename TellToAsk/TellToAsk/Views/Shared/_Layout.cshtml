@@ -6,7 +6,7 @@
         <title>@ViewBag.Title - My ASP.NET Application</title>
         @Styles.Render("~/Content/css")
         @Styles.Render("~/Content/kendo")
-
+        @RenderSection("styles", required: false)
         @Scripts.Render("~/bundles/kendo")
         @Scripts.Render("~/bundles/modernizr")
 
@@ -65,7 +65,7 @@
             
             
         </div>
-
+        
         @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
 

@@ -1,28 +1,39 @@
 ﻿@model IEnumerable<TellToAsk.Areas.LoggedUser.Models.QuestionModel>
 
+@{
+    ViewBag.Title = "My questions";
+}
+
+<legend>@ViewBag.Title</legend>
+
 @(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
     .Name("Grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.QuestionId).Visible(false);
+        columns.Bound(p => p.NewMessagesCount).Title("New Messages")
+            .ClientTemplate("<img src='../img/msg-#: NewMessagesCount > 0 ?  \"new-msg\" :  \"no-new\" #.png'/> #: NewMessagesCount #")
+            .Width("120px");
         columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
         "#= QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #");
-        columns.Bound(p => p.Category.Name).Title("Category").Width("400px").Visible(false);
-        columns.Bound(p => p.DateAsked).Title("Asked on").Width("400px");
+        columns.Bound(p => p.Category.Name).Title("Category").Width("100px").Visible(true);
+        columns.Bound(p => p.DateAsked).Title("Asked on").Width("100px");
     })
     .Sortable()
     .Selectable()
+    .Pageable()
+    .Scrollable(c => c.Height("750px"))
     .Events(ev =>
     {
         ev.Change("showDetails").Change("onChange");
     })
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Group(groups => groups.Add(p => p.Category.Name))
+        .PageSize(10)
         .Read(read => read.Action("GetMyQuestionsSimple", "LoggedUser")))
      )
 
-
+@*.Group(groups => groups.Add(p => p.Category.Name))*@
 <script>
     function onChange(e) {
        var grid = e.sender;
@@ -38,3 +49,8 @@
     @section Scripts {
         @Scripts.Render("~/bundles/kendo")
     }
+
+@section Styles {
+
+    @Styles.Render("~/Content/kendo-client-side")
+}

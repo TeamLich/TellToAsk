@@ -33,7 +33,7 @@
         <div class="control-group">
             @Html.LabelFor(model => model.Category, new { @class = "control-label" })
             <div class="controls">
-                @Html.DropDownListFor(model => model.Category, (IEnumerable<SelectListItem>)ViewBag.Category)
+                @Html.DropDownList("Category", String.Empty)
                 @Html.ValidationMessageFor(model => model.Category, null, new { @class = "help-inline" })
             </div>
         </div>

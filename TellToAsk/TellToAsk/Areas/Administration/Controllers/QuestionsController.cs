@@ -69,8 +69,7 @@ namespace TellToAsk.Areas.Administration.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Category = this.Data.Categories.All()
-                .ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() });
+            ViewBag.Category = new SelectList(this.Data.Categories.All(), "CategoryId", "Name", question.Category);
             return View(question);
         }
 

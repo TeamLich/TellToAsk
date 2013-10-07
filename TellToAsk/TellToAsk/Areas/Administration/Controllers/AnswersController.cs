@@ -27,8 +27,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Aswers/
         public ActionResult Index()
         {
-            var answers = this.Data.Answers.All().Select(AnswerModel.FromAnswer);
-            return View(answers.ToList());
+            var answers = this.Data.Answers.All().Select(AnswerModel.FromAnswer).ToList();
+            return View(answers);
         }
               
         public ActionResult Read([DataSourceRequest] DataSourceRequest request)

@@ -25,7 +25,8 @@ namespace TellToAsk.Areas.Administration.Controllers
         // GET: /Administration/Categories/
         public ActionResult Index()
         {
-            return View(this.Data.Categories.All().Select(CategoryModel.FromCategory).ToList());
+            var result = this.Data.Categories.All().Select(CategoryModel.FromCategory).ToList();
+            return View(result);
         }
 
         public ActionResult Read([DataSourceRequest] DataSourceRequest request)

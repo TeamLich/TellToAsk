@@ -2,24 +2,8 @@
 
 
 <fieldset class="form-horizontal">
-    <legend>Edit Roles</legend>
-    <div id="roles-list" class="controls">
-        <ul>
-            @foreach (var role in Model.Roles)
-            {
-                <li>
-                    @role.Role.Name
-                    @Ajax.ActionLink("Remove", "RemoveRole", new { id = Model.Id, roleId = role.Role.Id }, new AjaxOptions()
-                        {
-                            HttpMethod = "GET",
-                            InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "roles-list"
-                        })
-                </li>
-            }
-
-        </ul>
-    </div>
+    <legend>Add Roles</legend>
+   
     @using (Ajax.BeginForm("AddRole", new { id = Model.Id }, new AjaxOptions()
     {
         HttpMethod = "POST",
@@ -37,8 +21,8 @@
             </div>
         </div>
         <div class="form-actions no-color">
-            <input type="submit" value="Add Role" class="btn" />
-            <input type="button" value="Cancel" onclick="closeEditForm()" class="btn" />
+            <input type="submit" value="Add" class="btn btn-primary" />
+            <input type="button" value="Cancel" onclick="closeEditForm()" class="btn btn-primary" />
         </div>
     }
 </fieldset>

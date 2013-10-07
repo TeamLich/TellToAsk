@@ -77,6 +77,8 @@ namespace TellToAsk.Areas.Administration.Controllers
                 return HttpNotFound();
             }
             ViewBag.Genders = genders;
+            ViewBag.Roles = this.Data.Roles.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.Id });
 
             return View(user);
         }        
@@ -93,6 +95,8 @@ namespace TellToAsk.Areas.Administration.Controllers
             }
             ViewBag.Genders = genders;
 
+            ViewBag.Roles = this.Data.Roles.All().ToList()
+                .Select(x => new SelectListItem { Text = x.Name, Value = x.Id });
             return View(user);
         }
 

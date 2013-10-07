@@ -29,28 +29,41 @@
         <div class="control-group">
             @Html.LabelFor(model => model.Roles, new { @class = "control-label" })
             <div class="controls">
-                <ul>
-                    @foreach (var role in Model.Roles)
-                    {
-                        <li>@role.Role.Name</li>
-                    }
-                </ul>
-                @Ajax.ActionLink("Edit Roles", "EditRoles", "Users", new { id = Model.Id }, new AjaxOptions()
+                <div id="roles-list">
+                    @Html.Partial("_Roles")
+                </div>
+                @Ajax.ActionLink("Add Roles", "EditRoles", "Users", new { id = Model.Id }, new AjaxOptions()
                 {
                     HttpMethod = "GET",
                     InsertionMode = InsertionMode.Replace,
                     UpdateTargetId = "edit-roles"
                 }, new { @class = "btn btn btn-primary" })
-                @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
+                @if (!Model.Management.DisableSignIn)
                 {
-                    HttpMethod = "GET",
-                    OnComplete = "hideBanButton"
-                }, new { @class = "btn btn btn-primary ban-user" })
-                @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
+                    @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        OnComplete = "hideBanButton"
+                    }, new { @class = "btn btn btn-primary ban-user" })
+                    @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        OnComplete = "hideUnbanButton"
+                    }, new { @class = "btn btn btn-primary unban-user begin-hiden" })
+                }
+                else
                 {
-                    HttpMethod = "GET",
-                    OnComplete = "hideUnbanButton"
-                }, new { @class = "btn btn btn-primary unban-user" })
+                    @Ajax.ActionLink("Unban User", "UnbanUser", new { id = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        OnComplete = "hideUnbanButton"
+                    }, new { @class = "btn btn btn-primary unban-user" })
+                    @Ajax.ActionLink("Ban User", "BanUser", new { id = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        OnComplete = "hideBanButton"
+                    }, new { @class = "btn btn btn-primary ban-user begin-hiden" })
+                }
             </div>
         </div>
         <div class="form-actions">
@@ -70,7 +83,7 @@
 }
 
 <script>
-    $(".unban-user").hide();
+    $(".begin-hiden").hide()
     function hideBanButton() {
         $(".ban-user").hide();
         $(".unban-user").show();

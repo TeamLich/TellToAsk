@@ -45,6 +45,20 @@
             </div>
         </div>
 
+        <div class="control-group">
+            @Html.LabelFor(model => model.CreatorPoints, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.DisplayFor(model => model.CreatorPoints)
+                        </div>
+                    </div>
+
+        <div class="control-group">
+          
+                <div class="controls">
+                    @Html.ActionLink("User Details", "Details", "Users", new { id = Model.CreatorId }, null)
+                        </div>
+                    </div>
+
         <div class="form-actions">
             <input type="submit" value="Save" class="btn btn-primary" />
             @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })

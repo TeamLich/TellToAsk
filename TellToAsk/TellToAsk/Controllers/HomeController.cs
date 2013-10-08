@@ -24,8 +24,8 @@ namespace TellToAsk.Controllers
 
             if (this.HttpContext.Cache["HomePageTellToAskQuestionsData"] == null)
             {
-                IEnumerable<dynamic> questionsData = null;
-                IEnumerable<dynamic> answersData = null;
+                IEnumerable<dynamic> questionsData = new List<dynamic>();
+                IEnumerable<dynamic> answersData = new List<dynamic>();
 
                 var questionsCount = this.Data.Questions.All().Count();
 

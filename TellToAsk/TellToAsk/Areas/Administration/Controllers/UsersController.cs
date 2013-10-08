@@ -17,7 +17,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : BaseController
     {
          

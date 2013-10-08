@@ -21,7 +21,7 @@
             column.Bound(p => p.Approved).Title("Approved");
             column.Bound(p => p.TargetedGender).Title("Gender");
             column.Bound(p => p.TargetedMinAgeAsString).Title("Min Age").Width(50);
-            column.Bound(p => p.TargetedMinAgeAsString).Title("Max Age");
+            column.Bound(p => p.TargetedMaxAgeAsString).Title("Max Age");
             column.Template(p => @Html.Action("Edit", "Questions", new { id = p.QuestionId }))
                 .ClientTemplate("<a class='btn btn-primary' href='/Administration/Questions/Edit?id=#= QuestionId #'>Edit</a> " +
                 "<a class='btn btn-primary' href='/Administration/Questions/Details?id=#= QuestionId #'>Details</a> " +

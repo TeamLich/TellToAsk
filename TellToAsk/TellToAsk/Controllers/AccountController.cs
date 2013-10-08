@@ -78,7 +78,8 @@ namespace TellToAsk.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            PopulateGenders();
+
+            ViewBag.genders = this.PopulateGendersList();
             return View();
         }
 
@@ -151,14 +152,14 @@ namespace TellToAsk.Controllers
                     else
                     {
                         AddErrors(result);
-                        PopulateGenders();
+                        ViewBag.genders =  this.PopulateGendersList();
                         return View(model);
                     }
                 }
             }
             else
             {
-                PopulateGenders();
+                ViewBag.genders = this.PopulateGendersList();
                 ViewBag.error = (string.IsNullOrEmpty(errorMsg) ? "Select at least 3 categories" : "Categories NOT suitable for your age are:  " + errorMsg);
                 ViewBag.catselected = appruvedCatModels;
                 return View(model);
@@ -256,9 +257,10 @@ namespace TellToAsk.Controllers
         // GET: /Account/ManageUser
         public async Task<ActionResult> ManageUser(string message)
         {
-            PopulateGenders();
+          
             var userName = this.User.Identity.Name;
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
+            PopulateGenders(user.Gender);
             var userCats = user.Categories.AsQueryable().Select(CategoryModel.FromCategory).ToList();
             ViewBag.catSelected = userCats;
             ViewBag.Points = user.Points;
@@ -351,7 +353,7 @@ namespace TellToAsk.Controllers
                                 }
                                 //=======
                                 this.Data.SaveChanges();
-                                PopulateGenders();
+                                 PopulateGenders(model.Gender);
                                 return RedirectToAction("ManageUser", new { Message = "Your Profil has been updated." });
                             }
                             else
@@ -360,13 +362,13 @@ namespace TellToAsk.Controllers
                             }
                         }
                     }
-                    PopulateGenders();
+                    PopulateGenders(model.Gender);
                     // If we got this far, something failed, redisplay form
                     return View("_ChangeCategiriesPartial", model);
                 }
             }
 
-            PopulateGenders();
+            PopulateGenders(model.Gender);
             ViewBag.error = (string.IsNullOrEmpty(errorMsg) ? "Select at least 3 categories" : "Categories NOT suitable for your age are:  " + errorMsg);
             ViewBag.catselected = appruvedCatModels;
             return View("_ChangeCategiriesPartial", model);
@@ -495,7 +497,8 @@ namespace TellToAsk.Controllers
             base.Dispose(disposing);
         }
 
-        private void PopulateGenders()
+
+        private void PopulateGenders(Gender currentGender)
         {
             IList<SelectListItem> genList = new List<SelectListItem>();
             foreach (Gender gen in Enum.GetValues(typeof(Gender)))
@@ -506,6 +509,11 @@ namespace TellToAsk.Controllers
                     Text = gen.ToString(),
                     Value = ((int)gen).ToString(),
                 };
+
+                if (gen == currentGender)
+                {
+                    item.Selected = true;
+                }
 
                 genList.Add(item);
             }

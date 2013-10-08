@@ -5,19 +5,20 @@
 }
 
 <legend>@ViewBag.Title</legend>
-
-@(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.QuestionModel>()
+<em>For every answer you will get 10 points.
+For every answer thats is evaluated as 'useful you will get 5 more. For every answer evaluated as useless you will lose 5 points.'    
+</em>
+@(Html.Kendo().Grid<TellToAsk.Areas.LoggedUser.Models.TakeQuestionModel>()
     .Name("Grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.QuestionId).Visible(false);
         columns.Bound(p => p.QuestionTitle).Title("Question").ClientTemplate(
-        "#: QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #").Groupable(false).Sortable(false);
-        columns.Bound(p => p.Category.Name).Title("Category").Width("400px");
+        "#: QuestionTitle.length > 100 ? (QuestionTitle.substring(0, 100).concat('...')) : QuestionTitle #").Sortable(false);
+        columns.Bound(p => p.CategoryName).Title("Category").Width("400px");
         columns.Bound(p => p.DateAsked).Title("Asked on").Width("400px");
 
     })
-    .Groupable()
     .Pageable()
     .Sortable()
     .Selectable()

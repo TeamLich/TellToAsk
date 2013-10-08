@@ -21,7 +21,10 @@ namespace TellToAsk.Areas.Administration.Models
                     Title = question.Title,
                     Content = question.Text,
                     IsApproved = question.IsApproved,
-                    Category = question.CategoryId
+                    Category = question.CategoryId,
+                    CreatorPoints = question.Creator.Points,
+                    CreatorId = question.Creator.Id
+                    
                 };
             }
         }
@@ -38,7 +41,8 @@ namespace TellToAsk.Areas.Administration.Models
         public string Content { get; set; }
 
         public bool IsApproved { get; set; }
-
+        public string CreatorId { get; set; }
+        public int CreatorPoints { get; set; }
         public int Category { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
     public class LoggedUserController : BaseController
     {
         private const int PointsForAnswer = 10;
+        private const int PointsForQuestion = 20;
         private const int PointsForUsefullAnswer = 5;
         private const int PointsForUselessAnswer = -5;
 
@@ -79,9 +80,45 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
             var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
 
-            var questions = this.Data.Questions.All().Select(QuestionModel.FromQuestion);
-                //.Where( q => user.Categories.Contains(q.Category)).Select(QuestionModel.FromQuestion);
-            return Json(questions.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            var userCatsIds = user.Categories.AsQueryable().Select(c => c.CategoryId).ToList();
+
+            var userAge = GetAge(user);
+
+
+
+          var  questions = this.Data.Questions.All();
+
+          
+
+          questions = questions.Where(q => userCatsIds.Any(c => c == q.CategoryId));
+            
+          questions = questions.Where(q => q.Creator.Id != user.Id);
+         
+          questions = questions.Where(q => q.IsApproved);
+        
+          questions = questions.Where( q => !q.Answers.Any( a=> a.User.Id == user.Id));
+          
+          questions = questions.Where(q => !q.TargetedGender.HasValue || q.TargetedGender.Value == user.Gender);
+
+          questions = questions.Where(q => !q.TargetedMaxAge.HasValue || q.TargetedMaxAge.Value >= userAge);
+         
+          questions = questions.Where(q => !q.TargetedMinAge.HasValue || q.TargetedMinAge.Value <= userAge);
+
+
+          var questionsModels = questions.AsQueryable().Select(TakeQuestionModel.FromQuestion);
+           
+
+            return Json(questionsModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        private int GetAge(ApplicationUser user)
+        {
+            var bDay = (DateTime)user.BirthDate;
+            var age = DateTime.Now.Year - bDay.Year;
+
+            
+
+            return age;
         }
 
         public JsonResult URIDecode(string data)
@@ -241,7 +278,7 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
         public ActionResult CreateQuestion(QuestionModel questionModel)
         {
             ValidateNewQuestiionInput(questionModel);
-           
+            this.LoadDropDownModelsInViewBag();
             if (ModelState.IsValid)
             {
                 var userName = this.User.Identity.Name;
@@ -271,12 +308,14 @@ namespace TellToAsk.Areas.LoggedUser.Controllers
 
                 var user = this.Data.Users.All().FirstOrDefault(u => u.UserName == userName);
                 newQuestion.Creator = user;
-                
+                user.Points -= PointsForQuestion;
                 this.Data.Questions.Add(newQuestion);
                 this.Data.SaveChanges();
-                return RedirectToAction("MyQuestions");
+                this.ViewBag.ShowConfirm = true;
+                this.ViewBag.PointsForQuestion = PointsForQuestion;
+                return View("AskQuestion");
             }
-            this.LoadDropDownModelsInViewBag();
+            
 
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 string json = js.Serialize(questionModel);

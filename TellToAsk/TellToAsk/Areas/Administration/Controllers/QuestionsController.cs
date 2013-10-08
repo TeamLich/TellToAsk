@@ -15,7 +15,7 @@ using TellToAsk.Areas.Administration.Models;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     public class QuestionsController : BaseController
     {
 

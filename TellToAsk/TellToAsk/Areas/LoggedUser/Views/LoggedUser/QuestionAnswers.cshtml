@@ -17,11 +17,11 @@
         columns.Bound(p => p.IsRead).ClientTemplate("<img src='../img/msg-#: IsRead ? (!IsVoted ? \"for-evaluation\" : \"read\") :  \"unread\" #.png'/>").Width("100px");
         columns.Bound(p => p.DateAnswered).Format("{0:dd/MM/yyyy}").Width("100px"); ;
         columns.Bound(p => p.Comment).Title("Answer").ClientTemplate(
-        "<em class='break-word'>#: Comment.length > 500 ? (Comment.substring(0, 500).concat('...')) : Comment #</em>").Width(500).Groupable(false).Sortable(false);
+        "<em class='break-word'>#: Comment.length > 500 ? (Comment.substring(0, 500).concat('...')) : Comment #</em>").Width(500).Sortable(false);
     })
 
         .Scrollable(c => c.Height("500px"))
-        .Groupable()
+        
         .Pageable()
         .Sortable()
         .Selectable()
@@ -112,7 +112,7 @@
                             <input type="hidden" id="current-answer-id" value="#= AnswerId #" />
                         </div>
                         <div class="span2 text-center">
-                            <button id="cancel-btn" class='btn width100Pro'>Cancel</button>
+                            <button id="cancel-btn" class='btn width100Pro'>Close</button>
 
                             <br />
                             <br />

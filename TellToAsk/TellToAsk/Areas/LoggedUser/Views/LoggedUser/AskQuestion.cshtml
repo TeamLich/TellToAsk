@@ -5,6 +5,15 @@
     ViewBag.Title = "Ask question";
 }
 
+ @if (ViewBag.ShowConfirm as bool? == true)
+    {
+        <div class="alert alert-success success">
+            <p>
+                Question is submited and waiting for approvel. Please, keep in mind that you need @ViewBag.PointsForQuestion points to publish question.
+            </p>
+        </div>
+    }
+
 <legend>@ViewBag.Title</legend>
 
 @using (Html.BeginForm("CreateQuestion", "LoggedUser"))
@@ -63,7 +72,7 @@
 
     @if (@Model != null)
     {
-    @Html.Raw(ViewBag.JsonModel)
+        @Html.Raw(ViewBag.JsonModel)
     }
 
 </div>

@@ -16,7 +16,7 @@ using Microsoft.AspNet.Identity;
 
 namespace TellToAsk.Areas.Administration.Controllers
 {
-     [Authorize(Roles = "User")]
+     [Authorize(Roles = "Admin")]
     public class AnswersController : BaseController
     {
 
